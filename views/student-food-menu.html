@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Mess & Food Menu | Resident Portal</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-gold: #d97706;
+            --accent-gold-bg: #fffbeb;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .portal-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 32px 30px;
+            border-radius: 18px;
+            margin-bottom: 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25);
+        }
+
+        .portal-header h1 {
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            font-weight: 800;
+        }
+
+        .portal-header p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14.5px;
+        }
+
+        .portal-pill {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Today's Big Showcase */
+        .today-banner {
+            background: white;
+            border: 1.5px solid #bfdbfe;
+            border-radius: 20px;
+            padding: 28px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .today-banner::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #f59e0b, #3b82f6, #10b981);
+        }
+
+        .today-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+
+        .today-title-group h2 {
+            margin: 0 0 4px 0;
+            font-size: 22px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .today-date-badge {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2563eb;
+            background: #eff6ff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .active-serving-pill {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            animation: pulse-border 2s infinite;
+        }
+
+        @keyframes pulse-border {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(5, 150, 105, 0.4); }
+            50% { box-shadow: 0 0 0 6px rgba(5, 150, 105, 0); }
+        }
+
+        /* 3 Meal Cards Grid */
+        .meals-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .meal-card {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 22px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.25s ease;
+            position: relative;
+        }
+
+        .meal-card:hover {
+            transform: translateY(-4px);
+            border-color: #93c5fd;
+            box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+            background: #ffffff;
+        }
+
+        .meal-card.is-current-meal {
+            border: 2px solid #2563eb;
+            background: #ffffff;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+        }
+
+        .meal-tag-banner {
+            position: absolute;
+            top: -12px;
+            right: 18px;
+            background: #2563eb;
+            color: white;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+        }
+
+        .meal-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .meal-icon-title {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .meal-emoji-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .meal-name {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0;
+        }
+
+        .meal-time {
+            font-size: 12.5px;
+            font-weight: 600;
+            color: #64748b;
+        }
+
+        .meal-items-list {
+            font-size: 14.5px;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 16px;
+            min-height: 60px;
+        }
+
+        .special-highlight-card {
+            background: #fffbeb;
+            border: 1.5px solid #fde68a;
+            border-radius: 12px;
+            padding: 12px 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .special-star {
+            font-size: 20px;
+        }
+
+        .special-label {
+            font-size: 11.5px;
+            text-transform: uppercase;
+            font-weight: 800;
+            color: #b45309;
+            letter-spacing: 0.04em;
+            display: block;
+        }
+
+        .special-dish-name {
+            font-size: 14px;
+            font-weight: 800;
+            color: #78350f;
+        }
+
+        /* Announcement banner */
+        .announcement-card {
+            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+            border: 1.5px solid #bfdbfe;
+            border-radius: 14px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        /* Weekly Schedule Section */
+        .weekly-section {
+            background: white;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            padding: 26px;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            margin-bottom: 30px;
+        }
+
+        .weekly-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .weekly-header h3 {
+            font-size: 19px;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .schedule-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .schedule-table tr:hover td {
+            background: #f8fafc;
+        }
+
+        .schedule-table tr.is-today-row td {
+            background: #eff6ff;
+            font-weight: 600;
+        }
+
+        /* Mess Guidelines Grid */
+        .guidelines-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 18px;
+            margin-top: 24px;
+        }
+
+        .guideline-box {
+            background: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+        }
+
+        .guideline-box h4 {
+            margin: 0 0 6px 0;
+            font-size: 15px;
+            font-weight: 700;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .guideline-box p {
+            margin: 0;
+            font-size: 13px;
+            color: #64748b;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private Hostel & PG</h2>
+                <span>Resident Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/student-dashboard">Dashboard</a>
+            <a href="/student-food-menu" class="active">Food Menu</a>
+            <a href="/student-room">My Room</a>
+            <a href="/student-profile">Profile</a>
+            <a href="/student-fees">Rent & Fees</a>
+            <a href="/student-complaints">Complaints</a>
+            <a href="/student-reviews">Reviews & Feedback</a>
+            <a href="/student-settings">Settings</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+
+        <!-- Top Header -->
+        <div class="portal-header">
+            <div>
+                <h1>Daily Mess & Homely Food Menu</h1>
+                <p>Nutritious and freshly prepared South & North Indian meals served daily. View breakfast, lunch, and dinner specials.</p>
+            </div>
+            <div class="portal-pill">
+                <span>🔒 Read-Only Schedule</span>
+            </div>
+        </div>
+
+        <!-- Today's Showcase Banner -->
+        <div class="today-banner">
+
+            <!-- Today's Header Row -->
+            <div class="today-header-row">
+                <div class="today-title-group">
+                    <h2>
+                        <span>🍽️</span> Today's Menu: <span id="todayDayName">--</span>
+                        <span class="today-date-badge" id="todayDateStr">--</span>
+                    </h2>
+                    <span style="font-size: 13px; color: #64748b;">Daily meals prepared with filtered RO water and quality ingredients.</span>
+                </div>
+                <div>
+                    <span class="active-serving-pill" id="liveMealIndicator">
+                        <span style="width: 8px; height: 8px; border-radius: 50%; background: #059669;"></span>
+                        <span id="liveMealText">Checking meal timings...</span>
+                    </span>
+                </div>
+            </div>
+
+            <!-- Special Announcement Banner (if any) -->
+            <div id="announceBanner" class="announcement-card" style="display: none;">
+                <span style="font-size: 26px;">📢</span>
+                <div>
+                    <strong style="color: #1e40af; font-size: 14.5px; display: block; margin-bottom: 2px;">Kitchen Special Notice:</strong>
+                    <span id="announceText" style="color: #1e3a8a; font-size: 13.5px;"></span>
+                </div>
+            </div>
+
+            <!-- 3 Meal Cards Grid -->
+            <div class="meals-grid-3">
+
+                <!-- 1. MORNING TIFFIN -->
+                <div class="meal-card" id="cardBreakfast">
+                    <div id="tagBreakfast" class="meal-tag-banner" style="display: none;">Serving Now</div>
+                    <div>
+                        <div class="meal-card-top">
+                            <div class="meal-icon-title">
+                                <div class="meal-emoji-box" style="background: #fef3c7; color: #b45309;">🌅</div>
+                                <div>
+                                    <h3 class="meal-name">Morning Tiffin</h3>
+                                    <span class="meal-time" id="bTime">7:30 AM - 10:00 AM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meal-items-list" id="bItems">
+                            Loading breakfast menu...
+                        </div>
+                    </div>
+                    <div class="special-highlight-card" id="bSpecialBox">
+                        <span class="special-star">⭐</span>
+                        <div>
+                            <span class="special-label">Tiffin Special</span>
+                            <span class="special-dish-name" id="bSpecial">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. HOMELY LUNCH -->
+                <div class="meal-card" id="cardLunch">
+                    <div id="tagLunch" class="meal-tag-banner" style="display: none;">Serving Now</div>
+                    <div>
+                        <div class="meal-card-top">
+                            <div class="meal-icon-title">
+                                <div class="meal-emoji-box" style="background: #dbeafe; color: #1e40af;">☀️</div>
+                                <div>
+                                    <h3 class="meal-name">Homely Lunch</h3>
+                                    <span class="meal-time" id="lTime">12:30 PM - 3:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meal-items-list" id="lItems">
+                            Loading lunch menu...
+                        </div>
+                    </div>
+                    <div class="special-highlight-card" id="lSpecialBox">
+                        <span class="special-star">⭐</span>
+                        <div>
+                            <span class="special-label">Lunch Special</span>
+                            <span class="special-dish-name" id="lSpecial">--</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. NIGHT DINNER -->
+                <div class="meal-card" id="cardDinner">
+                    <div id="tagDinner" class="meal-tag-banner" style="display: none;">Serving Now</div>
+                    <div>
+                        <div class="meal-card-top">
+                            <div class="meal-icon-title">
+                                <div class="meal-emoji-box" style="background: #ede9fe; color: #6d28d9;">🌙</div>
+                                <div>
+                                    <h3 class="meal-name">Night Dinner</h3>
+                                    <span class="meal-time" id="dTime">7:30 PM - 10:00 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="meal-items-list" id="dItems">
+                            Loading dinner menu...
+                        </div>
+                    </div>
+                    <div class="special-highlight-card" id="dSpecialBox">
+                        <span class="special-star">⭐</span>
+                        <div>
+                            <span class="special-label">Dinner Special</span>
+                            <span class="special-dish-name" id="dSpecial">--</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- Full 7-Day Weekly Schedule Table -->
+        <div class="weekly-section">
+            <div class="weekly-header">
+                <h3><i data-lucide="calendar" style="width: 20px; height: 20px; color: var(--primary);"></i> Complete 7-Day Mess Schedule</h3>
+                <span style="font-size: 13px; color: var(--text-muted);">Updated daily by Hostel Admin</span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Day & Date</th>
+                            <th>Morning Tiffin</th>
+                            <th>Homely Lunch</th>
+                            <th>Night Dinner</th>
+                            <th>Special Treats</th>
+                        </tr>
+                    </thead>
+                    <tbody id="studentWeeklyTable">
+                        <tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 20px;">Loading weekly schedule...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mess Guidelines & Hygeine Rules -->
+        <div class="guidelines-grid">
+            <div class="guideline-box">
+                <h4><span>🕒</span> Dining Hall Timings</h4>
+                <p>Breakfast: 7:30 AM – 10:00 AM<br>Lunch: 12:30 PM – 3:00 PM<br>Dinner: 7:30 PM – 10:00 PM</p>
+            </div>
+            <div class="guideline-box">
+                <h4><span>🥗</span> Unlimited Healthy Food</h4>
+                <p>Rice, sambar, rasam, curd, and hot chapatis are served unlimited with strict hygeine and zero wastage policy.</p>
+            </div>
+            <div class="guideline-box">
+                <h4><span>🥡</span> Late Plate / Packed Meal</h4>
+                <p>Working late or coaching class? Request a packed meal box before 6:00 PM with the mess warden.</p>
+            </div>
+            <div class="guideline-box">
+                <h4><span>🔒</span> Read-Only Notice</h4>
+                <p>This menu is updated day-to-day directly by the hostel management and head cook.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const todayIso = new Date().toISOString().split("T")[0];
+
+        async function loadTodayMenu() {
+            try {
+                const res = await fetch('/api/food-menu/today');
+                const data = await res.json();
+
+                if (data && data.success && data.menu) {
+                    const m = data.menu;
+                    document.getElementById('todayDayName').textContent = m.day_name || "Today";
+                    document.getElementById('todayDateStr').textContent = m.menu_date || todayIso;
+
+                    // Breakfast
+                    document.getElementById('bTime').textContent = m.breakfast_time || "7:30 AM - 10:00 AM";
+                    document.getElementById('bItems').textContent = m.breakfast_items || "Masala Dosa, Sambar, Coconut Chutney, Tea/Coffee";
+                    if (m.breakfast_special) {
+                        document.getElementById('bSpecial').textContent = m.breakfast_special;
+                        document.getElementById('bSpecialBox').style.display = "flex";
+                    } else {
+                        document.getElementById('bSpecial').textContent = "Filter Coffee / Tea";
+                    }
+
+                    // Lunch
+                    document.getElementById('lTime').textContent = m.lunch_time || "12:30 PM - 3:00 PM";
+                    document.getElementById('lItems').textContent = m.lunch_items || "Steamed Rice, Dal, Veg Curry, Rasam, Curd, Papad";
+                    if (m.lunch_special) {
+                        document.getElementById('lSpecial').textContent = m.lunch_special;
+                        document.getElementById('lSpecialBox').style.display = "flex";
+                    } else {
+                        document.getElementById('lSpecial').textContent = "Fresh Curd & Crispy Appalam";
+                    }
+
+                    // Dinner
+                    document.getElementById('dTime').textContent = m.dinner_time || "7:30 PM - 10:00 PM";
+                    document.getElementById('dItems').textContent = m.dinner_items || "Chapatis, Paneer Curry, Jeera Rice, Dal Fry, Buttermilk";
+                    if (m.dinner_special) {
+                        document.getElementById('dSpecial').textContent = m.dinner_special;
+                        document.getElementById('dSpecialBox').style.display = "flex";
+                    } else {
+                        document.getElementById('dSpecial').textContent = "Sweet Kheer / Dessert";
+                    }
+
+                    // Announcement
+                    if (m.special_announcement) {
+                        document.getElementById('announceText').textContent = m.special_announcement;
+                        document.getElementById('announceBanner').style.display = "flex";
+                    }
+
+                    updateCurrentMealHighlight();
+                }
+            } catch (e) {
+                console.warn("Could not load today's menu:", e);
+            }
+        }
+
+        function updateCurrentMealHighlight() {
+            const now = new Date();
+            const hour = now.getHours();
+            const min = now.getMinutes();
+            const timeNum = hour + (min / 60);
+
+            const cardB = document.getElementById('cardBreakfast');
+            const cardL = document.getElementById('cardLunch');
+            const cardD = document.getElementById('cardDinner');
+
+            const tagB = document.getElementById('tagBreakfast');
+            const tagL = document.getElementById('tagLunch');
+            const tagD = document.getElementById('tagDinner');
+
+            const liveText = document.getElementById('liveMealText');
+
+            // Reset
+            cardB.classList.remove('is-current-meal');
+            cardL.classList.remove('is-current-meal');
+            cardD.classList.remove('is-current-meal');
+            tagB.style.display = 'none';
+            tagL.style.display = 'none';
+            tagD.style.display = 'none';
+
+            if (timeNum >= 7.0 && timeNum <= 10.5) {
+                cardB.classList.add('is-current-meal');
+                tagB.style.display = 'block';
+                liveText.textContent = "🟢 Serving Now: Morning Tiffin";
+            } else if (timeNum > 10.5 && timeNum < 12.5) {
+                liveText.textContent = "⏳ Next Meal: Homely Lunch at 12:30 PM";
+            } else if (timeNum >= 12.5 && timeNum <= 15.5) {
+                cardL.classList.add('is-current-meal');
+                tagL.style.display = 'block';
+                liveText.textContent = "🟢 Serving Now: Homely Lunch";
+            } else if (timeNum > 15.5 && timeNum < 19.5) {
+                liveText.textContent = "⏳ Next Meal: Night Dinner at 7:30 PM";
+            } else if (timeNum >= 19.5 && timeNum <= 22.5) {
+                cardD.classList.add('is-current-meal');
+                tagD.style.display = 'block';
+                liveText.textContent = "🟢 Serving Now: Night Dinner";
+            } else {
+                liveText.textContent = "🌙 Kitchen Closed (Reopens at 7:30 AM)";
+            }
+        }
+
+        async function loadWeeklySchedule() {
+            try {
+                const res = await fetch('/api/food-menu/week');
+                const data = await res.json();
+                const tbody = document.getElementById('studentWeeklyTable');
+
+                if (data && data.success && data.menus && data.menus.length > 0) {
+                    tbody.innerHTML = data.menus.map(m => {
+                        const isToday = (m.menu_date === todayIso);
+                        const specials = [
+                            m.breakfast_special ? `🌅 ${m.breakfast_special}` : null,
+                            m.lunch_special ? `☀️ ${m.lunch_special}` : null,
+                            m.dinner_special ? `🌙 ${m.dinner_special}` : null
+                        ].filter(Boolean).join("<br>");
+
+                        return `
+                            <tr class="${isToday ? 'is-today-row' : ''}">
+                                <td>
+                                    <strong>${m.day_name}</strong>
+                                    ${isToday ? '<span style="background: #2563eb; color: white; padding: 2px 7px; border-radius: 10px; font-size: 10px; margin-left: 6px;">TODAY</span>' : ''}
+                                    <br><span style="font-size: 11.5px; color: #64748b;">${m.menu_date}</span>
+                                    ${m.is_feast_day ? '<br><span style="font-size: 11px; color: #b45309; font-weight: 800;">🎉 FEAST</span>' : ''}
+                                </td>
+                                <td style="max-width: 220px; font-size: 13px; color: #334155;">${m.breakfast_items || '--'}</td>
+                                <td style="max-width: 240px; font-size: 13px; color: #334155;">${m.lunch_items || '--'}</td>
+                                <td style="max-width: 240px; font-size: 13px; color: #334155;">${m.dinner_items || '--'}</td>
+                                <td style="font-size: 12.5px; color: #b45309; font-weight: 700;">${specials || 'Standard'}</td>
+                            </tr>
+                        `;
+                    }).join("");
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 20px;">No weekly schedule available.</td></tr>';
+                }
+            } catch (e) {
+                console.warn("Could not load schedule table:", e);
+            }
+        }
+
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            loadTodayMenu();
+            loadWeeklySchedule();
+        });
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

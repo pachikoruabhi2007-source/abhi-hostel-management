@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Management | Private Hostel & PG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .category-tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            flex-wrap: wrap;
+        }
+
+        .cat-tab {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            border: 1px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .cat-tab:hover {
+            border-color: #93c5fd;
+            color: #1e3a8a;
+        }
+
+        .cat-tab.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .cat-pill {
+            background: rgba(255, 255, 255, 0.25);
+            font-size: 11px;
+            padding: 2px 7px;
+            border-radius: 12px;
+        }
+
+        .cat-tab:not(.active) .cat-pill {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .badge-res-type {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badge-jobholder { background: #eff6ff; color: #1e40af; border: 1px solid #bfdbfe; }
+        .badge-transfer { background: #fdf2f8; color: #9d174d; border: 1px solid #fbcfe8; }
+        .badge-student { background: #f0fdf4; color: #166534; border: 1px solid #bbf7d0; }
+
+        .dossier-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-top: 14px;
+        }
+
+        .dossier-item {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .dossier-item span {
+            display: block;
+            font-size: 11.5px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .dossier-item strong {
+            font-size: 14.5px;
+            color: #0f172a;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 18px;
+            max-width: 680px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 30px;
+            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e2e8f0;
+        }
+
+        .food-badge {
+            font-size: 11px;
+            padding: 3px 8px;
+            border-radius: 6px;
+            background: #fef9c3;
+            color: #854d0e;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Hostel Management</h2>
+                <span>Admin Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students" class="active">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu">Food Menu</a>
+            <a href="/vacating-notices">Transfer / Vacating</a>
+            <a href="/fees">Fees & Rent</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reports">Reports</a>
+            <a href="/admin-reviews">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <section class="page-hero">
+        <div>
+            <span class="dashboard-label">RESIDENT DIRECTORY</span>
+            <h1>Resident Management</h1>
+            <p>Onboard, verify, and manage Jobholders, Transfer Employees, and Students in private hostel accommodations.</p>
+        </div>
+        <div class="page-hero-icon">🏢</div>
+    </section>
+
+    <!-- Category Tabs Filter -->
+    <section class="modern-section" style="padding-bottom: 0;">
+        <div class="category-tabs">
+            <button class="cat-tab active" onclick="setCategoryFilter('all')">
+                🏢 All Residents <span class="cat-pill" id="countAll">0</span>
+            </button>
+            <button class="cat-tab" onclick="setCategoryFilter('Jobholder')">
+                💼 Jobholders / Professionals <span class="cat-pill" id="countJob">0</span>
+            </button>
+            <button class="cat-tab" onclick="setCategoryFilter('Transfer')">
+                🔄 Transfer & Relocated <span class="cat-pill" id="countTransfer">0</span>
+            </button>
+            <button class="cat-tab" onclick="setCategoryFilter('Student')">
+                🎓 Students & Interns <span class="cat-pill" id="countStudent">0</span>
+            </button>
+        </div>
+    </section>
+
+    <!-- Add Resident Form -->
+    <section class="modern-section">
+        <div class="section-header">
+            <div>
+                <span class="section-label">ADMISSION & CHECK-IN</span>
+                <h2>Add New Resident</h2>
+                <p>Register a jobholder, transferred employee, or student with workplace and verification details.</p>
+            </div>
+            <div class="section-icon">➕</div>
+        </div>
+
+        <form action="/api/students" method="POST" class="modern-form" id="addResidentForm" onsubmit="handleAddResident(event)">
+            <div class="form-grid">
+                <!-- Basic Info -->
+                <div class="form-group">
+                    <label>Full Name *</label>
+                    <input type="text" name="name" id="addName" placeholder="e.g. Rahul Sharma" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone Number *</label>
+                    <input type="tel" name="phone" id="addPhone" placeholder="10-digit mobile number" required>
+                </div>
+
+                <!-- Resident Category -->
+                <div class="form-group">
+                    <label>Resident Category *</label>
+                    <select name="resident_type" id="addResidentType" onchange="toggleCategoryLabels()" required>
+                        <option value="Jobholder">Jobholder / Working Professional 💼</option>
+                        <option value="Transfer">Transfer / Relocated Employee 🔄</option>
+                        <option value="Student">Student / Intern 🎓</option>
+                    </select>
+                </div>
+
+                <!-- Workplace / College -->
+                <div class="form-group">
+                    <label id="orgLabel">Company / Workplace *</label>
+                    <input type="text" name="company_or_college" id="addOrg" placeholder="e.g. TCS, Infosys, Amazon, HDFC Bank" required>
+                </div>
+
+                <div class="form-group">
+                    <label id="roleLabel">Job Role / Designation</label>
+                    <input type="text" name="designation_or_course" id="addRole" placeholder="e.g. Software Engineer, Financial Analyst">
+                </div>
+
+                <div class="form-group">
+                    <label>Workplace / Office Address</label>
+                    <input type="text" name="office_address" id="addOfficeAddr" placeholder="e.g. Hitech City / Cyber Gateway">
+                </div>
+
+                <!-- ID & Hometown -->
+                <div class="form-group">
+                    <label>Government ID Proof Type <span style="color:#ef4444;">*</span></label>
+                    <select name="id_proof_type" id="addIdType" onchange="handleIdTypeChange('add')" required>
+                        <option value="Aadhaar Card">Aadhaar Card (12 Digits)</option>
+                        <option value="PAN Card">PAN Card (10 Chars)</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Voter ID">Voter ID</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>ID Proof Number <span style="color:#ef4444;">*</span></label>
+                    <input type="text" name="id_proof_number" id="addIdNum" placeholder="e.g. 12-digit Aadhaar number" required oninput="validateIdInput('add')">
+                    <small id="addIdHelp" style="font-size:12px; margin-top:4px; display:block;"></small>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Attach ID Proof Document Copy (Photo or PDF) <span style="font-size:12px; color:#64748b; font-weight:normal;">(Confidential - Max 10MB)</span></label>
+                    <input type="file" id="addIdDocFile" accept="image/jpeg,image/png,image/webp,application/pdf" onchange="handleAddDocFile(this)" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; width: 100%; font-size: 13px;">
+                    <small id="addIdDocHelp" style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Supports JPG, PNG, WEBP or PDF. Stored privately and only visible to Admin and this resident.</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Native City / Hometown</label>
+                    <input type="text" name="native_city" id="addCity" placeholder="e.g. Bangalore, Pune, Vizag">
+                </div>
+
+                <!-- Stay Details -->
+                <div class="form-group">
+                    <label>Stay Agreement Type</label>
+                    <select name="stay_type" id="addStayType">
+                        <option value="Monthly Stay">Monthly Flexible Stay</option>
+                        <option value="Transfer Deputation">Transfer Deputation (Temporary)</option>
+                        <option value="Long Term">Long Term (6+ Months)</option>
+                        <option value="Short Term">Short Term / Daily</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Check-in Date *</label>
+                    <input type="date" name="check_in_date" id="addCheckIn" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Expected Departure Date (Optional)</label>
+                    <input type="date" name="expected_checkout_date" id="addCheckout">
+                </div>
+
+                <!-- Room Assignment -->
+                <div class="form-group">
+                    <label>Assign Room *</label>
+                    <select name="room_no" id="roomSelect" required>
+                        <option value="">Select Available Room</option>
+                    </select>
+                </div>
+
+                <!-- Rent & Deposit -->
+                <div class="form-group">
+                    <label>Monthly Rent (₹) *</label>
+                    <input type="number" name="monthly_rent" id="addRent" placeholder="e.g. 7500" min="0" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Refundable Security Deposit (₹)</label>
+                    <input type="number" name="security_deposit" id="addDeposit" placeholder="e.g. 10000" min="0">
+                </div>
+
+                <!-- Food Plan -->
+                <div class="form-group">
+                    <label>Mess / Food Plan</label>
+                    <select name="food_plan" id="addFoodPlan">
+                        <option value="With Food (3 Meals)">With Food (Breakfast, Lunch & Dinner)</option>
+                        <option value="Breakfast & Dinner">Breakfast & Dinner Only</option>
+                        <option value="Without Food">Without Food (Self / Swiggy)</option>
+                    </select>
+                </div>
+
+                <!-- Emergency Contact -->
+                <div class="form-group">
+                    <label>Emergency Contact Name</label>
+                    <input type="text" name="emergency_name" id="addEmergName" placeholder="e.g. Parent / Spouse / Local Contact">
+                </div>
+
+                <div class="form-group">
+                    <label>Emergency Contact Phone</label>
+                    <input type="tel" name="emergency_phone" id="addEmergPhone" placeholder="Emergency contact mobile number">
+                </div>
+            </div>
+
+            <button type="submit" class="primary-button" style="margin-top: 15px;">
+                ➕ Register Resident
+            </button>
+        </form>
+    </section>
+
+    <!-- Resident Directory Table -->
+    <section class="modern-section student-list-section">
+        <div class="section-header">
+            <div>
+                <span class="section-label">DIRECTORY</span>
+                <h2>Active Residents</h2>
+                <p>Search, filter, view complete verification dossier, and manage residents.</p>
+            </div>
+            <div style="display: flex; gap: 12px; align-items: center;">
+                <button type="button" onclick="cleanOldTestData()" style="background: #fef2f2; color: #dc2626; border: 1.5px solid #fecaca; padding: 8px 14px; border-radius: 10px; font-weight: 700; font-size: 13px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    🧹 Clean Test Users (Keep Admin & 257r1a66p7)
+                </button>
+                <div class="section-icon">👥</div>
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="student-controls">
+            <div class="search-box">
+                <span>🔍</span>
+                <input type="text" id="searchResident" placeholder="Search by name, company, hometown, or phone..." onkeyup="filterAndRender()">
+            </div>
+
+            <div class="control-group">
+                <label>Filter Room</label>
+                <select id="filterRoom" onchange="filterAndRender()">
+                    <option value="">All Rooms</option>
+                </select>
+            </div>
+
+            <div class="control-group">
+                <label>Sort By</label>
+                <select id="sortResident" onchange="filterAndRender()">
+                    <option value="name">Name (A-Z)</option>
+                    <option value="room">Room Number</option>
+                    <option value="type">Category</option>
+                    <option value="rent">Monthly Rent</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrapper">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>Resident</th>
+                        <th>Category</th>
+                        <th>Workplace / College</th>
+                        <th>Room & Food</th>
+                        <th>Contact & Hometown</th>
+                        <th>Rent & Deposit</th>
+                        <th>Stay Period</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="residentTable">
+                    <tr>
+                        <td colspan="8" style="text-align: center; padding: 24px;">Loading residents...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Resident Dossier Modal -->
+    <div id="dossierModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px;">
+                <div>
+                    <h3 id="dossierName" style="font-size: 22px; font-weight: 800; margin: 0; color: #0f172a;">Resident Dossier</h3>
+                    <span id="dossierTypeBadge" class="badge-res-type badge-jobholder" style="margin-top: 6px;">Jobholder</span>
+                </div>
+                <button type="button" onclick="closeDossierModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b;">✕</button>
+            </div>
+
+            <div class="dossier-grid">
+                <div class="dossier-item">
+                    <span>Assigned Room</span>
+                    <strong id="dossierRoom">Room --</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Phone Contact</span>
+                    <strong id="dossierPhone">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Company / College</span>
+                    <strong id="dossierOrg">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Role / Designation</span>
+                    <strong id="dossierRole">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Office Location</span>
+                    <strong id="dossierOffice">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Native Hometown</span>
+                    <strong id="dossierCity">--</strong>
+                </div>
+
+                <div class="dossier-item" style="grid-column: span 2; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                        <span style="font-weight: 700; color: #1e293b; font-size: 13px;">Confidential Government ID Proof & Police Verification</span>
+                        <span id="dossierIdStatusBadge" style="padding: 4px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700;">Status</span>
+                    </div>
+                    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 10px;">
+                        <strong id="dossierId" style="font-size: 14.5px; color: #0f172a;">--</strong>
+                        <div id="dossierDocAction"></div>
+                    </div>
+                    <div id="dossierRejectReasonBox" style="display: none; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 8px 12px; font-size: 12px; color: #991b1b; margin-bottom: 10px;">
+                        <strong>Rejection Reason:</strong> <span id="dossierRejectReasonText">--</span>
+                    </div>
+                    <!-- Admin Verification Controls -->
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; border-top: 1px dashed #cbd5e1; padding-top: 10px; align-items: center;">
+                        <span style="font-size: 12px; font-weight: 700; color: #475569; margin-right: 4px;">Admin Decision:</span>
+                        <button type="button" onclick="adminVerifyId('Verified')" style="padding: 7px 14px; background: #16a34a; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            ✓ Approve & Grant Permissions
+                        </button>
+                        <button type="button" onclick="adminVerifyId('Rejected')" style="padding: 7px 14px; background: #dc2626; color: white; border: none; border-radius: 8px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
+                            ✗ Reject & Require Re-upload
+                        </button>
+                    </div>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Food Plan</span>
+                    <strong id="dossierFood">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Monthly Rent</span>
+                    <strong id="dossierRent" style="color: #2563eb;">₹0 / month</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Security Deposit</span>
+                    <strong id="dossierDeposit" style="color: #059669;">₹0 (Refundable)</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Check-in Date</span>
+                    <strong id="dossierCheckIn">--</strong>
+                </div>
+
+                <div class="dossier-item">
+                    <span>Expected Checkout</span>
+                    <strong id="dossierCheckout">Flexible</strong>
+                </div>
+
+                <div class="dossier-item" style="grid-column: span 2;">
+                    <span>Emergency Contact</span>
+                    <strong id="dossierEmergency">--</strong>
+                </div>
+            </div>
+
+            <div style="display: flex; justify-content: flex-end; margin-top: 24px;">
+                <button type="button" class="primary-button" onclick="closeDossierModal()">Close Dossier</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Resident Modal -->
+    <div id="editModal" class="modal-overlay">
+        <div class="modal-box">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 14px; margin-bottom: 20px;">
+                <h3 style="font-size: 20px; font-weight: 800; margin: 0;">Update Resident Information</h3>
+                <button type="button" onclick="closeEditModal()" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #64748b;">✕</button>
+            </div>
+
+            <input type="hidden" id="editResidentId">
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editName" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Phone</label>
+                    <input type="tel" id="editPhone" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="editResidentType">
+                        <option value="Jobholder">Jobholder 💼</option>
+                        <option value="Transfer">Transfer 🔄</option>
+                        <option value="Student">Student 🎓</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Company / College</label>
+                    <input type="text" id="editOrg" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Role / Course</label>
+                    <input type="text" id="editRole">
+                </div>
+
+                <div class="form-group">
+                    <label>Room Number</label>
+                    <input type="text" id="editRoom" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Monthly Rent (₹)</label>
+                    <input type="number" id="editRent">
+                </div>
+
+                <div class="form-group">
+                    <label>Security Deposit (₹)</label>
+                    <input type="number" id="editDeposit">
+                </div>
+
+                <div class="form-group">
+                    <label>Food Plan</label>
+                    <select id="editFoodPlan">
+                        <option value="With Food (3 Meals)">With Food (3 Meals)</option>
+                        <option value="Breakfast & Dinner">Breakfast & Dinner</option>
+                        <option value="Without Food">Without Food</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Native Hometown</label>
+                    <input type="text" id="editCity">
+                </div>
+
+                <div class="form-group">
+                    <label>Government ID Proof Type <span style="color:#ef4444;">*</span></label>
+                    <select id="editIdType" onchange="handleIdTypeChange('edit')" required>
+                        <option value="Aadhaar Card">Aadhaar Card (12 Digits)</option>
+                        <option value="PAN Card">PAN Card (10 Chars)</option>
+                        <option value="Passport">Passport</option>
+                        <option value="Voter ID">Voter ID</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>ID Proof Number <span style="color:#ef4444;">*</span></label>
+                    <input type="text" id="editIdNum" placeholder="e.g. 12-digit Aadhaar number" required oninput="validateIdInput('edit')">
+                    <small id="editIdHelp" style="font-size:12px; margin-top:4px; display:block;"></small>
+                </div>
+
+                <div class="form-group" style="grid-column: span 2;">
+                    <label>Current ID Proof Document</label>
+                    <div id="editDocCurrentStatus" style="padding: 10px 14px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; font-size: 13px; margin-bottom: 8px;">
+                        Loading document status...
+                    </div>
+                    <label style="font-size: 12px; color: #475569;">Upload New / Replacement Document <span style="font-weight:normal; color:#64748b;">(Optional, Max 10MB)</span></label>
+                    <input type="file" id="editIdDocFile" accept="image/jpeg,image/png,image/webp,application/pdf" onchange="handleEditDocFile(this)" style="padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; width: 100%; font-size: 13px;">
+                    <small id="editIdDocHelp" style="font-size: 12px; color: #64748b; margin-top: 4px; display: block;">Leave empty to keep existing document unchanged.</small>
+                </div>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end; margin-top: 24px;">
+                <button type="button" class="btn-view" style="padding: 10px 18px; border-radius: 8px; border: 1px solid #cbd5e1; cursor: pointer;" onclick="closeEditModal()">Cancel</button>
+                <button type="button" class="primary-button" onclick="saveResidentEdit()">Save Updates</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function cleanOldTestData() {
+            if (!confirm("Are you sure you want to clean up test users?\n\nThis will delete all test accounts and keep ONLY:\n• Admin accounts\n• 257r1a66p7@cmrtc.ac.in\n\nRoom occupancies, fees, and residents list will be freshly synchronized.")) {
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/clean-test-users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    alert(`✅ ${data.message}`);
+                    window.location.reload();
+                } else {
+                    alert("Error: " + (data.error || "Failed to clean test users"));
+                }
+            } catch (err) {
+                alert("Error connecting to server: " + err.message);
+            }
+        }
+
+        // Set default check-in date
+        document.getElementById('addCheckIn').value = new Date().toISOString().split('T')[0];
+
+        let allResidents = [];
+        let currentCategory = 'all';
+
+        let addDocBase64 = null;
+        let addDocFilename = null;
+        let editDocBase64 = null;
+        let editDocFilename = null;
+
+        function handleAddDocFile(input) {
+            const file = input.files && input.files[0];
+            if (!file) {
+                addDocBase64 = null;
+                addDocFilename = null;
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File size exceeds 10MB limit. Please choose a smaller photo or PDF.");
+                input.value = "";
+                addDocBase64 = null;
+                addDocFilename = null;
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                addDocBase64 = e.target.result;
+                addDocFilename = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function handleEditDocFile(input) {
+            const file = input.files && input.files[0];
+            if (!file) {
+                editDocBase64 = null;
+                editDocFilename = null;
+                return;
+            }
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File size exceeds 10MB limit. Please choose a smaller photo or PDF.");
+                input.value = "";
+                editDocBase64 = null;
+                editDocFilename = null;
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                editDocBase64 = e.target.result;
+                editDocFilename = file.name;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function toggleCategoryLabels() {
+            const type = document.getElementById('addResidentType').value;
+            const orgLabel = document.getElementById('orgLabel');
+            const roleLabel = document.getElementById('roleLabel');
+            const orgInput = document.getElementById('addOrg');
+            const roleInput = document.getElementById('addRole');
+
+            if (type === 'Student') {
+                orgLabel.textContent = 'College / University / Coaching *';
+                orgInput.placeholder = 'e.g. Osmania University, Allen, VJIT';
+                roleLabel.textContent = 'Course / Branch';
+                roleInput.placeholder = 'e.g. B.Tech (CSE), MBA, UPSC Aspirant';
+            } else if (type === 'Transfer') {
+                orgLabel.textContent = 'Transferring Company / Branch *';
+                orgInput.placeholder = 'e.g. Amazon (Hyderabad to Bangalore transfer)';
+                roleLabel.textContent = 'Designation / Project';
+                roleInput.placeholder = 'e.g. Project Consultant, Branch Auditor';
+            } else {
+                orgLabel.textContent = 'Company / Workplace *';
+                orgInput.placeholder = 'e.g. TCS, Infosys, Amazon, HDFC Bank';
+                roleLabel.textContent = 'Job Role / Designation';
+                roleInput.placeholder = 'e.g. Senior Software Engineer';
+            }
+        }
+
+        // ==================== GOVERNMENT ID VALIDATION (AADHAAR / PAN) ====================
+        function handleIdTypeChange(prefix) {
+            const isAdd = prefix === 'add';
+            const typeSelect = document.getElementById(isAdd ? 'addIdType' : 'editIdType');
+            if (!typeSelect) return;
+            const type = typeSelect.value;
+            const input = document.getElementById(isAdd ? 'addIdNum' : 'editIdNum');
+            const help = document.getElementById(isAdd ? 'addIdHelp' : 'editIdHelp');
+            if (!input) return;
+
+            if (type === 'Aadhaar Card') {
+                input.placeholder = 'e.g. 5489 1234 5678 (12 digits)';
+                input.maxLength = 14;
+            } else if (type === 'PAN Card') {
+                input.placeholder = 'e.g. ABCDE1234F (10 characters)';
+                input.maxLength = 10;
+            } else if (type === 'Passport') {
+                input.placeholder = 'e.g. A1234567 (1 letter + 7 digits)';
+                input.maxLength = 9;
+            } else if (type === 'Voter ID') {
+                input.placeholder = 'e.g. ABC1234567 (3 letters + 7 digits)';
+                input.maxLength = 12;
+            } else {
+                input.placeholder = 'Enter valid ID proof number';
+                input.maxLength = 30;
+            }
+
+            if (input.value) {
+                validateIdInput(prefix);
+            } else if (help) {
+                help.textContent = '';
+            }
+        }
+
+        function validateIdInput(prefix) {
+            const isAdd = prefix === 'add';
+            const typeSelect = document.getElementById(isAdd ? 'addIdType' : 'editIdType');
+            const input = document.getElementById(isAdd ? 'addIdNum' : 'editIdNum');
+            const help = document.getElementById(isAdd ? 'addIdHelp' : 'editIdHelp');
+            if (!typeSelect || !input) return true;
+
+            const type = typeSelect.value;
+            let val = input.value;
+
+            if (type === 'Aadhaar Card') {
+                const digits = val.replace(/\D/g, '').slice(0, 12);
+                const parts = [];
+                for (let i = 0; i < digits.length; i += 4) {
+                    parts.push(digits.slice(i, i + 4));
+                }
+                input.value = parts.join(' ');
+
+                if (digits.length === 0) {
+                    if (help) { help.style.color = '#ef4444'; help.textContent = '❌ Aadhaar number is mandatory (12 digits)'; }
+                    return false;
+                }
+                if (digits[0] === '0' || digits[0] === '1') {
+                    if (help) { help.style.color = '#ef4444'; help.textContent = '❌ Aadhaar cannot begin with 0 or 1'; }
+                    return false;
+                }
+                if (digits.length < 12) {
+                    if (help) { help.style.color = '#f59e0b'; help.textContent = `⚠️ Aadhaar requires 12 digits (${digits.length}/12 entered)`; }
+                    return false;
+                }
+                if (help) { help.style.color = '#10b981'; help.textContent = '✓ Valid 12-digit Aadhaar format'; }
+                return true;
+            } else if (type === 'PAN Card') {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+                input.value = val;
+
+                if (val.length === 0) {
+                    if (help) { help.style.color = '#ef4444'; help.textContent = '❌ PAN number is mandatory (10 characters)'; }
+                    return false;
+                }
+                const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                if (!panRegex.test(val)) {
+                    if (help) { help.style.color = '#f59e0b'; help.textContent = '⚠️ Standard PAN format: 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F)'; }
+                    return false;
+                }
+                if (help) { help.style.color = '#10b981'; help.textContent = '✓ Valid PAN format'; }
+                return true;
+            } else if (type === 'Passport') {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 8);
+                input.value = val;
+                if (!/^[A-Z][0-9]{7}$/.test(val)) {
+                    if (help) { help.style.color = '#f59e0b'; help.textContent = '⚠️ Passport format: 1 letter followed by 7 digits'; }
+                    return false;
+                }
+                if (help) { help.style.color = '#10b981'; help.textContent = '✓ Valid Passport format'; }
+                return true;
+            } else if (type === 'Voter ID') {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+                input.value = val;
+                if (!/^[A-Z]{3}[0-9]{7}$/.test(val)) {
+                    if (help) { help.style.color = '#f59e0b'; help.textContent = '⚠️ Voter ID format: 3 letters followed by 7 digits'; }
+                    return false;
+                }
+                if (help) { help.style.color = '#10b981'; help.textContent = '✓ Valid Voter ID format'; }
+                return true;
+            }
+
+            if (!val.trim()) {
+                if (help) { help.style.color = '#ef4444'; help.textContent = '❌ Government ID proof number is mandatory'; }
+                return false;
+            }
+            if (help) { help.style.color = '#10b981'; help.textContent = '✓ Valid ID format'; }
+            return true;
+        }
+
+        // Load Rooms for dropdown & filter
+        async function loadRooms() {
+            try {
+                const res = await fetch('/api/rooms');
+                const rooms = await res.json();
+
+                const roomSelect = document.getElementById('roomSelect');
+                const filterRoom = document.getElementById('filterRoom');
+
+                rooms.forEach(room => {
+                    const opt = document.createElement('option');
+                    opt.value = room.room_no;
+                    opt.textContent = `Room ${room.room_no}`;
+                    filterRoom.appendChild(opt);
+
+                    const avail = (room.total_beds || 0) - (room.occupied_beds || 0);
+                    if (avail > 0) {
+                        const selOpt = document.createElement('option');
+                        selOpt.value = room.room_no;
+                        selOpt.textContent = `Room ${room.room_no} (${room.room_type || 'Sharing'}, ${avail} bed${avail > 1 ? 's' : ''} available)`;
+                        roomSelect.appendChild(selOpt);
+                    }
+                });
+            } catch (err) {
+                console.error("Error loading rooms:", err);
+            }
+        }
+
+        // Load residents
+        async function loadResidents() {
+            try {
+                const res = await fetch('/api/students');
+                allResidents = await res.json();
+                updateCategoryCounts();
+                filterAndRender();
+            } catch (err) {
+                console.error("Error loading residents:", err);
+                document.getElementById('residentTable').innerHTML = `
+                    <tr><td colspan="8" style="text-align:center; color:#ef4444; padding:20px;">Failed to load residents.</td></tr>
+                `;
+            }
+        }
+
+        function updateCategoryCounts() {
+            document.getElementById('countAll').textContent = allResidents.length;
+            const jobs = allResidents.filter(r => (r.resident_type || 'Jobholder').toLowerCase() === 'jobholder').length;
+            const trans = allResidents.filter(r => (r.resident_type || '').toLowerCase() === 'transfer').length;
+            const students = allResidents.filter(r => (r.resident_type || '').toLowerCase() === 'student').length;
+
+            document.getElementById('countJob').textContent = jobs;
+            document.getElementById('countTransfer').textContent = trans;
+            document.getElementById('countStudent').textContent = students;
+        }
+
+        function setCategoryFilter(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-tab').forEach(t => t.classList.remove('active'));
+            event.currentTarget.classList.add('active');
+            filterAndRender();
+        }
+
+        function filterAndRender() {
+            const query = document.getElementById('searchResident').value.toLowerCase().trim();
+            const selectedRoom = document.getElementById('filterRoom').value;
+            const sortField = document.getElementById('sortResident').value;
+
+            let filtered = allResidents.filter(r => {
+                const rType = (r.resident_type || 'Jobholder');
+                if (currentCategory !== 'all' && rType.toLowerCase() !== currentCategory.toLowerCase()) {
+                    return false;
+                }
+
+                if (selectedRoom && String(r.room_no) !== String(selectedRoom)) {
+                    return false;
+                }
+
+                if (query) {
+                    const text = `${r.name || ''} ${r.company_or_college || ''} ${r.department || ''} ${r.phone || ''} ${r.native_city || ''}`.toLowerCase();
+                    if (!text.includes(query)) return false;
+                }
+
+                return true;
+            });
+
+            // Sort
+            filtered.sort((a, b) => {
+                if (sortField === 'name') return (a.name || '').localeCompare(b.name || '');
+                if (sortField === 'room') return (Number(a.room_no) || 0) - (Number(b.room_no) || 0);
+                if (sortField === 'type') return (a.resident_type || '').localeCompare(b.resident_type || '');
+                if (sortField === 'rent') return (Number(b.monthly_rent) || 0) - (Number(a.monthly_rent) || 0);
+                return 0;
+            });
+
+            renderTable(filtered);
+        }
+
+        function renderTable(residents) {
+            const tbody = document.getElementById('residentTable');
+            if (!residents || residents.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="8" style="text-align:center; color:#64748b; padding:30px;">
+                            No matching residents found in this category.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = residents.map(r => {
+                const rType = r.resident_type || 'Jobholder';
+                let badgeClass = 'badge-jobholder';
+                let icon = '💼';
+                if (rType === 'Transfer') { badgeClass = 'badge-transfer'; icon = '🔄'; }
+                if (rType === 'Student') { badgeClass = 'badge-student'; icon = '🎓'; }
+
+                const org = r.company_or_college || r.department || 'Not specified';
+                const role = r.designation_or_course || '';
+                const rent = Number(r.monthly_rent) || 0;
+                const deposit = Number(r.security_deposit) || 0;
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="student-name-cell">
+                                <div class="student-avatar">
+                                    ${(r.name || 'R').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <strong>${r.name}</strong>
+                                    <div style="font-size: 11.5px; color: #64748b;">ID #${r.student_id}</div>
+                                    ${(r.id_proof_status === 'Verified')
+                                        ? '<span style="display:inline-block; font-size:10.5px; font-weight:700; color:#15803d; background:#dcfce7; padding:2px 7px; border-radius:4px; margin-top:3px;">✓ Verified</span>'
+                                        : (r.id_proof_status === 'Rejected')
+                                        ? '<span style="display:inline-block; font-size:10.5px; font-weight:700; color:#b91c1c; background:#fee2e2; padding:2px 7px; border-radius:4px; margin-top:3px;">✗ ID Rejected</span>'
+                                        : '<span style="display:inline-block; font-size:10.5px; font-weight:700; color:#b45309; background:#fef3c7; padding:2px 7px; border-radius:4px; margin-top:3px;">⏳ Needs Review</span>'
+                                    }
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="badge-res-type ${badgeClass}">
+                                ${icon} ${rType}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>${org}</strong>
+                            ${role ? `<div style="font-size: 12px; color: #64748b;">${role}</div>` : ''}
+                        </td>
+                        <td>
+                            <span class="room-badge">🏠 Room ${r.room_no || 'N/A'}</span>
+                            <div class="food-badge">🍲 ${r.food_plan || 'With Food'}</div>
+                        </td>
+                        <td>
+                            <div>📞 ${r.phone}</div>
+                            ${r.native_city ? `<div style="font-size: 12px; color: #64748b;">📍 ${r.native_city}</div>` : ''}
+                        </td>
+                        <td>
+                            <strong style="color: #2563eb;">₹${rent.toLocaleString('en-IN')}/mo</strong>
+                            <div style="font-size: 11.5px; color: #059669;">Dep: ₹${deposit.toLocaleString('en-IN')}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 12.5px;">In: <strong>${r.check_in_date || 'Active'}</strong></div>
+                            ${r.expected_checkout_date ? `<div style="font-size: 11.5px; color: #b45309;">Out: ${r.expected_checkout_date}</div>` : '<div style="font-size: 11.5px; color: #64748b;">Flexible</div>'}
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                                <button type="button" class="action-button edit-btn" style="padding: 5px 9px; font-size: 12px;" onclick="viewDossier(${r.student_id})" title="View Complete Resident Dossier">
+                                    🔍 Dossier
+                                </button>
+                                ${r.id_proof_file ? `
+                                <a href="/api/id-proof/view/${r.student_id}" target="_blank" class="action-button" style="padding: 5px 9px; font-size: 12px; background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; border-radius: 6px; text-decoration: none; display: inline-flex; align-items: center; gap: 4px; font-weight: 700;" title="View Confidential Aadhaar/PAN Document">
+                                    📄 ID Doc
+                                </a>` : `
+                                <span style="font-size: 11px; color: #94a3b8; padding: 4px 6px;" title="No document copy uploaded">No doc</span>
+                                `}
+                                <button type="button" class="action-button edit-btn" style="padding: 5px 9px; font-size: 12px;" onclick="openEditModal(${r.student_id})" title="Edit Resident">
+                                    ✏️
+                                </button>
+                                <button type="button" class="action-button delete-btn" style="padding: 5px 9px; font-size: 12px;" onclick="deleteResident(${r.student_id})" title="Vacate">
+                                    🚪
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function handleAddResident(e) {
+            e.preventDefault();
+
+            if (!validateIdInput('add')) {
+                const idType = document.getElementById('addIdType').value;
+                alert(`Please provide a valid mandatory ${idType} before submitting.`);
+                document.getElementById('addIdNum').focus();
+                return;
+            }
+
+            const form = document.getElementById('addResidentForm');
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            if (addDocBase64) {
+                data.id_proof_file = addDocBase64;
+                data.id_proof_filename = addDocFilename;
+            }
+
+            try {
+                const res = await fetch('/api/students', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert('Resident onboarded and room bed assigned successfully!');
+                    form.reset();
+                    addDocBase64 = null;
+                    addDocFilename = null;
+                    const addDocInput = document.getElementById('addIdDocFile');
+                    if (addDocInput) addDocInput.value = '';
+                    document.getElementById('addCheckIn').value = new Date().toISOString().split('T')[0];
+                    handleIdTypeChange('add');
+                    loadResidents();
+                } else {
+                    alert(result.error || 'Failed to add resident');
+                }
+            } catch (err) {
+                alert('Server error adding resident');
+            }
+        }
+
+        function viewDossier(id) {
+            const r = allResidents.find(res => res.student_id === id);
+            if (!r) return;
+            currentDossierStudentId = r.student_id;
+
+            document.getElementById('dossierName').textContent = r.name;
+            const rType = r.resident_type || 'Jobholder';
+            const badge = document.getElementById('dossierTypeBadge');
+            badge.textContent = rType;
+            badge.className = `badge-res-type badge-${rType.toLowerCase()}`;
+
+            document.getElementById('dossierRoom').textContent = `Room ${r.room_no || 'Unassigned'}`;
+            document.getElementById('dossierPhone').textContent = r.phone || '--';
+            document.getElementById('dossierOrg').textContent = r.company_or_college || r.department || 'Not specified';
+            document.getElementById('dossierRole').textContent = r.designation_or_course || '--';
+            document.getElementById('dossierOffice').textContent = r.office_address || '--';
+            document.getElementById('dossierId').textContent = `${r.id_proof_type || 'ID'}: ${r.id_proof_number || 'Verified'}`;
+            
+            // Status Badge
+            const statusBadge = document.getElementById('dossierIdStatusBadge');
+            const rejectBox = document.getElementById('dossierRejectReasonBox');
+            const idStatus = r.id_proof_status || 'Pending Verification';
+            if (idStatus === 'Verified') {
+                statusBadge.textContent = '✓ Approved & Permissions Granted';
+                statusBadge.style.background = '#dcfce7';
+                statusBadge.style.color = '#15803d';
+                rejectBox.style.display = 'none';
+            } else if (idStatus === 'Rejected') {
+                statusBadge.textContent = '✗ Rejected (Re-upload Required)';
+                statusBadge.style.background = '#fee2e2';
+                statusBadge.style.color = '#b91c1c';
+                rejectBox.style.display = 'block';
+                document.getElementById('dossierRejectReasonText').textContent = r.id_proof_rejection_reason || 'Document copy is invalid or mismatching.';
+            } else {
+                statusBadge.textContent = '⏳ Pending Verification';
+                statusBadge.style.background = '#fef3c7';
+                statusBadge.style.color = '#b45309';
+                rejectBox.style.display = 'none';
+            }
+
+            const docAction = document.getElementById('dossierDocAction');
+            if (docAction) {
+                if (r.id_proof_file) {
+                    docAction.innerHTML = `
+                        <a href="/api/id-proof/view/${r.student_id}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; padding:6px 14px; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:8px; font-weight:700; font-size:12.5px; text-decoration:none;">
+                            📄 View Uploaded Document
+                        </a>
+                    `;
+                } else {
+                    docAction.innerHTML = `<span style="font-size:12px; color:#94a3b8; font-style:italic;">No document file uploaded</span>`;
+                }
+            }
+            document.getElementById('dossierFood').textContent = r.food_plan || 'With Food';
+            document.getElementById('dossierRent').textContent = `₹${(Number(r.monthly_rent) || 0).toLocaleString('en-IN')} / month`;
+            document.getElementById('dossierDeposit').textContent = `₹${(Number(r.security_deposit) || 0).toLocaleString('en-IN')} (Refundable)`;
+            document.getElementById('dossierCheckIn').textContent = r.check_in_date || '--';
+            document.getElementById('dossierCheckout').textContent = r.expected_checkout_date || 'Flexible Monthly Stay';
+
+            const emerg = (r.emergency_name || r.emergency_phone) ? `${r.emergency_name || 'Contact'} (${r.emergency_phone || ''})` : 'None registered';
+            document.getElementById('dossierEmergency').textContent = emerg;
+
+            document.getElementById('dossierModal').style.display = 'flex';
+        }
+
+        function closeDossierModal() {
+            document.getElementById('dossierModal').style.display = 'none';
+        }
+
+        let currentDossierStudentId = null;
+
+        async function adminVerifyId(status) {
+            if (!currentDossierStudentId) return;
+            let reason = null;
+            if (status === 'Rejected') {
+                reason = prompt("Please provide a reason for rejecting this resident's ID proof (e.g. Blurry photo, Name mismatch, Expired or wrong document):", "Uploaded ID document copy is unclear or details mismatch with registration record.");
+                if (reason === null) return; // User clicked Cancel
+            } else {
+                if (!confirm("Are you sure you want to approve this resident's government ID and grant full verified permissions?")) {
+                    return;
+                }
+            }
+
+            try {
+                const res = await fetch(`/api/students/${currentDossierStudentId}/verify-id`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status, reason })
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert(result.message);
+                    await loadResidents();
+                    viewDossier(currentDossierStudentId);
+                } else {
+                    alert(result.error || 'Failed to update verification status.');
+                }
+            } catch (err) {
+                alert('Server error updating ID verification.');
+            }
+        }
+
+        function openEditModal(id) {
+            const r = allResidents.find(res => res.student_id === id);
+            if (!r) return;
+
+            document.getElementById('editResidentId').value = r.student_id;
+            document.getElementById('editName').value = r.name || '';
+            document.getElementById('editPhone').value = r.phone || '';
+            document.getElementById('editResidentType').value = r.resident_type || 'Jobholder';
+            document.getElementById('editOrg').value = r.company_or_college || r.department || '';
+            document.getElementById('editRole').value = r.designation_or_course || '';
+            document.getElementById('editRoom').value = r.room_no || '';
+            document.getElementById('editRent').value = r.monthly_rent || 0;
+            document.getElementById('editDeposit').value = r.security_deposit || 0;
+            document.getElementById('editFoodPlan').value = r.food_plan || 'With Food (3 Meals)';
+            document.getElementById('editCity').value = r.native_city || '';
+            document.getElementById('editIdType').value = r.id_proof_type || 'Aadhaar Card';
+            document.getElementById('editIdNum').value = r.id_proof_number || '';
+            handleIdTypeChange('edit');
+
+            // Reset edit doc upload state and show current document status
+            editDocBase64 = null;
+            editDocFilename = null;
+            const editDocInput = document.getElementById('editIdDocFile');
+            if (editDocInput) editDocInput.value = '';
+
+            const statusBox = document.getElementById('editDocCurrentStatus');
+            if (statusBox) {
+                if (r.id_proof_file) {
+                    statusBox.innerHTML = `
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;">
+                            <span style="color:#0f172a; font-weight:600;">✓ Document verified on file: ${r.id_proof_filename || (r.id_proof_type + ' copy')}</span>
+                            <a href="/api/id-proof/view/${r.student_id}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; padding:4px 10px; background:#eff6ff; color:#2563eb; border:1px solid #bfdbfe; border-radius:6px; font-size:12px; font-weight:700; text-decoration:none;">📄 View Confidential Document</a>
+                        </div>
+                    `;
+                } else {
+                    statusBox.innerHTML = `<span style="color:#94a3b8; font-style:italic;">No document copy currently on file.</span>`;
+                }
+            }
+
+            document.getElementById('editModal').style.display = 'flex';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        async function saveResidentEdit() {
+            if (!validateIdInput('edit')) {
+                const idType = document.getElementById('editIdType').value;
+                alert(`Please enter a valid mandatory ${idType} before updating.`);
+                document.getElementById('editIdNum').focus();
+                return;
+            }
+
+            const id = document.getElementById('editResidentId').value;
+            const data = {
+                name: document.getElementById('editName').value.trim(),
+                phone: document.getElementById('editPhone').value.trim(),
+                resident_type: document.getElementById('editResidentType').value,
+                company_or_college: document.getElementById('editOrg').value.trim(),
+                department: document.getElementById('editOrg').value.trim(),
+                designation_or_course: document.getElementById('editRole').value.trim(),
+                room_no: document.getElementById('editRoom').value.trim(),
+                monthly_rent: Number(document.getElementById('editRent').value) || 0,
+                security_deposit: Number(document.getElementById('editDeposit').value) || 0,
+                food_plan: document.getElementById('editFoodPlan').value,
+                native_city: document.getElementById('editCity').value.trim(),
+                id_proof_type: document.getElementById('editIdType').value,
+                id_proof_number: document.getElementById('editIdNum').value.trim()
+            };
+
+            if (editDocBase64) {
+                data.id_proof_file = editDocBase64;
+                data.id_proof_filename = editDocFilename;
+            }
+
+            try {
+                const res = await fetch(`/api/students/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.message) {
+                    alert(result.message);
+                    closeEditModal();
+                    loadResidents();
+                } else {
+                    alert(result.error || 'Failed to update resident');
+                }
+            } catch (err) {
+                alert('Server error updating resident');
+            }
+        }
+
+        async function deleteResident(id) {
+            if (!confirm('Are you sure you want to vacate this resident? Their assigned room bed will be released back to available inventory.')) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/students/${id}`, { method: 'DELETE' });
+                const result = await res.json();
+                if (result.message) {
+                    alert(result.message);
+                    loadResidents();
+                } else {
+                    alert(result.error || 'Failed to vacate resident');
+                }
+            } catch (err) {
+                alert('Server error vacating resident');
+            }
+        }
+
+        // Initialize
+        loadRooms();
+        loadResidents();
+        handleIdTypeChange('add');
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

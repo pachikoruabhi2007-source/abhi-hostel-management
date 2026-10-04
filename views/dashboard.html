@@ -1,0 +1,2087 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management | Modern Animated Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           DESIGN SYSTEM & CSS VARIABLES
+           ========================================= */
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+
+            --accent-orange: #f59e0b;
+            --accent-orange-bg: #fffbeb;
+            --accent-orange-glow: rgba(245, 158, 11, 0.25);
+
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark {
+            --bg-page: #030712;
+            --bg-surface: #111827;
+            --bg-subtle: #1f2937;
+            --bg-hover: #1e293b;
+            --border-color: #1f2937;
+            --border-subtle: #1a2234;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-border: rgba(59, 130, 246, 0.35);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+
+            --accent-green: #34d399;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-green-glow: rgba(16, 185, 129, 0.4);
+
+            --accent-purple: #a78bfa;
+            --accent-purple-bg: rgba(139, 92, 246, 0.15);
+            --accent-purple-glow: rgba(139, 92, 246, 0.4);
+
+            --accent-orange: #fbbf24;
+            --accent-orange-bg: rgba(245, 158, 11, 0.15);
+            --accent-orange-glow: rgba(245, 158, 11, 0.4);
+
+            --accent-red: #f87171;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 14px 28px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+        }
+
+        /* Ambient Glow Background Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 14s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -20%;
+            left: 20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(139, 92, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 18s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 40px) scale(1.1); }
+            100% { transform: translate(30px, -20px) scale(0.95); }
+        }
+
+        /* =========================================
+           APP CONTAINER & ANIMATED COLLAPSIBLE SIDEBAR
+           ========================================= */
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 12px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease, background-color 0.4s ease, border-color 0.4s ease;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        /* Sidebar Header & Brand */
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.4s ease;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-wrapper:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .brand-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            min-width: 0;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            color: #fff;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+
+        .brand-wrapper:hover .brand-logo {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.45);
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            line-height: 1.2;
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-top: 2px;
+        }
+
+        .brand-chevron {
+            color: var(--text-muted);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .brand-info,
+        .sidebar.collapsed .brand-chevron {
+            opacity: 0;
+            transform: translateX(-8px);
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Navigation Links */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 44px;
+            width: 100%;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 500;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .sidebar.collapsed .nav-item:hover {
+            transform: none;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 600;
+            border-left: 3px solid var(--primary);
+            box-shadow: inset 0 0 12px rgba(59, 130, 246, 0.08);
+        }
+
+        .nav-icon {
+            width: 48px;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.15);
+            color: var(--primary);
+        }
+
+        .nav-icon svg,
+        .nav-icon i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .nav-label {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .sidebar.collapsed .nav-label {
+            opacity: 0;
+            transform: translateX(-10px);
+            display: none;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 9999px;
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 700;
+            transition: opacity 0.2s ease;
+            box-shadow: 0 2px 6px rgba(59, 130, 246, 0.4);
+            animation: subtleBadgePulse 3s infinite ease-in-out;
+        }
+
+        .nav-badge.badge-amber {
+            background-color: var(--accent-orange);
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+        }
+
+        @keyframes subtleBadgePulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.08); }
+        }
+
+        .sidebar.collapsed .nav-badge {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Sidebar Section Divider */
+        .sidebar-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 14px;
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: border-color 0.4s ease;
+        }
+
+        .section-label {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .section-label {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Collapse Toggle Button */
+        .toggle-btn {
+            position: relative;
+            margin-top: auto;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            background: transparent;
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 10px 0;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .toggle-icon {
+            width: 48px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .toggle-icon svg,
+        .toggle-icon i {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .sidebar:not(.collapsed) .toggle-icon svg,
+        .sidebar:not(.collapsed) .toggle-icon i {
+            transform: rotate(180deg);
+        }
+
+        .toggle-text {
+            font-size: 0.88rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .toggle-text {
+            opacity: 0;
+            display: none;
+        }
+
+        /* =========================================
+           MAIN DASHBOARD CONTENT
+           ========================================= */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        /* Header */
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .header-title-group h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+        }
+
+        .header-title-group p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 6px 12px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            transition: var(--transition-smooth);
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes radar-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .icon-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--primary-border);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .icon-btn:active {
+            transform: translateY(0);
+        }
+
+        .icon-btn.spinning svg,
+        .icon-btn.spinning i {
+            animation: spinOnce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes spinOnce {
+            from { transform: rotate(0deg) scale(0.8); }
+            to { transform: rotate(360deg) scale(1); }
+        }
+
+        .btn-badge-dot {
+            position: absolute;
+            top: 7px;
+            right: 7px;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-red);
+            border: 2px solid var(--bg-surface);
+            animation: dotPing 1.8s infinite cubic-bezier(0, 0, 0.2, 1);
+        }
+
+        @keyframes dotPing {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.3); opacity: 0.8; }
+        }
+
+        /* Bell wiggle animation on hover */
+        .icon-btn:hover #bellIcon {
+            animation: bellWiggle 0.6s ease-in-out;
+        }
+
+        @keyframes bellWiggle {
+            0%, 100% { transform: rotate(0); }
+            20% { transform: rotate(15deg); }
+            40% { transform: rotate(-15deg); }
+            60% { transform: rotate(8deg); }
+            80% { transform: rotate(-8deg); }
+        }
+
+        .mobile-toggle {
+            display: none;
+        }
+
+        /* Main Container */
+        .content-container {
+            padding: 28px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           STAGGERED ENTRANCE ANIMATIONS
+           ========================================= */
+        .animate-enter {
+            animation: fadeSlideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.12s; }
+        .delay-3 { animation-delay: 0.19s; }
+        .delay-4 { animation-delay: 0.26s; }
+        .delay-5 { animation-delay: 0.33s; }
+        .delay-6 { animation-delay: 0.40s; }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================
+           4-COLUMN ANIMATED STATS CARDS
+           ========================================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Card top accent line */
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.card-blue:hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 28px -4px var(--primary-glow);
+        }
+        .stat-card.card-blue:hover::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+
+        .stat-card.card-green:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 12px 28px -4px var(--accent-green-glow);
+        }
+        .stat-card.card-green:hover::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .stat-card.card-purple:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 12px 28px -4px var(--accent-purple-glow);
+        }
+        .stat-card.card-purple:hover::before {
+            background: linear-gradient(90deg, #8b5cf6, #c084fc);
+        }
+
+        .stat-card.card-orange:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 12px 28px -4px var(--accent-orange-glow);
+        }
+        .stat-card.card-orange:hover::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .stat-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .stat-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-content: center;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .stat-card:hover .stat-icon-box {
+            transform: scale(1.15) rotate(6deg);
+        }
+
+        .stat-icon-box.blue {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-icon-box.green {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .stat-icon-box.purple {
+            background-color: var(--accent-purple-bg);
+            color: var(--accent-purple);
+        }
+
+        .stat-icon-box.orange {
+            background-color: var(--accent-orange-bg);
+            color: var(--accent-orange);
+        }
+
+        .stat-icon-box svg,
+        .stat-icon-box i {
+            width: 22px;
+            height: 22px;
+        }
+
+        .trend-badge {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-green);
+            padding: 3px 8px;
+            border-radius: 9999px;
+            background: var(--accent-green-bg);
+            animation: floatTrend 4s ease-in-out infinite alternate;
+        }
+
+        @keyframes floatTrend {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-2px); }
+        }
+
+        .trend-badge svg,
+        .trend-badge i {
+            width: 14px;
+            height: 14px;
+        }
+
+        .stat-title {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 4px;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .stat-subtitle {
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--accent-green);
+            margin-top: 6px;
+        }
+
+        .stat-subtitle.orange-text {
+            color: var(--accent-orange);
+        }
+
+        /* =========================================
+           MAIN GRID: 2 COLUMNS (2:1 RATIO)
+           ========================================= */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .column-main {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .column-side {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* Shared Card Styles */
+        .card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.4s ease;
+        }
+
+        .card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .card-subtitle {
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .card-action-link {
+            font-size: 0.84rem;
+            font-weight: 600;
+            color: var(--primary);
+            text-decoration: none;
+            transition: var(--transition-smooth);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .card-action-link:hover {
+            color: var(--primary-dark);
+            transform: translateX(3px);
+        }
+
+        /* Chart Card */
+        .chart-box {
+            position: relative;
+            height: 290px;
+            width: 100%;
+        }
+
+        /* Recent Activity List with Hover Slide */
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid transparent;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+        }
+
+        .activity-item:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--border-color);
+            transform: translateX(6px);
+        }
+
+        .activity-icon-pill {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .activity-item:hover .activity-icon-pill {
+            transform: scale(1.15) rotate(5deg);
+        }
+
+        .activity-icon-pill.green {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .activity-icon-pill.blue {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .activity-icon-pill.purple {
+            background-color: var(--accent-purple-bg);
+            color: var(--accent-purple);
+        }
+
+        .activity-icon-pill.orange {
+            background-color: var(--accent-orange-bg);
+            color: var(--accent-orange);
+        }
+
+        .activity-icon-pill.red {
+            background-color: var(--accent-red-bg);
+            color: var(--accent-red);
+        }
+
+        .activity-icon-pill svg,
+        .activity-icon-pill i {
+            width: 18px;
+            height: 18px;
+        }
+
+        .activity-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .activity-headline {
+            font-size: 0.88rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .activity-detail {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            margin-top: 1px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .activity-timestamp {
+            font-size: 0.74rem;
+            color: var(--text-muted);
+            white-space: nowrap;
+        }
+
+        /* Quick Stats Animated Progress Bars with Shimmer */
+        .progress-group {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .progress-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .progress-labels {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.84rem;
+        }
+
+        .progress-title {
+            color: var(--text-secondary);
+            font-weight: 600;
+        }
+
+        .progress-value {
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 9px;
+            background-color: var(--bg-subtle);
+            border-radius: 9999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 9999px;
+            position: relative;
+            overflow: hidden;
+            transition: width 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        /* Shimmer Wave running along the progress bars */
+        .progress-fill::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            background: linear-gradient(
+                90deg,
+                rgba(255, 255, 255, 0) 0%,
+                rgba(255, 255, 255, 0.35) 50%,
+                rgba(255, 255, 255, 0) 100%
+            );
+            animation: shimmerWave 2.2s infinite;
+        }
+
+        @keyframes shimmerWave {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .progress-fill.blue {
+            background: linear-gradient(90deg, #60a5fa, #3b82f6);
+            box-shadow: 0 0 10px rgba(59, 130, 246, 0.4);
+        }
+
+        .progress-fill.green {
+            background: linear-gradient(90deg, #34d399, #10b981);
+            box-shadow: 0 0 10px rgba(16, 185, 129, 0.4);
+        }
+
+        .progress-fill.orange {
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            box-shadow: 0 0 10px rgba(245, 158, 11, 0.4);
+        }
+
+        .progress-fill.purple {
+            background: linear-gradient(90deg, #c084fc, #8b5cf6);
+            box-shadow: 0 0 10px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Top Room Categories / Wings */
+        .category-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .category-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-subtle);
+            transition: var(--transition-smooth);
+        }
+
+        .category-row:hover {
+            transform: translateX(4px);
+            border-color: var(--primary-border);
+            background-color: var(--bg-hover);
+        }
+
+        .category-name {
+            font-size: 0.88rem;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .category-metric {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        /* Quick Shortcuts Bar with Hover Float */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 14px;
+        }
+
+        .btn-action {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+        }
+
+        .btn-action:hover {
+            background-color: var(--bg-hover);
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-action.primary-action {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: #ffffff;
+            border: none;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+        }
+
+        .btn-action.primary-action:hover {
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.5);
+            transform: translateY(-3px);
+            filter: brightness(1.05);
+        }
+
+        .btn-action svg,
+        .btn-action i {
+            width: 16px;
+            height: 16px;
+            transition: transform 0.25s ease;
+        }
+
+        .btn-action:hover svg,
+        .btn-action:hover i {
+            transform: scale(1.15);
+        }
+
+        /* Mobile Backdrop */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 45;
+            transition: opacity 0.3s ease;
+        }
+
+        /* =========================================
+           RESPONSIVE BREAKPOINTS
+           ========================================= */
+        @media (max-width: 1200px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                width: 260px !important;
+                box-shadow: var(--shadow-lg);
+            }
+
+            .sidebar.mobile-open {
+                left: 0;
+            }
+
+            .sidebar-backdrop.active {
+                display: block;
+            }
+
+            .mobile-toggle {
+                display: grid;
+            }
+
+            .dashboard-header {
+                padding: 14px 18px;
+            }
+
+            .content-container {
+                padding: 16px;
+                gap: 18px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .status-pill {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- Mobile Backdrop -->
+        <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+        <!-- ==================== ANIMATED COLLAPSIBLE SIDEBAR ==================== -->
+        <aside class="sidebar" id="sidebar">
+
+            <!-- Title & Logo Section -->
+            <div class="sidebar-header">
+                <a href="/dashboard" class="brand-wrapper" title="Hostel Management">
+                    <div class="brand-left">
+                        <div class="brand-logo">
+                            <svg width="20" height="auto" viewBox="0 0 50 39" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M16.4992 2H37.5808L22.0816 24.9729H1L16.4992 2Z" fill="currentColor"/>
+                                <path d="M17.4224 27.102L11.4192 36H33.5008L49 13.0271H32.7024L23.2064 27.102H17.4224Z" fill="currentColor"/>
+                            </svg>
+                        </div>
+                        <div class="brand-info">
+                            <span class="brand-title">Hostel Admin</span>
+                            <span class="brand-badge">Pro Management</span>
+                        </div>
+                    </div>
+                    <i data-lucide="chevron-down" class="brand-chevron" style="width: 16px; height: 16px;"></i>
+                </a>
+            </div>
+
+            <!-- Navigation Links -->
+            <nav class="sidebar-nav">
+                <!-- Dashboard -->
+                <a href="/dashboard" class="nav-item active" title="Dashboard">
+                    <div class="nav-icon">
+                        <i data-lucide="home"></i>
+                    </div>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <!-- Residents -->
+                <a href="/students" class="nav-item" title="Residents">
+                    <div class="nav-icon">
+                        <i data-lucide="users"></i>
+                    </div>
+                    <span class="nav-label">Residents</span>
+                    <span class="nav-badge" id="badgeStudents">0</span>
+                </a>
+
+                <!-- Rooms -->
+                <a href="/rooms" class="nav-item" title="Rooms">
+                    <div class="nav-icon">
+                        <i data-lucide="package"></i>
+                    </div>
+                    <span class="nav-label">Rooms</span>
+                </a>
+
+                <!-- Food & Mess Menu -->
+                <a href="/food-menu" class="nav-item" title="Daily Food & Mess Menu">
+                    <div class="nav-icon">
+                        <i data-lucide="utensils"></i>
+                    </div>
+                    <span class="nav-label">Food Menu</span>
+                </a>
+
+                <!-- Transfer & Vacating Notices -->
+                <a href="/vacating-notices" class="nav-item" title="Transfer & Vacating Notices">
+                    <div class="nav-icon">
+                        <i data-lucide="send"></i>
+                    </div>
+                    <span class="nav-label">Transfer / Vacate</span>
+                    <span class="nav-badge badge-amber" id="badgeNotices">0</span>
+                </a>
+
+                <!-- Complaints -->
+                <a href="/complaints" class="nav-item" title="Complaints">
+                    <div class="nav-icon">
+                        <i data-lucide="tag"></i>
+                    </div>
+                    <span class="nav-label">Complaints</span>
+                    <span class="nav-badge badge-amber" id="badgeComplaints">0</span>
+                </a>
+
+                <!-- Fees & Rent -->
+                <a href="/fees" class="nav-item" title="Fees & Rent">
+                    <div class="nav-icon">
+                        <i data-lucide="dollar-sign"></i>
+                    </div>
+                    <span class="nav-label">Rent & Fees</span>
+                </a>
+
+                <!-- Analytics / Reports -->
+                <a href="/reports" class="nav-item" title="Analytics & Reports">
+                    <div class="nav-icon">
+                        <i data-lucide="bar-chart-3"></i>
+                    </div>
+                    <span class="nav-label">Analytics</span>
+                </a>
+
+                <!-- Reviews & Feedback -->
+                <a href="/admin-reviews" class="nav-item" title="Resident Reviews & Feedback">
+                    <div class="nav-icon">
+                        <i data-lucide="star"></i>
+                    </div>
+                    <span class="nav-label">Reviews</span>
+                </a>
+
+                <!-- View Site -->
+                <a href="/" class="nav-item" title="View Public Portal">
+                    <div class="nav-icon">
+                        <i data-lucide="monitor"></i>
+                    </div>
+                    <span class="nav-label">View Site</span>
+                </a>
+            </nav>
+
+            <!-- Account Section -->
+            <div class="sidebar-section">
+                <div class="section-label">Account</div>
+
+                <a href="/profile" class="nav-item" title="Admin Profile & Users">
+                    <div class="nav-icon">
+                        <i data-lucide="user"></i>
+                    </div>
+                    <span class="nav-label">Profile</span>
+                </a>
+
+                <a href="/settings" class="nav-item" title="Hostel & System Settings">
+                    <div class="nav-icon">
+                        <i data-lucide="settings"></i>
+                    </div>
+                    <span class="nav-label">Settings</span>
+                </a>
+
+                <a href="/logout" class="nav-item" title="Logout">
+                    <div class="nav-icon">
+                        <i data-lucide="log-out"></i>
+                    </div>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </div>
+
+            <!-- Toggle Close Button -->
+            <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                <div class="toggle-icon">
+                    <i data-lucide="chevrons-right"></i>
+                </div>
+                <span class="toggle-text">Hide</span>
+            </button>
+
+        </aside>
+
+
+        <!-- ==================== MAIN CONTENT ==================== -->
+        <main class="main-wrapper">
+
+            <!-- Top Header -->
+            <header class="dashboard-header animate-enter delay-1">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="icon-btn mobile-toggle" id="mobileToggleBtn" title="Open Menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="header-title-group">
+                        <h1>Dashboard</h1>
+                        <p>Welcome back to your hostel management control center</p>
+                    </div>
+                </div>
+
+                <div class="header-controls">
+                    <!-- Live System Status -->
+                    <div class="status-pill">
+                        <span class="status-pulse"></span>
+                        <span>System Online</span>
+                    </div>
+
+                    <!-- Notification Button -->
+                    <button class="icon-btn" id="notifBtn" title="Recent Notifications">
+                        <i data-lucide="bell" id="bellIcon"></i>
+                        <span class="btn-badge-dot"></span>
+                    </button>
+
+                    <!-- Theme Toggle (Dark / Light) -->
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">
+                        <i data-lucide="moon" id="themeIcon"></i>
+                    </button>
+
+                    <!-- User Profile Button -->
+                    <a href="/profile" class="icon-btn" id="headerProfileBtn" title="Admin Profile" style="overflow: hidden; padding: 0;">
+                        <i data-lucide="user" id="headerUserIcon"></i>
+                        <img id="headerUserImg" alt="Profile" style="display:none; width: 100%; height: 100%; object-fit: cover; border-radius: inherit;">
+                    </a>
+                </div>
+            </header>
+
+
+            <!-- Content Container -->
+            <div class="content-container">
+
+                <!-- ==================== 4 ANIMATED STATS CARDS ==================== -->
+                <section class="stats-grid">
+
+                    <!-- Stat 1: Total Residents -->
+                    <div class="stat-card card-blue animate-enter delay-1">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-box blue">
+                                <i data-lucide="users"></i>
+                            </div>
+                            <div class="trend-badge">
+                                <i data-lucide="trending-up"></i>
+                                <span>Active</span>
+                            </div>
+                        </div>
+                        <span class="stat-title">Total Residents</span>
+                        <div class="stat-value" id="totalStudents">0</div>
+                        <span class="stat-subtitle" id="residentBreakdownText">Jobholders, Transfers & Students</span>
+                    </div>
+
+                    <!-- Stat 2: Total Rooms -->
+                    <div class="stat-card card-green animate-enter delay-2">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-box green">
+                                <i data-lucide="package"></i>
+                            </div>
+                            <div class="trend-badge">
+                                <i data-lucide="trending-up"></i>
+                                <span>100%</span>
+                            </div>
+                        </div>
+                        <span class="stat-title">Total Rooms</span>
+                        <div class="stat-value" id="totalRooms">0</div>
+                        <span class="stat-subtitle">All wings active</span>
+                    </div>
+
+                    <!-- Stat 3: Available Beds -->
+                    <div class="stat-card card-purple animate-enter delay-3">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-box purple">
+                                <i data-lucide="shopping-cart"></i>
+                            </div>
+                            <div class="trend-badge">
+                                <i data-lucide="trending-up"></i>
+                                <span>Open</span>
+                            </div>
+                        </div>
+                        <span class="stat-title">Available Beds</span>
+                        <div class="stat-value" id="availableBeds">0</div>
+                        <span class="stat-subtitle">Ready for allocation</span>
+                    </div>
+
+                    <!-- Stat 4: Pending Complaints -->
+                    <div class="stat-card card-orange animate-enter delay-4">
+                        <div class="stat-card-top">
+                            <div class="stat-icon-box orange">
+                                <i data-lucide="dollar-sign"></i>
+                            </div>
+                            <div class="trend-badge" style="color: var(--accent-orange); background: var(--accent-orange-bg);">
+                                <i data-lucide="activity"></i>
+                                <span>Action</span>
+                            </div>
+                        </div>
+                        <span class="stat-title">Pending Complaints</span>
+                        <div class="stat-value" id="pendingComplaints">0</div>
+                        <span class="stat-subtitle orange-text">Requiring review</span>
+                    </div>
+
+                </section>
+
+
+                <!-- ==================== 2-COLUMN MAIN CONTENT ==================== -->
+                <div class="content-grid">
+
+                    <!-- Left Column (2/3 width) -->
+                    <div class="column-main">
+
+                        <!-- Chart Overview Card -->
+                        <div class="card animate-enter delay-5">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">Hostel Capacity Overview</h3>
+                                    <p class="card-subtitle">Real-time student distribution, room capacity and issues</p>
+                                </div>
+                                <div class="status-pill">
+                                    <span class="status-pulse"></span>
+                                    <span>Live Data</span>
+                                </div>
+                            </div>
+
+                            <div class="chart-box">
+                                <canvas id="hostelChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity Card -->
+                        <div class="card animate-enter delay-6">
+                            <div class="card-header">
+                                <div>
+                                    <h3 class="card-title">Recent Activity</h3>
+                                    <p class="card-subtitle">Latest operations, complaints and allocations</p>
+                                </div>
+                                <a href="/reports" class="card-action-link">
+                                    <span>View all</span>
+                                    <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                                </a>
+                            </div>
+
+                            <div class="activity-list" id="activityList">
+                                <!-- Activity 1 -->
+                                <div class="activity-item">
+                                    <div class="activity-icon-pill green">
+                                        <i data-lucide="dollar-sign"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-headline">Fee payment verified</div>
+                                        <div class="activity-detail">Student fee receipt updated for current semester</div>
+                                    </div>
+                                    <div class="activity-timestamp">2 min ago</div>
+                                </div>
+
+                                <!-- Activity 2 -->
+                                <div class="activity-item">
+                                    <div class="activity-icon-pill blue">
+                                        <i data-lucide="users"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-headline">New resident registered</div>
+                                        <div class="activity-detail">Student profile admitted to hostel directory</div>
+                                    </div>
+                                    <div class="activity-timestamp">5 min ago</div>
+                                </div>
+
+                                <!-- Activity 3 -->
+                                <div class="activity-item">
+                                    <div class="activity-icon-pill purple">
+                                        <i data-lucide="package"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-headline">Room allocation completed</div>
+                                        <div class="activity-detail">Bed allocated with updated room capacity</div>
+                                    </div>
+                                    <div class="activity-timestamp">12 min ago</div>
+                                </div>
+
+                                <!-- Activity 4 -->
+                                <div class="activity-item">
+                                    <div class="activity-icon-pill orange">
+                                        <i data-lucide="activity"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-headline">Maintenance ticket updated</div>
+                                        <div class="activity-detail">Electrical & plumbing audit logged</div>
+                                    </div>
+                                    <div class="activity-timestamp">1 hour ago</div>
+                                </div>
+
+                                <!-- Activity 5 -->
+                                <div class="activity-item">
+                                    <div class="activity-icon-pill red">
+                                        <i data-lucide="bell"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <div class="activity-headline">New complaint registered</div>
+                                        <div class="activity-detail">Hostel resident filed a facility support request</div>
+                                    </div>
+                                    <div class="activity-timestamp">2 hours ago</div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    <!-- Right Column (1/3 width) -->
+                    <div class="column-side">
+
+                        <!-- Quick Stats & Capacity Meters -->
+                        <div class="card animate-enter delay-5">
+                            <h3 class="card-title" style="margin-bottom: 18px;">Quick Stats</h3>
+
+                            <div class="progress-group">
+                                <!-- Meter 1: Bed Occupancy -->
+                                <div class="progress-item">
+                                    <div class="progress-labels">
+                                        <span class="progress-title">Bed Occupancy</span>
+                                        <span class="progress-value" id="valOccupancy">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill blue" id="barOccupancy" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Meter 2: Available Capacity -->
+                                <div class="progress-item">
+                                    <div class="progress-labels">
+                                        <span class="progress-title">Available Capacity</span>
+                                        <span class="progress-value" id="valAvailable">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill green" id="barAvailable" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Meter 3: Complaint Rate -->
+                                <div class="progress-item">
+                                    <div class="progress-labels">
+                                        <span class="progress-title">Complaints Resolved</span>
+                                        <span class="progress-value" id="valResolved">0%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill orange" id="barResolved" style="width: 0%;"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Meter 4: Active Residents -->
+                                <div class="progress-item">
+                                    <div class="progress-labels">
+                                        <span class="progress-title">Hostel Utilization</span>
+                                        <span class="progress-value" id="valUtilization">87%</span>
+                                    </div>
+                                    <div class="progress-track">
+                                        <div class="progress-fill purple" id="barUtilization" style="width: 87%;"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Today's Mess Menu Card -->
+                        <div class="card animate-enter delay-6" style="border: 1.5px solid var(--primary-border); background: var(--bg-surface);">
+                            <div class="card-header" style="margin-bottom: 12px;">
+                                <div>
+                                    <h3 class="card-title" style="display: flex; align-items: center; gap: 8px; font-size: 1rem;">
+                                        <span>🍽️</span> Today's Mess Menu
+                                    </h3>
+                                    <p class="card-subtitle" id="adminDashMenuDate" style="font-size: 0.76rem;">Loading daily meals...</p>
+                                </div>
+                                <a href="/food-menu" class="card-action-link" style="font-size: 0.8rem;">
+                                    <span>Edit</span>
+                                    <i data-lucide="chevron-right" style="width: 14px; height: 14px;"></i>
+                                </a>
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #b45309; margin-bottom: 2px;">
+                                        <span>🌅 Tiffin</span>
+                                        <span id="adBTime" style="color: var(--text-muted); font-weight: 500;">7:30 AM - 10 AM</span>
+                                    </div>
+                                    <div id="adBItems" style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.3;">Loading...</div>
+                                    <div id="adBSpec" style="font-size: 0.72rem; color: #b45309; font-weight: 700; margin-top: 3px;">⭐ Special: --</div>
+                                </div>
+
+                                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #2563eb; margin-bottom: 2px;">
+                                        <span>☀️ Lunch</span>
+                                        <span id="adLTime" style="color: var(--text-muted); font-weight: 500;">12:30 PM - 3 PM</span>
+                                    </div>
+                                    <div id="adLItems" style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.3;">Loading...</div>
+                                    <div id="adLSpec" style="font-size: 0.72rem; color: #2563eb; font-weight: 700; margin-top: 3px;">⭐ Special: --</div>
+                                </div>
+
+                                <div style="background: var(--bg-subtle); border: 1px solid var(--border-color); border-radius: 8px; padding: 8px 10px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.76rem; font-weight: 700; color: #7c3aed; margin-bottom: 2px;">
+                                        <span>🌙 Dinner</span>
+                                        <span id="adDTime" style="color: var(--text-muted); font-weight: 500;">7:30 PM - 10 PM</span>
+                                    </div>
+                                    <div id="adDItems" style="font-size: 0.8rem; color: var(--text-secondary); line-height: 1.3;">Loading...</div>
+                                    <div id="adDSpec" style="font-size: 0.72rem; color: #7c3aed; font-weight: 700; margin-top: 3px;">⭐ Special: --</div>
+                                </div>
+                            </div>
+
+                            <a href="/food-menu" style="display: block; text-align: center; background: var(--primary-light); color: var(--primary); border: 1px solid var(--primary-border); padding: 7px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; text-decoration: none; margin-top: 10px;">
+                                Manage & Update Menu →
+                            </a>
+                        </div>
+
+
+                        <!-- Top Room Categories & Shortcuts -->
+                        <div class="card animate-enter delay-6">
+                            <h3 class="card-title" style="margin-bottom: 14px;">Room Categories</h3>
+
+                            <div class="category-list">
+                                <div class="category-row">
+                                    <span class="category-name">Single AC Room</span>
+                                    <span class="category-metric" id="catSingle">Premium Wing</span>
+                                </div>
+                                <div class="category-row">
+                                    <span class="category-name">Double Shared AC</span>
+                                    <span class="category-metric" id="catDouble">Block A</span>
+                                </div>
+                                <div class="category-row">
+                                    <span class="category-name">Triple Bed Standard</span>
+                                    <span class="category-metric" id="catTriple">Block B</span>
+                                </div>
+                                <div class="category-row">
+                                    <span class="category-name">Dormitory Deluxe</span>
+                                    <span class="category-metric" id="catDorm">Block C</span>
+                                </div>
+                            </div>
+
+                            <!-- Quick Action Shortcuts -->
+                            <div class="quick-actions-grid">
+                                <a href="/students" class="btn-action primary-action">
+                                    <i data-lucide="users"></i>
+                                    <span>Students</span>
+                                </a>
+                                <a href="/rooms" class="btn-action">
+                                    <i data-lucide="package"></i>
+                                    <span>Rooms</span>
+                                </a>
+                                <a href="/complaints" class="btn-action">
+                                    <i data-lucide="tag"></i>
+                                    <span>Complaints</span>
+                                </a>
+                                <a href="/fees" class="btn-action">
+                                    <i data-lucide="dollar-sign"></i>
+                                    <span>Fees</span>
+                                </a>
+                                <a href="/admin-reviews" class="btn-action">
+                                    <i data-lucide="star"></i>
+                                    <span>Reviews</span>
+                                </a>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ==================== ANIMATION & LOGIC SCRIPT ==================== -->
+    <script>
+        // Initialize Lucide Icons
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        // ==================== SIDEBAR COLLAPSE TOGGLE ====================
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const mobileToggleBtn = document.getElementById("mobileToggleBtn");
+        const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+        // Restore sidebar state from localStorage
+        const savedSidebarState = localStorage.getItem("hostel_sidebar_collapsed");
+        if (savedSidebarState === "true") {
+            sidebar.classList.add("collapsed");
+        }
+
+        sidebarToggle.addEventListener("click", () => {
+            sidebar.classList.toggle("collapsed");
+            localStorage.setItem("hostel_sidebar_collapsed", sidebar.classList.contains("collapsed"));
+            refreshIcons();
+        });
+
+        // Mobile Drawer toggle
+        mobileToggleBtn.addEventListener("click", () => {
+            sidebar.classList.toggle("mobile-open");
+            sidebarBackdrop.classList.toggle("active");
+        });
+
+        sidebarBackdrop.addEventListener("click", () => {
+            sidebar.classList.remove("mobile-open");
+            sidebarBackdrop.classList.remove("active");
+        });
+
+        // ==================== DARK MODE TOGGLE WITH ROTATION ANIMATION ====================
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function applyTheme(isDark, animate = false) {
+            if (animate && themeToggleBtn) {
+                themeToggleBtn.classList.add("spinning");
+                setTimeout(() => themeToggleBtn.classList.remove("spinning"), 500);
+            }
+
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("hostel_theme", "dark");
+                if (themeIcon) {
+                    themeIcon.setAttribute("data-lucide", "sun");
+                }
+            } else {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("hostel_theme", "light");
+                if (themeIcon) {
+                    themeIcon.setAttribute("data-lucide", "moon");
+                }
+            }
+            refreshIcons();
+            updateChartTheme(isDark);
+        }
+
+        // Initialize Theme from localStorage or system preference
+        const savedTheme = localStorage.getItem("hostel_theme");
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const initialDark = savedTheme ? savedTheme === "dark" : prefersDark;
+        applyTheme(initialDark, false);
+
+        themeToggleBtn.addEventListener("click", () => {
+            const isCurrentlyDark = document.documentElement.classList.contains("dark");
+            applyTheme(!isCurrentlyDark, true);
+        });
+
+        // ==================== CHART.JS INSTANCE ====================
+        let hostelChartInstance = null;
+
+        function updateChartTheme(isDark) {
+            if (!hostelChartInstance) return;
+            const textColor = isDark ? "#94a3b8" : "#64748b";
+            const borderColor = isDark ? "#111827" : "#ffffff";
+
+            hostelChartInstance.options.plugins.legend.labels.color = textColor;
+            hostelChartInstance.data.datasets[0].borderColor = borderColor;
+            hostelChartInstance.update();
+        }
+
+        // ==================== SMOOTH ANIMATED COUNTER HELPER ====================
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+            const target = Number(targetValue) || 0;
+            const duration = 1200;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                // Ease Out Expo
+                const eased = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+                element.textContent = Math.floor(target * eased);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // ==================== FETCH DASHBOARD DATA ====================
+        fetch("/api/dashboard")
+            .then(res => {
+                if (!res.ok) throw new Error("Could not load dashboard data");
+                return res.json();
+            })
+            .then(data => {
+                // Populate Stat Counters with Ease-out animation
+                animateNumber("totalStudents", data.total_residents || data.total_students);
+                animateNumber("totalRooms", data.total_rooms);
+                animateNumber("availableBeds", data.available_beds);
+                animateNumber("pendingComplaints", data.pending_complaints);
+
+                // Update category breakdown subtitle
+                const breakdown = document.getElementById("residentBreakdownText");
+                if (breakdown) {
+                    const j = data.jobholder_count || 0;
+                    const t = data.transfer_count || 0;
+                    const s = data.student_count || 0;
+                    breakdown.textContent = `${j} Jobholders • ${t} Transfers • ${s} Students`;
+                }
+
+                // Update Sidebar Badges
+                const badgeStudents = document.getElementById("badgeStudents");
+                if (badgeStudents) badgeStudents.textContent = data.total_residents || data.total_students || 0;
+
+                const badgeComplaints = document.getElementById("badgeComplaints");
+                if (badgeComplaints) badgeComplaints.textContent = data.pending_complaints || 0;
+
+                const badgeNotices = document.getElementById("badgeNotices");
+                if (badgeNotices) badgeNotices.textContent = data.pending_notices || 0;
+
+                // Calculate Progress Meter Percentages
+                const occupiedBeds = Number(data.occupied_beds) || (Number(data.total_students) || 0);
+                const availableBeds = Number(data.available_beds) || 0;
+                const totalBeds = occupiedBeds + availableBeds;
+
+                let occupancyPercent = 0;
+                let availabilityPercent = 0;
+
+                if (totalBeds > 0) {
+                    occupancyPercent = Math.round((occupiedBeds / totalBeds) * 100);
+                    availabilityPercent = Math.round((availableBeds / totalBeds) * 100);
+                } else if (Number(data.total_rooms) > 0) {
+                    occupancyPercent = 65;
+                    availabilityPercent = 35;
+                }
+
+                const pendingComp = Number(data.pending_complaints) || 0;
+                const resolvedComp = Number(data.resolved_complaints) || 0;
+                const totalComp = pendingComp + resolvedComp;
+                const resolvedPercent = totalComp > 0 ? Math.round((resolvedComp / totalComp) * 100) : 85;
+
+                // Update Progress Meters with animated width expansion
+                const valOcc = document.getElementById("valOccupancy");
+                const barOcc = document.getElementById("barOccupancy");
+                if (valOcc && barOcc) {
+                    valOcc.textContent = occupancyPercent + "%";
+                    setTimeout(() => { barOcc.style.width = occupancyPercent + "%"; }, 250);
+                }
+
+                const valAvail = document.getElementById("valAvailable");
+                const barAvail = document.getElementById("barAvailable");
+                if (valAvail && barAvail) {
+                    valAvail.textContent = availabilityPercent + "%";
+                    setTimeout(() => { barAvail.style.width = availabilityPercent + "%"; }, 350);
+                }
+
+                const valRes = document.getElementById("valResolved");
+                const barRes = document.getElementById("barResolved");
+                if (valRes && barRes) {
+                    valRes.textContent = resolvedPercent + "%";
+                    setTimeout(() => { barRes.style.width = resolvedPercent + "%"; }, 450);
+                }
+
+                // Render Animated Chart.js
+                const isDark = document.documentElement.classList.contains("dark");
+                const ctx = document.getElementById("hostelChart");
+
+                if (ctx) {
+                    const jobs = Number(data.jobholder_count) || 0;
+                    const transfers = Number(data.transfer_count) || 0;
+                    const students = Number(data.student_count) || 0;
+                    const openBeds = Number(data.available_beds) || 0;
+
+                    hostelChartInstance = new Chart(ctx, {
+                        type: "doughnut",
+                        data: {
+                            labels: ["Jobholders", "Transfers", "Students", "Open Beds"],
+                            datasets: [{
+                                data: [
+                                    jobs || 1,
+                                    transfers || 1,
+                                    students || 1,
+                                    openBeds || 1
+                                ],
+                                backgroundColor: [
+                                    "#3b82f6", // Blue
+                                    "#ec4899", // Pink
+                                    "#10b981", // Green
+                                    "#8b5cf6"  // Purple
+                                ],
+                                borderColor: isDark ? "#111827" : "#ffffff",
+                                borderWidth: 3,
+                                hoverOffset: 12
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            cutout: "70%",
+                            plugins: {
+                                legend: {
+                                    position: "bottom",
+                                    labels: {
+                                        padding: 16,
+                                        usePointStyle: true,
+                                        pointStyle: "circle",
+                                        font: {
+                                            family: "'Plus Jakarta Sans', sans-serif",
+                                            size: 12,
+                                            weight: "500"
+                                        },
+                                        color: isDark ? "#94a3b8" : "#64748b"
+                                    }
+                                }
+                            },
+                            animation: {
+                                animateRotate: true,
+                                animateScale: true,
+                                duration: 1200,
+                                easing: "easeOutQuart"
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(err => {
+                console.error("Dashboard API error:", err);
+            });
+
+        // Load Today's Food Menu on Admin Dashboard
+        fetch('/api/food-menu/today')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.success && data.menu) {
+                    const m = data.menu;
+                    const dateEl = document.getElementById('adminDashMenuDate');
+                    if (dateEl) dateEl.textContent = `${m.day_name}, ${m.menu_date}`;
+
+                    const bItems = document.getElementById('adBItems');
+                    const bTime = document.getElementById('adBTime');
+                    const bSpec = document.getElementById('adBSpec');
+                    if (bItems) bItems.textContent = m.breakfast_items || "Standard Tiffin";
+                    if (bTime) bTime.textContent = m.breakfast_time || "7:30 AM - 10 AM";
+                    if (bSpec) bSpec.textContent = m.breakfast_special ? `⭐ ${m.breakfast_special}` : "Standard menu";
+
+                    const lItems = document.getElementById('adLItems');
+                    const lTime = document.getElementById('adLTime');
+                    const lSpec = document.getElementById('adLSpec');
+                    if (lItems) lItems.textContent = m.lunch_items || "Standard Lunch";
+                    if (lTime) lTime.textContent = m.lunch_time || "12:30 PM - 3 PM";
+                    if (lSpec) lSpec.textContent = m.lunch_special ? `⭐ ${m.lunch_special}` : "Standard menu";
+
+                    const dItems = document.getElementById('adDItems');
+                    const dTime = document.getElementById('adDTime');
+                    const dSpec = document.getElementById('adDSpec');
+                    if (dItems) dItems.textContent = m.dinner_items || "Standard Dinner";
+                    if (dTime) dTime.textContent = m.dinner_time || "7:30 PM - 10 PM";
+                    if (dSpec) dSpec.textContent = m.dinner_special ? `⭐ ${m.dinner_special}` : "Standard menu";
+                }
+            })
+            .catch(() => {});
+
+        // Load Admin Profile Photo in Header
+        fetch('/api/profile')
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.profile_photo) {
+                    const img = document.getElementById('headerUserImg');
+                    const icon = document.getElementById('headerUserIcon');
+                    if (img && icon) {
+                        img.src = data.profile_photo;
+                        img.style.display = 'block';
+                        icon.style.display = 'none';
+                    }
+                }
+            })
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

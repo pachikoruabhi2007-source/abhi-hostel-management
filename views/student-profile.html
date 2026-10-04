@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Profile | Private Hostel</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .profile-container {
+            max-width: 860px;
+            margin: 36px auto;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .profile-header-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 20px;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 28px;
+            margin-bottom: 28px;
+        }
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .avatar-wrapper {
+            position: relative;
+            width: 88px;
+            height: 88px;
+        }
+
+        .profile-avatar-big {
+            width: 88px;
+            height: 88px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            font-size: 36px;
+            font-weight: 800;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(37, 99, 235, 0.25);
+            overflow: hidden;
+            border: 3px solid white;
+        }
+
+        .profile-avatar-big img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #2563eb;
+            color: white;
+            border: 2px solid white;
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.4);
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+
+        .avatar-edit-badge:hover {
+            transform: scale(1.1);
+            background: #1d4ed8;
+        }
+
+        .avatar-controls {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .btn-upload-photo {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #bfdbfe;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload-photo:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        .btn-remove-photo {
+            background: none;
+            border: none;
+            color: #ef4444;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 4px 0;
+            text-align: left;
+            display: none;
+        }
+
+        .btn-remove-photo:hover {
+            text-decoration: underline;
+        }
+
+        .profile-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .profile-field {
+            background: #f8fafc;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+        }
+
+        .profile-field:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .profile-field span {
+            display: block;
+            font-size: 12px;
+            font-weight: 700;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 5px;
+        }
+
+        .profile-field strong {
+            font-size: 15px;
+            color: #0f172a;
+            line-height: 1.4;
+            display: block;
+        }
+
+        .status-msg-banner {
+            display: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-size: 13.5px;
+            font-weight: 600;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-msg-banner.success {
+            background: #ecfdf5;
+            color: #059669;
+            border: 1px solid #a7f3d0;
+        }
+
+        .status-msg-banner.error {
+            background: #fef2f2;
+            color: #dc2626;
+            border: 1px solid #fecaca;
+        }
+
+        @media (max-width: 650px) {
+            .profile-grid {
+                grid-template-columns: 1fr;
+            }
+            .profile-header-wrap {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private Hostel & PG</h2>
+                <span>Resident Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/student-dashboard">Dashboard</a>
+            <a href="/student-food-menu">Food Menu</a>
+            <a href="/student-room">My Room</a>
+            <a href="/student-profile" class="active">Profile</a>
+            <a href="/student-fees">Rent & Fees</a>
+            <a href="/student-complaints">Complaints</a>
+            <a href="/student-reviews">Reviews & Feedback</a>
+            <a href="/student-settings">Settings</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="profile-container">
+
+        <div class="profile-card">
+
+            <!-- Toast / Status Message -->
+            <div id="statusBanner" class="status-msg-banner">
+                <span id="statusIcon">✓</span>
+                <span id="statusText"></span>
+            </div>
+
+            <!-- Header Wrap with Avatar & Photo Upload -->
+            <div class="profile-header-wrap">
+                <div class="avatar-section">
+                    <div class="avatar-wrapper">
+                        <div class="profile-avatar-big" id="avatarBox">
+                            <span id="avatarLetter">R</span>
+                            <img id="avatarImg" alt="Profile Photo">
+                        </div>
+                        <button type="button" class="avatar-edit-badge" onclick="triggerFileInput()" title="Upload Profile Photo">
+                            <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="avatar-controls">
+                        <h2 id="name" style="margin: 0 0 6px 0; font-size: 24px; font-weight: 800;">Loading...</h2>
+                        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+                            <span id="roleBadge" style="background: #eff6ff; color: #2563eb; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid #bfdbfe;">
+                                Resident
+                            </span>
+                            <button type="button" class="btn-upload-photo" onclick="triggerFileInput()">
+                                <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Upload Photo
+                            </button>
+                            <button type="button" class="btn-remove-photo" id="btnRemovePhoto" onclick="removePhoto()">
+                                Remove Photo
+                            </button>
+                        </div>
+                        <span style="font-size: 11px; color: #64748b; margin-top: 4px;">JPG, PNG, WebP up to 5MB</span>
+                    </div>
+
+                    <!-- Hidden File Input -->
+                    <input type="file" id="photoFileInput" accept="image/*" style="display: none;" onchange="handleFileSelected(event)">
+                </div>
+
+                <div>
+                    <a href="/student-settings" style="display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; background: #f1f5f9; color: #1e293b; border-radius: 8px; text-decoration: none; font-weight: 700; font-size: 13px;">
+                        <i data-lucide="settings" style="width: 15px; height: 15px;"></i> Edit Details & Settings
+                    </a>
+                </div>
+            </div>
+
+            <!-- Profile Details Grid -->
+            <div class="profile-grid">
+                <div class="profile-field">
+                    <span>Email Address</span>
+                    <strong id="email">Loading...</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Phone Number</span>
+                    <strong id="phone">Loading...</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Assigned Room</span>
+                    <strong id="room">Loading...</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Category</span>
+                    <strong id="resType">Loading...</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Company / Workplace / College</span>
+                    <strong id="company">Not specified</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Role / Course</span>
+                    <strong id="role">Not specified</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Office / Work Address</span>
+                    <strong id="office">Not specified</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Native City / Hometown</span>
+                    <strong id="city">Not specified</strong>
+                </div>
+
+                <div class="profile-field" style="grid-column: span 2; background: #f8fafc; border: 1.5px solid #e2e8f0; border-radius: 12px; padding: 14px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-wrap: wrap; gap: 8px;">
+                        <span style="font-weight: 700; color: #1e293b;">Government ID Proof & Verification Status</span>
+                        <span id="profileIdStatusBadge" style="padding: 3px 10px; border-radius: 999px; font-size: 11.5px; font-weight: 700; background: #fef3c7; color: #b45309;">Pending Review</span>
+                    </div>
+                    <strong id="idProof" style="font-size: 14px; color: #0f172a;">Stored Securely</strong>
+                    <div style="font-size: 11px; color: #64748b; margin-top: 3px;">
+                        <i class="fa-solid fa-lock" style="font-size: 10px; color: #16a34a;"></i> ID number is encrypted and masked for strict privacy. It is not visible to anyone in plain text.
+                    </div>
+                    <div id="idProofDocLink" style="margin-top: 8px;"></div>
+                    <div id="profileRejectionAlert" style="display: none; margin-top: 10px; background: #fef2f2; border: 1px solid #fecaca; border-radius: 8px; padding: 12px 14px;">
+                        <div style="color: #991b1b; font-size: 12.5px; font-weight: 700; margin-bottom: 4px;">
+                            ⚠️ Verification Action Required: Document Rejected
+                        </div>
+                        <div id="profileRejectionReason" style="color: #7f1d1d; font-size: 12px; margin-bottom: 10px;">
+                            The uploaded document was rejected by Admin.
+                        </div>
+                        <button type="button" onclick="openReuploadModal()" style="padding: 7px 15px; background: #dc2626; color: white; border: none; border-radius: 7px; font-weight: 700; font-size: 12px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                            🔄 Re-upload Valid Government ID Now
+                        </button>
+                    </div>
+                </div>
+
+                <div class="profile-field">
+                    <span>Meal / Mess Plan</span>
+                    <strong id="food">With Food (3 Meals)</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Monthly Accommodation Rent</span>
+                    <strong id="rent">₹0 / month</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Security Caution Deposit</span>
+                    <strong id="deposit">₹0</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Check-in Date</span>
+                    <strong id="checkIn">Active</strong>
+                </div>
+
+                <div class="profile-field">
+                    <span>Expected Checkout</span>
+                    <strong id="checkOut">Flexible</strong>
+                </div>
+
+                <div class="profile-field" style="grid-column: span 2;">
+                    <span>Emergency Contact</span>
+                    <strong id="emergency">None registered</strong>
+                </div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+                <a href="/student-dashboard" style="display: inline-block; background: #f1f5f9; color: #1e293b; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13.5px;">
+                    ← Back to Dashboard
+                </a>
+                <a href="/student-settings" style="display: inline-block; background: #2563eb; color: white; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 13.5px;">
+                    Change Password & Preferences →
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        function refreshIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        function showStatus(msg, isSuccess = true) {
+            const banner = document.getElementById("statusBanner");
+            const text = document.getElementById("statusText");
+            const icon = document.getElementById("statusIcon");
+
+            banner.className = `status-msg-banner ${isSuccess ? 'success' : 'error'}`;
+            banner.style.display = "flex";
+            text.textContent = msg;
+            icon.textContent = isSuccess ? "✓" : "⚠";
+
+            setTimeout(() => {
+                banner.style.display = "none";
+            }, 5000);
+        }
+
+        function triggerFileInput() {
+            document.getElementById("photoFileInput").click();
+        }
+
+        // Handle File Selection and Upload
+        function handleFileSelected(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                showStatus("Please select an image file (PNG, JPG, JPEG, WebP)", false);
+                return;
+            }
+
+            if (file.size > 6 * 1024 * 1024) {
+                showStatus("Image file size must be less than 6MB", false);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function(event) {
+                const base64Data = event.target.result;
+
+                // Instant UI preview
+                setAvatarPhoto(base64Data);
+
+                try {
+                    const res = await fetch("/api/profile/upload-photo", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ image: base64Data })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showStatus(data.message || "Profile photo uploaded successfully!");
+                        setAvatarPhoto(data.photoUrl);
+                    } else {
+                        showStatus(data.error || "Failed to upload photo", false);
+                    }
+                } catch (err) {
+                    showStatus("Server error uploading photo", false);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Remove Profile Photo
+        async function removePhoto() {
+            if (!confirm("Are you sure you want to remove your profile photo?")) return;
+
+            try {
+                const res = await fetch("/api/profile/delete-photo", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    showStatus("Profile photo removed.");
+                    const name = document.getElementById("name").textContent;
+                    clearAvatarPhoto(name);
+                } else {
+                    showStatus("Failed to remove photo", false);
+                }
+            } catch (err) {
+                showStatus("Error removing photo", false);
+            }
+        }
+
+        function setAvatarPhoto(url) {
+            const letter = document.getElementById("avatarLetter");
+            const img = document.getElementById("avatarImg");
+            const btnRemove = document.getElementById("btnRemovePhoto");
+
+            if (letter) letter.style.display = "none";
+            if (img) {
+                img.src = url;
+                img.style.display = "block";
+            }
+            if (btnRemove) btnRemove.style.display = "inline-block";
+        }
+
+        function clearAvatarPhoto(name) {
+            const letter = document.getElementById("avatarLetter");
+            const img = document.getElementById("avatarImg");
+            const btnRemove = document.getElementById("btnRemovePhoto");
+
+            if (img) {
+                img.src = "";
+                img.style.display = "none";
+            }
+            if (letter) {
+                letter.textContent = (name || "R").charAt(0).toUpperCase();
+                letter.style.display = "block";
+            }
+            if (btnRemove) btnRemove.style.display = "none";
+        }
+
+        // Fetch Resident Profile Data
+        fetch("/api/student-profile")
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    showStatus(data.error, false);
+                    return;
+                }
+
+                const displayName = data.name || "Resident";
+                document.getElementById("name").textContent = displayName;
+
+                // Photo setup
+                if (data.profile_photo) {
+                    setAvatarPhoto(data.profile_photo);
+                } else {
+                    clearAvatarPhoto(displayName);
+                }
+
+                document.getElementById("email").textContent = data.email || "Not provided";
+                document.getElementById("phone").textContent = data.phone || "Not provided";
+
+                const rType = data.resident_type || "Jobholder";
+                document.getElementById("resType").textContent = rType;
+                document.getElementById("roleBadge").textContent = `${rType} Resident`;
+
+                document.getElementById("room").textContent = data.room_no ? `Room ${data.room_no}` : "Unassigned";
+                document.getElementById("company").textContent = data.company_or_college || data.department || "Not specified";
+                document.getElementById("role").textContent = data.designation_or_course || "Professional / Student";
+                document.getElementById("office").textContent = data.office_address || "Not specified";
+                document.getElementById("city").textContent = data.native_city || "Not specified";
+
+                const idText = data.id_proof_number ? `${data.id_proof_type || 'ID'}: ${data.id_proof_number}` : "Stored Securely & Masked";
+                document.getElementById("idProof").textContent = idText;
+
+                // Verification Status Badge & Rejection Alert
+                const statusBadge = document.getElementById("profileIdStatusBadge");
+                const rejectionAlert = document.getElementById("profileRejectionAlert");
+                const rejectionReasonText = document.getElementById("profileRejectionReason");
+                const idStatus = data.id_proof_status || "Pending Verification";
+
+                if (idStatus === "Verified") {
+                    statusBadge.textContent = "✓ Verified (Full Permissions Active)";
+                    statusBadge.style.background = "#dcfce7";
+                    statusBadge.style.color = "#15803d";
+                    rejectionAlert.style.display = "none";
+                } else if (idStatus === "Rejected") {
+                    statusBadge.textContent = "✗ Rejected by Admin";
+                    statusBadge.style.background = "#fee2e2";
+                    statusBadge.style.color = "#b91c1c";
+                    rejectionAlert.style.display = "block";
+                    rejectionReasonText.textContent = `Admin remarks: "${data.id_proof_rejection_reason || 'Document is unclear, invalid, or details mismatch. Please re-upload.'}"`;
+                } else {
+                    statusBadge.textContent = "⏳ Under Admin Review";
+                    statusBadge.style.background = "#fef3c7";
+                    statusBadge.style.color = "#b45309";
+                    rejectionAlert.style.display = "none";
+                }
+
+                const docLink = document.getElementById("idProofDocLink");
+                if (docLink) {
+                    if (data.id_proof_file && data.student_id) {
+                        docLink.innerHTML = `
+                            <a href="/api/id-proof/view/${data.student_id}" target="_blank" style="display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:700; color:#2563eb; text-decoration:none; margin-top:4px;">
+                                📄 View My Uploaded ID Document (Confidential)
+                            </a>
+                        `;
+                    } else {
+                        docLink.innerHTML = `<span style="font-size:11.5px; color:#94a3b8;">Document copy on file</span>`;
+                    }
+                }
+
+                document.getElementById("food").textContent = data.food_plan || "With Food (3 Meals)";
+                document.getElementById("rent").textContent = `₹${(Number(data.monthly_rent) || 0).toLocaleString("en-IN")} / month`;
+                document.getElementById("deposit").textContent = `₹${(Number(data.security_deposit) || 0).toLocaleString("en-IN")} (Refundable)`;
+
+                document.getElementById("checkIn").textContent = data.check_in_date || "Active";
+                document.getElementById("checkOut").textContent = data.expected_checkout_date || "Flexible Monthly Stay";
+
+                const emerg = (data.emergency_name || data.emergency_phone)
+                    ? `${data.emergency_name || 'Contact'} (${data.emergency_phone || ''})`
+                    : "None registered";
+                document.getElementById("emergency").textContent = emerg;
+                refreshIcons();
+            })
+            .catch(err => {
+                console.error(err);
+                showStatus("Unable to load profile details", false);
+            });
+
+        // ==================== RE-UPLOAD MODAL CONTROLS ====================
+        function openReuploadModal() {
+            document.getElementById('reuploadModal').style.display = 'flex';
+        }
+
+        function closeReuploadModal() {
+            document.getElementById('reuploadModal').style.display = 'none';
+        }
+
+        async function submitReupload() {
+            const fileInput = document.getElementById('modalIdFile');
+            const file = fileInput.files && fileInput.files[0];
+            if (!file) {
+                alert("Please select a clear photo or PDF file of your valid government ID.");
+                return;
+            }
+
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File size exceeds 10MB limit. Please choose a smaller photo or PDF.");
+                return;
+            }
+
+            const submitBtn = document.getElementById('btnSubmitReupload');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Uploading...";
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const base64Data = e.target.result;
+                const idType = document.getElementById('modalIdType').value;
+                const idNum = document.getElementById('modalIdNum').value.trim();
+
+                try {
+                    const res = await fetch('/api/student/reupload-id', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            id_proof_type: idType,
+                            id_proof_number: idNum,
+                            id_proof_file: base64Data,
+                            id_proof_filename: file.name
+                        })
+                    });
+                    const result = await res.json();
+                    if (result.success) {
+                        alert("Document re-uploaded successfully! It is now pending admin review.");
+                        closeReuploadModal();
+                        window.location.reload();
+                    } else {
+                        alert(result.error || "Failed to re-upload ID document.");
+                    }
+                } catch (err) {
+                    alert("Server error uploading document.");
+                } finally {
+                    submitBtn.disabled = false;
+                    submitBtn.textContent = "Submit to Admin";
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+
+    <!-- Re-upload ID Modal -->
+    <div id="reuploadModal" style="display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: white; border-radius: 16px; max-width: 480px; width: 100%; padding: 24px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25);">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 12px; margin-bottom: 16px;">
+                <h3 style="margin: 0; font-size: 18px; font-weight: 800; color: #0f172a;">Re-upload Valid Government ID Proof</h3>
+                <button type="button" onclick="closeReuploadModal()" style="background: none; border: none; font-size: 20px; cursor: pointer; color: #64748b;">✕</button>
+            </div>
+            <p style="font-size: 13px; color: #64748b; margin-bottom: 16px;">
+                Your previous document was rejected by Admin. Please select a clear, readable photo or PDF of your valid Aadhaar or PAN card. Permissions will be granted once approved.
+            </p>
+            <div style="margin-bottom: 14px;">
+                <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 4px;">ID Proof Type</label>
+                <select id="modalIdType" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px;">
+                    <option value="Aadhaar Card">Aadhaar Card (12 Digits)</option>
+                    <option value="PAN Card">PAN Card (10 Chars)</option>
+                    <option value="Passport">Passport</option>
+                    <option value="Voter ID">Voter ID</option>
+                </select>
+            </div>
+            <div style="margin-bottom: 14px;">
+                <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 4px;">Updated ID Number (Optional if unchanged)</label>
+                <input type="text" id="modalIdNum" placeholder="e.g. 5678 1234 9012" style="width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px;">
+            </div>
+            <div style="margin-bottom: 18px;">
+                <label style="font-size: 12px; font-weight: 700; color: #334155; display: block; margin-bottom: 4px;">Attach Clear Document Copy (Photo or PDF - Max 10MB) *</label>
+                <input type="file" id="modalIdFile" accept="image/*,application/pdf" style="width: 100%; padding: 8px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 13px;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end;">
+                <button type="button" onclick="closeReuploadModal()" style="padding: 9px 16px; border: 1px solid #cbd5e1; background: white; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer;">Cancel</button>
+                <button type="button" id="btnSubmitReupload" onclick="submitReupload()" style="padding: 9px 18px; background: #2563eb; color: white; border: none; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer;">Submit to Admin</button>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

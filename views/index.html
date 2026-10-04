@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Executive & Student PG | Private Hostel Management</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        :root {
+            --primary-accent: #2563eb;
+            --primary-gradient: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #38bdf8 100%);
+            --card-border: rgba(226, 232, 240, 0.8);
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
+            margin: 0;
+            padding: 0;
+        }
+
+        .hero-banner {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 70px 20px 85px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: "";
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-banner::after {
+            content: "";
+            position: absolute;
+            bottom: -80px;
+            right: -60px;
+            width: 350px;
+            height: 350px;
+            background: rgba(56, 189, 248, 0.15);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(8px);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 13px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .hero-title {
+            font-size: 42px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 0 auto 18px;
+            max-width: 850px;
+            line-height: 1.25;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            opacity: 0.92;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-cta-primary {
+            background: white;
+            color: #1e3a8a;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 14px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-cta-outline {
+            background: rgba(255, 255, 255, 0.12);
+            color: white;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            backdrop-filter: blur(6px);
+            transition: all 0.2s ease;
+        }
+
+        .btn-cta-outline:hover {
+            background: rgba(255, 255, 255, 0.22);
+            transform: translateY(-2px);
+        }
+
+        /* Pillars Section */
+        .pillars-container {
+            max-width: 1200px;
+            margin: -40px auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .pillar-card {
+            background: white;
+            border-radius: 18px;
+            padding: 32px 26px;
+            box-shadow: 0 12px 30px rgba(15, 23, 42, 0.08);
+            border: 1px solid var(--card-border);
+            transition: transform 0.25s ease, box-shadow 0.25s ease;
+        }
+
+        .pillar-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 20px 38px rgba(15, 23, 42, 0.12);
+        }
+
+        .pillar-icon {
+            font-size: 38px;
+            width: 64px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 14px;
+            margin-bottom: 20px;
+        }
+
+        .icon-jobholder { background: #eff6ff; color: #2563eb; }
+        .icon-transfer { background: #ecfdf5; color: #059669; }
+        .icon-student { background: #fdf4ff; color: #c026d3; }
+
+        .pillar-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #0f172a;
+        }
+
+        .pillar-desc {
+            font-size: 14.5px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .pillar-features {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .pillar-features li {
+            font-size: 13.5px;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .pillar-features li span {
+            color: #10b981;
+            font-weight: bold;
+        }
+
+        /* Facilities Grid */
+        .section-wrap {
+            max-width: 1200px;
+            margin: 60px auto;
+            padding: 0 20px;
+        }
+
+        .section-head {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-head h2 {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 8px;
+        }
+
+        .section-head p {
+            color: #64748b;
+            font-size: 16px;
+        }
+
+        .amenities-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .amenity-box {
+            background: white;
+            border-radius: 14px;
+            padding: 22px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+
+        .amenity-box:hover {
+            border-color: #93c5fd;
+            transform: translateY(-3px);
+        }
+
+        .amenity-box .emoji {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .amenity-box h4 {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 6px;
+            color: #1e293b;
+        }
+
+        .amenity-box p {
+            font-size: 13px;
+            color: #64748b;
+            margin: 0;
+        }
+
+        /* Footer */
+        .site-footer {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 50px 20px 30px;
+            font-size: 14px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 36px;
+            padding-bottom: 30px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: left;
+        }
+
+        .footer-col h4 {
+            color: white;
+            font-size: 16px;
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-weight: 700;
+        }
+
+        .footer-col a {
+            display: block;
+            color: #94a3b8;
+            text-decoration: none;
+            margin-bottom: 10px;
+            transition: color 0.2s;
+        }
+
+        .footer-col a:hover {
+            color: #60a5fa;
+            text-decoration: underline;
+        }
+
+        .footer-bottom {
+            max-width: 1100px;
+            margin: 24px auto 0;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        @media (max-width: 900px) {
+            .pillars-container {
+                grid-template-columns: 1fr;
+                margin-top: 20px;
+            }
+            .amenities-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hero-title {
+                font-size: 30px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation Bar -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private PG & Hostel</h2>
+                <span>Executive & Resident Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/" class="active">Home</a>
+            <a href="/about">About Us</a>
+            <a href="/contact">Contact Us</a>
+            <a href="/dashboard">Admin Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/vacating-notices">Transfer / Vacating</a>
+            <a href="/fees">Rent & Deposit</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reviews">Reviews</a>
+            <a href="/login" class="login-nav-btn">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <!-- Hero Banner -->
+    <header class="hero-banner">
+        <div class="hero-badge">
+            🌟 Premium Accommodation For Professionals & Students
+        </div>
+
+        <h1 class="hero-title">
+            Smart Living Designed for Working Professionals, Relocating People & Students
+        </h1>
+
+        <p class="hero-subtitle">
+            Flexible monthly stays, corporate transfer checkouts, high-speed Wi-Fi, home-cooked hygienic meals, and zero-hassle security deposit management.
+        </p>
+
+        <div class="hero-cta">
+            <a href="/login" class="btn-cta-primary">🔑 Resident & Admin Login</a>
+            <a href="/register" class="btn-cta-outline">📝 Quick Registration</a>
+            <a href="/students" class="btn-cta-outline">👥 Resident Directory</a>
+        </div>
+    </header>
+
+    <!-- 3 Core Resident Categories -->
+    <section class="pillars-container">
+
+        <!-- Jobholders & Working Professionals -->
+        <div class="pillar-card">
+            <div class="pillar-icon icon-jobholder">
+                💼
+            </div>
+            <h3 class="pillar-title">Jobholders & IT Pros</h3>
+            <p class="pillar-desc">
+                Tailored for IT professionals, corporate employees, and remote workers who need quiet rest and productivity.
+            </p>
+            <ul class="pillar-features">
+                <li><span>✓</span> High-Speed Fiber Wi-Fi & Work Desks</li>
+                <li><span>✓</span> 24/7 Power Backup & Peaceful Hours</li>
+                <li><span>✓</span> Flexible Monthly Rent with Digital Receipts</li>
+                <li><span>✓</span> Healthy Breakfast & Dinner Plans</li>
+            </ul>
+        </div>
+
+        <!-- Transferred & Relocating People -->
+        <div class="pillar-card">
+            <div class="pillar-icon icon-transfer">
+                🔄
+            </div>
+            <h3 class="pillar-title">Transfer & Temporary Stays</h3>
+            <p class="pillar-desc">
+                Ideal for employees on short/medium-term deputations, city transfers, and project assignments.
+            </p>
+            <ul class="pillar-features">
+                <li><span>✓</span> Instant Move-In Ready AC & Non-AC Rooms</li>
+                <li><span>✓</span> 15/30-Day Flexible Transfer Notice</li>
+                <li><span>✓</span> Fast Security Deposit Refund Clearance</li>
+                <li><span>✓</span> Baggage Assistance & Secure Storage</li>
+            </ul>
+        </div>
+
+        <!-- Private Students & Exam Aspirants -->
+        <div class="pillar-card">
+            <div class="pillar-icon icon-student">
+                🎓
+            </div>
+            <h3 class="pillar-title">Students & Interns</h3>
+            <p class="pillar-desc">
+                Safe, disciplined, and homely environment for college students, interns, and exam aspirants.
+            </p>
+            <ul class="pillar-features">
+                <li><span>✓</span> Budget-friendly 2, 3, & 4-sharing options</li>
+                <li><span>✓</span> Nutritious 3-time meal facility</li>
+                <li><span>✓</span> CCTV surveillance & biometric entry</li>
+                <li><span>✓</span> Dedicated study spaces & housekeeping</li>
+            </ul>
+        </div>
+
+    </section>
+
+    <!-- Private Hostel Facilities -->
+    <section class="section-wrap">
+        <div class="section-head">
+            <h2>Why Private Hostel & PG Residents Choose Us</h2>
+            <p>Modern amenities built for comfort, safety, and seamless everyday living.</p>
+        </div>
+
+        <div class="amenities-grid">
+            <div class="amenity-box">
+                <span class="emoji">📶</span>
+                <h4>High-Speed Wi-Fi</h4>
+                <p>Seamless connectivity for WFH and online meetings</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">🍲</span>
+                <h4>Homely Food Plan</h4>
+                <p>Hygienic breakfast, lunch, and dinner options</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">❄️</span>
+                <h4>AC & Non-AC Rooms</h4>
+                <p>Single, double, and triple executive sharing</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">🛡️</span>
+                <h4>24/7 Security</h4>
+                <p>CCTV monitoring, biometric access & emergency response</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">🧹</span>
+                <h4>Daily Housekeeping</h4>
+                <p>Clean bathrooms, sanitization & room cleaning</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">⚡</span>
+                <h4>Power Backup</h4>
+                <p>Uninterrupted electricity during outages</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">📄</span>
+                <h4>Notice & Checkout</h4>
+                <p>Online transfer notice & prompt deposit refund</p>
+            </div>
+
+            <div class="amenity-box">
+                <span class="emoji">💳</span>
+                <h4>Transparent Rent</h4>
+                <p>No hidden charges, monthly dues tracker</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="footer-content">
+            <div class="footer-col">
+                <h4>🏨 Executive PG & Private Hostel</h4>
+                <p style="line-height: 1.6; color: #94a3b8; margin-bottom: 12px;">
+                    Modern residential accommodation offering comfortable stays for working IT professionals, corporate transfer employees, and students in Hyderabad.
+                </p>
+                <div style="font-size: 13px; color: #cbd5e1; line-height: 1.8;">
+                    <div>📍 <strong>Address:</strong> Plot 42, Silicon Valley Colony, Madhapur, Hyderabad, TS - 500081</div>
+                    <div>✉️ <strong>Admin Email:</strong> <a href="mailto:pachikoruabhi2007@gmail.com" style="display:inline; color:#60a5fa;">pachikoruabhi2007@gmail.com</a></div>
+                    <div>📞 <strong>Warden / Support:</strong> <a href="tel:+919704844011" style="display:inline; color:#60a5fa;">+91 9704844011</a> / <a href="tel:+919876543210" style="display:inline; color:#60a5fa;">+91 9876543210</a></div>
+                </div>
+            </div>
+
+            <div class="footer-col">
+                <h4>Quick Portals</h4>
+                <a href="/">Home</a>
+                <a href="/about">About Us</a>
+                <a href="/contact">Contact Support</a>
+                <a href="/login">Resident & Admin Login</a>
+                <a href="/register">Admission Form</a>
+                <a href="/reviews">Resident Reviews</a>
+            </div>
+
+            <div class="footer-col">
+                <h4>Legal & Policies</h4>
+                <a href="/terms">Terms & Conditions</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/refund-policy">Cancellation & Refund Policy</a>
+                <a href="/contact">Grievance Desk</a>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2026 Executive PG & Private Hostel Management System. All rights reserved. | 🔒 Secured Payments via Razorpay (PCI-DSS Compliant)</p>
+        </div>
+    </footer>
+
+</body>
+</html>

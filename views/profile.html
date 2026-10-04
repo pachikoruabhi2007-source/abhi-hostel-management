@@ -1,0 +1,1814 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Profile & User Management | HostelHub</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+
+            --accent-orange: #f59e0b;
+            --accent-orange-bg: #fffbeb;
+            --accent-orange-glow: rgba(245, 158, 11, 0.25);
+
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark {
+            --bg-page: #030712;
+            --bg-surface: #111827;
+            --bg-subtle: #1f2937;
+            --bg-hover: #1e293b;
+            --border-color: #1f2937;
+            --border-subtle: #1a2234;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-border: rgba(59, 130, 246, 0.35);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+
+            --accent-green: #34d399;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-purple: #a78bfa;
+            --accent-purple-bg: rgba(139, 92, 246, 0.15);
+            --accent-orange: #fbbf24;
+            --accent-orange-bg: rgba(245, 158, 11, 0.15);
+            --accent-red: #f87171;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 14px 28px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* =========================================
+           SIDEBAR
+           ========================================= */
+        .sidebar {
+            width: var(--sidebar-width);
+            min-height: 100vh;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 50;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            padding: 24px 16px;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .brand-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 4px 8px 24px 8px;
+            border-bottom: 1px solid var(--border-subtle);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            display: grid;
+            place-content: center;
+            color: white;
+            font-weight: 800;
+            box-shadow: 0 4px 14px var(--primary-glow);
+            flex-shrink: 0;
+        }
+
+        .brand-text {
+            display: flex;
+            flex-direction: column;
+            transition: opacity 0.2s ease, transform 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .brand-name {
+            font-size: 1.12rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-tag {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+        }
+
+        .sidebar.collapsed .brand-text {
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            transform: translateX(-15px);
+        }
+
+        .nav-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            margin-top: 20px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.92rem;
+            transition: var(--transition-smooth);
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .nav-item.active {
+            background: linear-gradient(90deg, var(--primary-light), transparent);
+            color: var(--primary);
+            border-left: 3px solid var(--primary);
+            font-weight: 700;
+        }
+
+        .nav-icon {
+            width: 20px;
+            height: 20px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .nav-label {
+            display: none;
+        }
+
+        .sidebar-section {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            border-top: 1px solid var(--border-subtle);
+            padding-top: 16px;
+            margin-top: 10px;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-muted);
+            padding: 0 10px 6px 10px;
+        }
+
+        .sidebar.collapsed .section-label {
+            display: none;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 8px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 10px;
+            font-weight: 600;
+            font-size: 0.82rem;
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .sidebar.collapsed .toggle-text {
+            display: none;
+        }
+
+        /* =========================================
+           MAIN WRAPPER & HEADER
+           ========================================= */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            transition: margin-left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar.collapsed~.main-wrapper {
+            margin-left: var(--sidebar-collapsed-width);
+        }
+
+        .dashboard-header {
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            backdrop-filter: blur(8px);
+        }
+
+        .header-title-group h1 {
+            font-size: 1.45rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        .header-title-group p {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--primary-border);
+            transform: translateY(-2px);
+        }
+
+        .content-container {
+            padding: 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 28px;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* =========================================
+           PROFILE HERO & AVATAR CARD
+           ========================================= */
+        .profile-hero-card {
+            background: linear-gradient(135deg, var(--bg-surface) 0%, var(--bg-subtle) 100%);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 32px;
+            box-shadow: var(--shadow-md);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 24px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .profile-hero-card::after {
+            content: "";
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
+            pointer-events: none;
+        }
+
+        .avatar-uploader-group {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+        }
+
+        .avatar-frame {
+            position: relative;
+            width: 96px;
+            height: 96px;
+            flex-shrink: 0;
+        }
+
+        .avatar-circle {
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 38px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 24px var(--primary-glow);
+            border: 4px solid var(--bg-surface);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .avatar-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: none;
+        }
+
+        .avatar-edit-badge {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            border: 3px solid var(--bg-surface);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 12px var(--primary-glow);
+            transition: transform 0.25s ease, background-color 0.2s ease;
+        }
+
+        .avatar-edit-badge:hover {
+            transform: scale(1.12);
+            background: var(--primary-dark);
+        }
+
+        .user-main-info {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .user-name-title {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+        }
+
+        .user-meta-chips {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .role-badge {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1px solid var(--primary-border);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            text-transform: capitalize;
+        }
+
+        .status-badge {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            font-weight: 700;
+            font-size: 0.8rem;
+            padding: 4px 12px;
+            border-radius: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-badge::before {
+            content: "";
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+        }
+
+        .avatar-actions-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .btn-upload-avatar {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.84rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-upload-avatar:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .btn-remove-avatar {
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--accent-red);
+            padding: 8px 14px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 0.84rem;
+            cursor: pointer;
+            display: none;
+            transition: all 0.2s ease;
+        }
+
+        .btn-remove-avatar:hover {
+            background: var(--accent-red-bg);
+            border-color: var(--accent-red);
+        }
+
+        /* =========================================
+           TABS NAVIGATION
+           ========================================= */
+        .tabs-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 2px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 20px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            transition: var(--transition-smooth);
+            border-radius: var(--radius-md) var(--radius-md) 0 0;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-hover);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+        }
+
+        .tab-btn.active::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background-color: var(--primary);
+            border-radius: 3px 3px 0 0;
+        }
+
+        .tab-pane {
+            display: none;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .tab-pane.active {
+            display: flex;
+        }
+
+        /* =========================================
+           FORM CARDS & GRIDS
+           ========================================= */
+        .card-panel {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 26px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .card-panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-panel-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-primary);
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-size: 0.83rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+        }
+
+        .form-input,
+        .form-select {
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.92rem;
+            font-weight: 600;
+            outline: none;
+            transition: var(--transition-smooth);
+            width: 100%;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background-color: var(--bg-surface);
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 800;
+            font-size: 0.92rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px var(--primary-glow);
+            transition: all 0.25s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px var(--primary-glow);
+        }
+
+        /* =========================================
+           UPLOAD USER DRAG-DROP BOX
+           ========================================= */
+        .upload-dropzone {
+            border: 2px dashed var(--primary-border);
+            background-color: var(--primary-light);
+            border-radius: var(--radius-lg);
+            padding: 36px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .upload-dropzone:hover,
+        .upload-dropzone.dragover {
+            border-color: var(--primary);
+            background-color: var(--bg-hover);
+            transform: scale(1.01);
+        }
+
+        .dropzone-icon {
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            color: var(--primary);
+            display: grid;
+            place-content: center;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .users-table-wrap {
+            overflow-x: auto;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            margin-top: 16px;
+        }
+
+        .users-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+            text-align: left;
+        }
+
+        .users-table th {
+            background-color: var(--bg-subtle);
+            color: var(--text-secondary);
+            font-weight: 700;
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--border-color);
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+        }
+
+        .users-table td {
+            padding: 13px 16px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-primary);
+            vertical-align: middle;
+        }
+
+        .users-table tr:hover td {
+            background-color: var(--bg-hover);
+        }
+
+        .table-user-cell {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .table-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 0.85rem;
+            display: grid;
+            place-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .table-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Banner / Toast */
+        .toast-banner {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.92rem;
+            font-weight: 700;
+            align-items: center;
+            gap: 10px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .toast-banner.success {
+            background-color: var(--accent-green-bg);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-banner.error {
+            background-color: var(--accent-red-bg);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+
+            .sidebar.mobile-open {
+                transform: translateX(0);
+            }
+
+            .main-wrapper {
+                margin-left: 0 !important;
+            }
+
+            .grid-2,
+            .grid-3 {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== SIDEBAR ==================== -->
+    <aside class="sidebar" id="sidebar">
+        <div>
+            <a href="/dashboard" class="brand-container">
+                <div class="brand-logo-icon">H</div>
+                <div class="brand-text">
+                    <span class="brand-name">HostelHub</span>
+                    <span class="brand-tag">Administration</span>
+                </div>
+            </a>
+
+            <nav class="nav-list">
+                <a href="/dashboard" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="layout-dashboard"></i></div>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+                <a href="/students" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="users"></i></div>
+                    <span class="nav-label">Residents</span>
+                </a>
+                <a href="/rooms" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="door-open"></i></div>
+                    <span class="nav-label">Rooms</span>
+                </a>
+                <a href="/food-menu" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="utensils"></i></div>
+                    <span class="nav-label">Food Menu</span>
+                </a>
+                <a href="/vacating-notices" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="send"></i></div>
+                    <span class="nav-label">Transfer / Vacating</span>
+                </a>
+                <a href="/fees" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="credit-card"></i></div>
+                    <span class="nav-label">Rent & Fees</span>
+                </a>
+                <a href="/complaints" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="alert-circle"></i></div>
+                    <span class="nav-label">Complaints</span>
+                </a>
+                <a href="/reports" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="bar-chart-3"></i></div>
+                    <span class="nav-label">Analytics</span>
+                </a>
+            </nav>
+        </div>
+
+        <div>
+            <div class="sidebar-section">
+                <span class="section-label">Account</span>
+                <a href="/profile" class="nav-item active">
+                    <div class="nav-icon"><i data-lucide="user"></i></div>
+                    <span class="nav-label">Profile & Users</span>
+                </a>
+                <a href="/settings" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="settings"></i></div>
+                    <span class="nav-label">Settings</span>
+                </a>
+                <a href="/logout" class="nav-item" style="color: var(--accent-red);">
+                    <div class="nav-icon"><i data-lucide="log-out"></i></div>
+                    <span class="nav-label">Logout</span>
+                </a>
+            </div>
+
+            <button class="toggle-btn" id="sidebarToggle" style="width: 100%;">
+                <i data-lucide="chevrons-left"></i>
+                <span class="toggle-text">Collapse</span>
+            </button>
+        </div>
+    </aside>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="main-wrapper">
+
+        <!-- Top Header -->
+        <header class="dashboard-header">
+            <div style="display: flex; align-items: center; gap: 14px;">
+                <button class="icon-btn mobile-toggle" id="mobileToggle" title="Menu" style="display: none;">
+                    <i data-lucide="menu"></i>
+                </button>
+                <div class="header-title-group">
+                    <h1>Administrator Profile</h1>
+                    <p>Manage your account credentials, profile photo, and system users</p>
+                </div>
+            </div>
+
+            <div class="header-controls">
+                <button class="icon-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+                    <i data-lucide="moon" id="themeIcon"></i>
+                </button>
+                <a href="/settings" class="icon-btn" title="Hostel Settings">
+                    <i data-lucide="settings"></i>
+                </a>
+            </div>
+        </header>
+
+        <!-- Content Area -->
+        <div class="content-container">
+
+            <!-- Toast / Feedback Banner -->
+            <div id="toastBanner" class="toast-banner">
+                <span id="toastIcon">✓</span>
+                <span id="toastMsg">Success</span>
+            </div>
+
+            <!-- Profile Hero Card with Avatar Upload -->
+            <section class="profile-hero-card">
+                <div class="avatar-uploader-group">
+                    <div class="avatar-frame">
+                        <div class="avatar-circle" id="avatarCircle">
+                            <span id="avatarLetter">A</span>
+                            <img id="avatarImg" alt="Profile Photo">
+                        </div>
+                        <button type="button" class="avatar-edit-badge" onclick="triggerPhotoInput()"
+                            title="Change Profile Photo">
+                            <i data-lucide="camera" style="width: 16px; height: 16px;"></i>
+                        </button>
+                    </div>
+
+                    <div class="user-main-info">
+                        <div class="user-meta-chips">
+                            <span class="role-badge" id="userRoleBadge">Administrator</span>
+                            <span class="status-badge">Active Status</span>
+                        </div>
+                        <h2 class="user-name-title" id="userNameTitle">Loading...</h2>
+                        <span style="font-size: 0.9rem; color: var(--text-secondary);"
+                            id="userEmailSub">admin@hostel.com</span>
+
+                        <div class="avatar-actions-bar">
+                            <button type="button" class="btn-upload-avatar" onclick="triggerPhotoInput()">
+                                <i data-lucide="upload" style="width: 14px; height: 14px;"></i> Upload Photo
+                            </button>
+                            <button type="button" class="btn-remove-avatar" id="btnRemoveAvatar"
+                                onclick="deletePhoto()">
+                                Remove Photo
+                            </button>
+                        </div>
+                        <span style="font-size: 0.72rem; color: var(--text-muted); margin-top: 3px;">JPG, PNG, WebP up
+                            to 6MB</span>
+                    </div>
+
+                    <!-- Hidden file picker for photo upload -->
+                    <input type="file" id="photoFileInput" accept="image/*" style="display: none;"
+                        onchange="handlePhotoSelected(event)">
+                </div>
+
+                <div>
+                    <a href="/settings"
+                        style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 18px; border-radius: var(--radius-md); background: var(--bg-surface); border: 1px solid var(--border-color); color: var(--text-primary); text-decoration: none; font-weight: 700; font-size: 0.88rem;">
+                        <i data-lucide="settings" style="width: 15px; height: 15px;"></i> Hostel Configurations
+                    </a>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs -->
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('tabAccount', this)">
+                    <i data-lucide="user-cog" style="width: 17px; height: 17px;"></i> My Profile & Password
+                </button>
+                <button class="tab-btn" onclick="switchTab('tabUsers', this)">
+                    <i data-lucide="user-plus" style="width: 17px; height: 17px;"></i> Upload & Manage Users
+                </button>
+            </div>
+
+            <!-- ==================== TAB 1: MY PROFILE & PASSWORD ==================== -->
+            <div class="tab-pane active" id="tabAccount">
+
+                <!-- Account Info Form -->
+                <div class="card-panel">
+                    <div class="card-panel-header">
+                        <div class="card-panel-title">
+                            <i data-lucide="id-card" style="color: var(--primary);"></i> Personal Details
+                        </div>
+                    </div>
+
+                    <form id="profileForm" onsubmit="savePersonalDetails(event)">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="profName" class="form-input" required
+                                    placeholder="e.g. John Doe">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address *</label>
+                                <input type="email" id="profEmail" class="form-input" required
+                                    placeholder="admin@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="profPhone" class="form-input" placeholder="+91 9876543210">
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn-submit">
+                                <i data-lucide="check" style="width: 16px; height: 16px;"></i> Save Profile Changes
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Password Change Form -->
+                <div class="card-panel">
+                    <div class="card-panel-header">
+                        <div class="card-panel-title">
+                            <i data-lucide="shield-check" style="color: var(--accent-purple);"></i> Security & Change
+                            Password
+                        </div>
+                    </div>
+
+                    <form id="passwordForm" onsubmit="changePassword(event)">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Current Password *</label>
+                                <input type="password" id="curPassword" class="form-input" required
+                                    placeholder="••••••••">
+                            </div>
+                            <div class="form-group">
+                                <label>New Password *</label>
+                                <input type="password" id="newPassword" class="form-input" required minlength="6"
+                                    placeholder="At least 6 characters">
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm New Password *</label>
+                                <input type="password" id="confirmPassword" class="form-input" required minlength="6"
+                                    placeholder="Repeat new password">
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                            <button type="submit" class="btn-submit"
+                                style="background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%); box-shadow: 0 4px 14px var(--accent-purple-glow);">
+                                <i data-lucide="key" style="width: 16px; height: 16px;"></i> Update Password
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+            </div>
+
+            <!-- ==================== TAB 2: UPLOAD & MANAGE USERS ==================== -->
+            <div class="tab-pane" id="tabUsers">
+
+                <!-- Upload Users Section (CSV / Excel / JSON) -->
+                <div class="card-panel">
+                    <div class="card-panel-header">
+                        <div class="card-panel-title">
+                            <i data-lucide="file-up" style="color: var(--primary);"></i> Upload Users (Batch CSV / JSON
+                            Import)
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="cleanDatabaseUsers()"
+                                style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.3); color: var(--accent-red); padding: 7px 14px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;"
+                                title="Delete old test accounts except admin and 257r1a66p7@cmrtc.ac.in">
+                                <i data-lucide="trash-2" style="width: 14px; height: 14px;"></i> Clean Test Accounts
+                            </button>
+                            <button type="button" onclick="downloadCsvTemplate()"
+                                style="background: none; border: 1px solid var(--border-color); color: var(--primary); padding: 7px 14px; border-radius: var(--radius-md); font-weight: 700; font-size: 0.82rem; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+                                <i data-lucide="download" style="width: 14px; height: 14px;"></i> Download CSV Template
+                            </button>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 16px;">
+                        Quickly provision multiple user accounts at once by uploading a CSV or JSON file containing
+                        <code>name, email, phone, role, password</code>.
+                    </p>
+
+                    <!-- Dropzone -->
+                    <div class="upload-dropzone" id="usersDropzone"
+                        onclick="document.getElementById('usersCsvInput').click()">
+                        <div class="dropzone-icon">
+                            <i data-lucide="upload-cloud" style="width: 28px; height: 28px;"></i>
+                        </div>
+                        <div>
+                            <strong style="font-size: 1rem; color: var(--text-primary); display: block;">Click to choose
+                                CSV file or drag and drop here</strong>
+                            <span style="font-size: 0.82rem; color: var(--text-secondary);">Supports .csv and .json
+                                format up to 5MB</span>
+                        </div>
+                        <span id="selectedFileName"
+                            style="font-size: 0.85rem; font-weight: 700; color: var(--primary); display: none;"></span>
+                    </div>
+                    <input type="file" id="usersCsvInput" accept=".csv, .json" style="display: none;"
+                        onchange="handleUsersFileSelect(event)">
+
+                    <!-- Preview of Parsed Users -->
+                    <div id="usersPreviewWrap" style="display: none; margin-top: 18px;">
+                        <div
+                            style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px;">
+                            <span style="font-weight: 700; font-size: 0.9rem;" id="previewCountText">0 Users Ready to
+                                Import</span>
+                            <button type="button" class="btn-submit" id="btnConfirmBatchUpload"
+                                onclick="submitBatchUsers()">
+                                <i data-lucide="user-check" style="width: 15px; height: 15px;"></i> Confirm & Import
+                                Users
+                            </button>
+                        </div>
+                        <div class="users-table-wrap" style="max-height: 240px; overflow-y: auto;">
+                            <table class="users-table">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Role</th>
+                                        <th>Phone</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="previewTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Add Single User Form -->
+                <div class="card-panel">
+                    <div class="card-panel-header">
+                        <div class="card-panel-title">
+                            <i data-lucide="user-plus" style="color: var(--accent-green);"></i> Add Single System User
+                        </div>
+                    </div>
+
+                    <form id="addUserForm" onsubmit="handleCreateSingleUser(event)">
+                        <div class="grid-3">
+                            <div class="form-group">
+                                <label>Full Name *</label>
+                                <input type="text" id="addName" class="form-input" required
+                                    placeholder="e.g. Rahul Sharma">
+                            </div>
+                            <div class="form-group">
+                                <label>Email Address *</label>
+                                <input type="email" id="addEmail" class="form-input" required
+                                    placeholder="rahul@example.com">
+                            </div>
+                            <div class="form-group">
+                                <label>Phone Number</label>
+                                <input type="text" id="addPhone" class="form-input" placeholder="+91 9876543210">
+                            </div>
+                            <div class="form-group">
+                                <label>System Role *</label>
+                                <select id="addRole" class="form-select" required>
+                                    <option value="student">Resident / Student</option>
+                                    <option value="warden">Hostel Warden</option>
+                                    <option value="staff">Staff / Caretaker</option>
+                                    <option value="admin">Administrator</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Initial Password *</label>
+                                <input type="password" id="addPassword" class="form-input" required minlength="6"
+                                    placeholder="Temporary password">
+                            </div>
+                            <div class="form-group" style="justify-content: flex-end;">
+                                <button type="submit" class="btn-submit"
+                                    style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); box-shadow: 0 4px 14px var(--accent-green-glow); width: 100%; justify-content: center; height: 42px;">
+                                    <i data-lucide="plus-circle" style="width: 16px; height: 16px;"></i> Create User
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- System Users Directory -->
+                <div class="card-panel">
+                    <div class="card-panel-header">
+                        <div class="card-panel-title">
+                            <i data-lucide="users" style="color: var(--primary);"></i> Registered System Users
+                        </div>
+                        <input type="text" id="userSearchInput" class="form-input"
+                            placeholder="Search by name or email..." style="max-width: 260px;"
+                            oninput="filterUsersTable()">
+                    </div>
+
+                    <div class="users-table-wrap">
+                        <table class="users-table">
+                            <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Role</th>
+                                    <th>Email & Phone</th>
+                                    <th>Room & ID Status</th>
+                                    <th style="text-align: right;">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="usersListTable">
+                                <tr>
+                                    <td colspan="5"
+                                        style="text-align: center; color: var(--text-secondary); padding: 24px;">Loading
+                                        registered users...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- ==================== JAVASCRIPT ==================== -->
+    <script>
+        let currentUserId = null;
+        let allUsersData = [];
+        let parsedBatchUsers = [];
+
+        function refreshIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        // Sidebar Toggle
+        const sidebar = document.getElementById("sidebar");
+        const toggleBtn = document.getElementById("sidebarToggle");
+        if (toggleBtn) {
+            toggleBtn.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                refreshIcons();
+            });
+        }
+
+        // Theme Toggle (Dark / Light)
+        const themeBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("hostel_theme", "dark");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "sun");
+            } else {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("hostel_theme", "light");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "moon");
+            }
+            refreshIcons();
+        }
+
+        const savedTheme = localStorage.getItem("hostel_theme");
+        applyTheme(savedTheme === "dark");
+
+        if (themeBtn) {
+            themeBtn.addEventListener("click", () => {
+                const isDark = document.documentElement.classList.contains("dark");
+                applyTheme(!isDark);
+            });
+        }
+
+        // Toast Feedback
+        function showToast(msg, isError = false) {
+            const banner = document.getElementById("toastBanner");
+            const text = document.getElementById("toastMsg");
+            const icon = document.getElementById("toastIcon");
+
+            banner.className = `toast-banner ${isError ? 'error' : 'success'}`;
+            banner.style.display = "flex";
+            text.textContent = msg;
+            icon.textContent = isError ? "⚠" : "✓";
+
+            setTimeout(() => {
+                banner.style.display = "none";
+            }, 5000);
+        }
+
+        // Tab Switching
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-pane").forEach(p => p.classList.remove("active"));
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+
+            const target = document.getElementById(tabId);
+            if (target) target.classList.add("active");
+            if (btn) btn.classList.add("active");
+            refreshIcons();
+        }
+
+        // Avatar Setup
+        function setAvatarPhoto(url) {
+            const letter = document.getElementById("avatarLetter");
+            const img = document.getElementById("avatarImg");
+            const btnRemove = document.getElementById("btnRemoveAvatar");
+
+            if (letter) letter.style.display = "none";
+            if (img) {
+                img.src = url;
+                img.style.display = "block";
+            }
+            if (btnRemove) btnRemove.style.display = "inline-block";
+        }
+
+        function clearAvatarPhoto(name) {
+            const letter = document.getElementById("avatarLetter");
+            const img = document.getElementById("avatarImg");
+            const btnRemove = document.getElementById("btnRemoveAvatar");
+
+            if (img) {
+                img.src = "";
+                img.style.display = "none";
+            }
+            if (letter) {
+                letter.textContent = (name || "A").charAt(0).toUpperCase();
+                letter.style.display = "block";
+            }
+            if (btnRemove) btnRemove.style.display = "none";
+        }
+
+        function triggerPhotoInput() {
+            document.getElementById("photoFileInput").click();
+        }
+
+        // Handle Photo Selected & Asynchronous Base64 Upload
+        function handlePhotoSelected(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            if (!file.type.startsWith("image/")) {
+                showToast("Please choose an image file (PNG, JPG, WebP)", true);
+                return;
+            }
+
+            if (file.size > 6 * 1024 * 1024) {
+                showToast("Image file size exceeds the 6MB limit.", true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async function (ev) {
+                const base64 = ev.target.result;
+                setAvatarPhoto(base64); // Instant local preview
+
+                try {
+                    const res = await fetch("/api/profile/upload-photo", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ image: base64 })
+                    });
+                    const data = await res.json();
+                    if (data.success) {
+                        showToast(data.message || "Profile photo updated successfully!");
+                        setAvatarPhoto(data.photoUrl);
+                    } else {
+                        showToast(data.error || "Failed to save photo", true);
+                    }
+                } catch (err) {
+                    showToast("Server error saving profile photo", true);
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Delete Photo
+        async function deletePhoto() {
+            if (!confirm("Are you sure you want to remove your profile photo?")) return;
+            try {
+                const res = await fetch("/api/profile/delete-photo", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Profile photo removed.");
+                    const curName = document.getElementById("userNameTitle").textContent;
+                    clearAvatarPhoto(curName);
+                } else {
+                    showToast(data.error || "Failed to remove photo", true);
+                }
+            } catch (err) {
+                showToast("Server error removing photo", true);
+            }
+        }
+
+        // Load Current Profile
+        async function loadProfile() {
+            try {
+                const res = await fetch("/api/profile");
+                const data = await res.json();
+                if (data) {
+                    currentUserId = data.user_id;
+                    const name = data.name || "Administrator";
+                    document.getElementById("userNameTitle").textContent = name;
+                    document.getElementById("userEmailSub").textContent = data.email || "";
+                    document.getElementById("userRoleBadge").textContent = (data.role || "Admin").toUpperCase();
+
+                    document.getElementById("profName").value = data.name || "";
+                    document.getElementById("profEmail").value = data.email || "";
+                    document.getElementById("profPhone").value = data.phone || "";
+
+                    if (data.profile_photo) {
+                        setAvatarPhoto(data.profile_photo);
+                    } else {
+                        clearAvatarPhoto(name);
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading profile:", err);
+            }
+        }
+
+        // Save Personal Details
+        async function savePersonalDetails(e) {
+            e.preventDefault();
+            const name = document.getElementById("profName").value.trim();
+            const email = document.getElementById("profEmail").value.trim();
+            const phone = document.getElementById("profPhone").value.trim();
+
+            try {
+                const res = await fetch("/api/admin/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, phone })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Profile details updated!");
+                    document.getElementById("userNameTitle").textContent = name;
+                    document.getElementById("userEmailSub").textContent = email;
+                } else {
+                    showToast(data.error || "Failed to update profile", true);
+                }
+            } catch (err) {
+                showToast("Server error updating profile", true);
+            }
+        }
+
+        // Change Password
+        async function changePassword(e) {
+            e.preventDefault();
+            const name = document.getElementById("profName").value.trim();
+            const email = document.getElementById("profEmail").value.trim();
+            const phone = document.getElementById("profPhone").value.trim();
+            const currentPassword = document.getElementById("curPassword").value;
+            const newPassword = document.getElementById("newPassword").value;
+            const confirmPassword = document.getElementById("confirmPassword").value;
+
+            if (newPassword !== confirmPassword) {
+                showToast("New passwords do not match. Please verify.", true);
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, phone, currentPassword, newPassword })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Password updated successfully!");
+                    document.getElementById("curPassword").value = "";
+                    document.getElementById("newPassword").value = "";
+                    document.getElementById("confirmPassword").value = "";
+                } else {
+                    showToast(data.error || "Failed to update password", true);
+                }
+            } catch (err) {
+                showToast("Server error updating password", true);
+            }
+        }
+
+        // ==================== USERS MANAGEMENT ====================
+
+        // Load Registered Users
+        async function loadUsersList() {
+            try {
+                const res = await fetch("/api/admin/users");
+                const data = await res.json();
+                if (data && data.success) {
+                    allUsersData = data.users || [];
+                    renderUsersTable(allUsersData);
+                }
+            } catch (err) {
+                console.error("Error loading users:", err);
+            }
+        }
+
+        function renderUsersTable(users) {
+            const tbody = document.getElementById("usersListTable");
+            if (!users || users.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; color: var(--text-secondary); padding: 24px;">No users found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = users.map(u => {
+                const initial = (u.name || "U").charAt(0).toUpperCase();
+                const avatarContent = u.profile_photo
+                    ? `<img src="${u.profile_photo}" alt="${u.name}">`
+                    : `<span>${initial}</span>`;
+
+                const idStatus = u.id_proof_status || "No Document";
+                let idBadgeColor = "background: #f1f5f9; color: #475569;";
+                if (idStatus === "Verified") idBadgeColor = "background: #dcfce7; color: #15803d;";
+                else if (idStatus === "Rejected") idBadgeColor = "background: #fee2e2; color: #b91c1c;";
+                else if (idStatus === "Pending Verification") idBadgeColor = "background: #fef3c7; color: #b45309;";
+
+                const isSelf = (currentUserId && Number(currentUserId) === Number(u.user_id));
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="table-user-cell">
+                                <div class="table-avatar">${avatarContent}</div>
+                                <div>
+                                    <strong style="display:block; font-size: 0.92rem;">${u.name} ${isSelf ? '<span style="font-size:0.7rem; color:var(--primary); font-weight:700;">(You)</span>' : ''}</strong>
+                                    <span style="font-size: 0.75rem; color: var(--text-muted);">User #${u.user_id}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="role-badge" style="font-size: 0.74rem;">${u.role || 'student'}</span>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.88rem; font-weight: 600; color: var(--text-primary);">${u.email}</div>
+                            <div style="font-size: 0.78rem; color: var(--text-secondary);">${u.phone || '—'}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 0.82rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px;">
+                                ${u.room_no ? `🛏️ Room ${u.room_no}` : '<span style="color:var(--text-muted); font-weight:500;">No Room</span>'}
+                            </div>
+                            <span style="display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 700; ${idBadgeColor}">
+                                ${idStatus}
+                            </span>
+                        </td>
+                        <td style="text-align: right;">
+                            ${isSelf ? `
+                                <span style="font-size: 0.75rem; color: var(--text-muted);">Current User</span>
+                            ` : `
+                                <button type="button" onclick="deleteUser(${u.user_id})" 
+                                    style="background: rgba(239, 68, 68, 0.1); border: 1px solid rgba(239, 68, 68, 0.25); color: var(--accent-red); padding: 6px 10px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;"
+                                    title="Delete this user account">
+                                    <i data-lucide="trash-2" style="width: 13px; height: 13px;"></i> Delete
+                                </button>
+                            `}
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+            refreshIcons();
+        }
+
+        // Delete single user
+        async function deleteUser(userId) {
+            const user = allUsersData.find(u => Number(u.user_id) === Number(userId));
+            const name = user ? user.name : "User";
+            if (!confirm(`Are you sure you want to completely delete ${name} (ID: ${userId})? This will remove all their records and free their bed occupancy.`)) {
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/admin/users/${userId}`, { method: "DELETE" });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "User deleted successfully!");
+                    loadUsersList();
+                } else {
+                    showToast(data.error || "Failed to delete user", true);
+                }
+            } catch (err) {
+                showToast("Server error deleting user", true);
+            }
+        }
+
+        // Clean database (keep admin and 257r1a66p7@cmrtc.ac.in)
+        async function cleanDatabaseUsers() {
+            if (!confirm("This will permanently remove all test accounts and leave only Administrator and '257r1a66p7@cmrtc.ac.in'. Continue?")) {
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/clean-test-users", { method: "POST" });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Cleaned database successfully!");
+                    loadUsersList();
+                } else {
+                    showToast(data.error || "Failed to clean test users", true);
+                }
+            } catch (err) {
+                showToast("Server error cleaning test users", true);
+            }
+        }
+
+        function filterUsersTable() {
+            const query = (document.getElementById("userSearchInput").value || "").toLowerCase().trim();
+            if (!query) {
+                renderUsersTable(allUsersData);
+                return;
+            }
+            const filtered = allUsersData.filter(u =>
+                (u.name && u.name.toLowerCase().includes(query)) ||
+                (u.email && u.email.toLowerCase().includes(query)) ||
+                (u.role && u.role.toLowerCase().includes(query)) ||
+                (u.phone && u.phone.includes(query))
+            );
+            renderUsersTable(filtered);
+        }
+
+        // Add Single User
+        async function handleCreateSingleUser(e) {
+            e.preventDefault();
+            const name = document.getElementById("addName").value.trim();
+            const email = document.getElementById("addEmail").value.trim();
+            const phone = document.getElementById("addPhone").value.trim();
+            const role = document.getElementById("addRole").value;
+            const password = document.getElementById("addPassword").value;
+
+            try {
+                const res = await fetch("/api/admin/create-user", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name, email, phone, role, password })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "User created successfully!");
+                    document.getElementById("addUserForm").reset();
+                    loadUsersList();
+                } else {
+                    showToast(data.error || "Failed to create user", true);
+                }
+            } catch (err) {
+                showToast("Server error creating user", true);
+            }
+        }
+
+        // Download CSV Template
+        function downloadCsvTemplate() {
+            const csvContent = "name,email,phone,role,password\n" +
+                "Rahul Sharma,rahul@example.com,9876543210,student,Pass@123\n" +
+                "Anita Desai,anita@example.com,9876543211,warden,Pass@123\n" +
+                "Vikram Singh,vikram@example.com,9876543212,staff,Pass@123\n";
+
+            const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "hostel_users_template.csv";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Handle File Selection for Batch Users Upload
+        function handleUsersFileSelect(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            document.getElementById("selectedFileName").style.display = "block";
+            document.getElementById("selectedFileName").textContent = `Selected: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+
+            const reader = new FileReader();
+            reader.onload = function (ev) {
+                const content = ev.target.result;
+                try {
+                    if (file.name.endsWith(".json")) {
+                        parsedBatchUsers = JSON.parse(content);
+                    } else {
+                        parsedBatchUsers = parseCsvUsers(content);
+                    }
+
+                    if (!Array.isArray(parsedBatchUsers) || parsedBatchUsers.length === 0) {
+                        showToast("No valid user records found in the file", true);
+                        return;
+                    }
+
+                    // Render Preview
+                    document.getElementById("usersPreviewWrap").style.display = "block";
+                    document.getElementById("previewCountText").textContent = `${parsedBatchUsers.length} User(s) Ready to Import`;
+                    const previewBody = document.getElementById("previewTableBody");
+                    previewBody.innerHTML = parsedBatchUsers.slice(0, 10).map(u => `
+                        <tr>
+                            <td><strong>${u.name || ''}</strong></td>
+                            <td>${u.email || ''}</td>
+                            <td><span class="role-badge" style="font-size: 0.72rem;">${u.role || 'student'}</span></td>
+                            <td>${u.phone || '—'}</td>
+                        </tr>
+                    `).join("");
+                    refreshIcons();
+                } catch (err) {
+                    showToast("Error parsing file: " + err.message, true);
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function parseCsvUsers(text) {
+            const lines = text.split(/\r?\n/).filter(l => l.trim().length > 0);
+            if (lines.length < 2) return [];
+
+            const header = lines[0].split(",").map(h => h.trim().toLowerCase());
+            const users = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const cols = lines[i].split(",").map(c => c.trim());
+                if (cols.length === 0 || !cols[0]) continue;
+
+                const user = {};
+                header.forEach((key, idx) => {
+                    user[key] = cols[idx] || "";
+                });
+
+                if (user.name && user.email) {
+                    users.push(user);
+                }
+            }
+            return users;
+        }
+
+        // Submit Batch Users Upload
+        async function submitBatchUsers() {
+            if (!parsedBatchUsers || parsedBatchUsers.length === 0) {
+                showToast("No users loaded for upload.", true);
+                return;
+            }
+
+            const btn = document.getElementById("btnConfirmBatchUpload");
+            btn.disabled = true;
+            btn.innerHTML = `<i data-lucide="loader" class="spinning" style="width: 15px; height: 15px;"></i> Uploading...`;
+            refreshIcons();
+
+            try {
+                const res = await fetch("/api/admin/upload-users", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ users: parsedBatchUsers })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Users imported successfully!");
+                    document.getElementById("usersPreviewWrap").style.display = "none";
+                    document.getElementById("selectedFileName").style.display = "none";
+                    document.getElementById("usersCsvInput").value = "";
+                    parsedBatchUsers = [];
+                    loadUsersList();
+                } else {
+                    showToast(data.error || "Failed to upload users", true);
+                }
+            } catch (err) {
+                showToast("Server error during batch upload", true);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = `<i data-lucide="user-check" style="width: 15px; height: 15px;"></i> Confirm & Import Users`;
+                refreshIcons();
+            }
+        }
+
+        // Initialize on load
+        loadProfile();
+        loadUsersList();
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>

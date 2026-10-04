@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Reviews & Feedback | Private Hostel & PG</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --accent-gold: #f59e0b;
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1080px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Hero */
+        .reviews-hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #4f46e5 100%);
+            color: white;
+            padding: 36px 32px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.2);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .reviews-hero h1 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+        }
+
+        .reviews-hero p {
+            margin: 0;
+            opacity: 0.92;
+            font-size: 15px;
+            max-width: 600px;
+            line-height: 1.5;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 4px 14px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Overall Rating Grid */
+        .rating-overview-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 18px;
+            padding: 24px 28px;
+            margin-bottom: 28px;
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            gap: 32px;
+            align-items: center;
+            box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+        }
+
+        @media (max-width: 768px) {
+            .rating-overview-card {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                text-align: center;
+            }
+        }
+
+        .rating-big-score {
+            text-align: center;
+            border-right: 1.5px solid var(--border-color);
+            padding-right: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .rating-big-score {
+                border-right: none;
+                border-bottom: 1.5px solid var(--border-color);
+                padding-right: 0;
+                padding-bottom: 20px;
+            }
+        }
+
+        .big-number {
+            font-size: 54px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1;
+            margin-bottom: 6px;
+        }
+
+        .stars-gold {
+            color: #f59e0b;
+            font-size: 22px;
+            letter-spacing: 2px;
+            margin-bottom: 4px;
+        }
+
+        .rating-bars {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .rating-bar-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 13px;
+            font-weight: 600;
+        }
+
+        .rating-bar-row span {
+            width: 55px;
+            color: var(--text-muted);
+        }
+
+        .bar-track {
+            flex: 1;
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 999px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%);
+            border-radius: 999px;
+            transition: width 0.5s ease;
+        }
+
+        /* Review Submission Form */
+        .submit-review-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 18px;
+            padding: 28px;
+            margin-bottom: 32px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .card-header-line {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card-header-line h2 {
+            margin: 0;
+            font-size: 20px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .star-picker {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .star-btn {
+            background: none;
+            border: none;
+            font-size: 32px;
+            color: #cbd5e1;
+            cursor: pointer;
+            transition: transform 0.15s, color 0.15s;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .star-btn.active, .star-btn.hovered {
+            color: #f59e0b;
+        }
+
+        .star-btn:hover {
+            transform: scale(1.15);
+        }
+
+        .star-hint-text {
+            font-size: 14px;
+            font-weight: 700;
+            color: #d97706;
+            margin-left: 10px;
+        }
+
+        /* Category Chips */
+        .category-chips-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .cat-chip {
+            padding: 8px 16px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+            background: #f8fafc;
+            color: #475569;
+            border: 1.5px solid #cbd5e1;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .cat-chip:hover {
+            border-color: #2563eb;
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .cat-chip.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+        }
+
+        .form-input, .form-textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s;
+            margin-bottom: 16px;
+        }
+
+        .form-input:focus, .form-textarea:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-submit-review {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14.5px;
+            font-weight: 800;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+            transition: all 0.2s;
+        }
+
+        .btn-submit-review:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Tabs */
+        .tabs-nav {
+            display: flex;
+            gap: 8px;
+            border-bottom: 2px solid #e2e8f0;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 18px;
+            font-size: 14px;
+            font-weight: 800;
+            color: #64748b;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+            transition: all 0.2s;
+        }
+
+        .tab-btn:hover {
+            color: #2563eb;
+        }
+
+        .tab-btn.active {
+            color: #2563eb;
+            border-bottom-color: #2563eb;
+        }
+
+        /* Review Cards */
+        .reviews-list {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .review-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 22px 24px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .review-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+        }
+
+        .review-top-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .resident-author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .author-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 16px;
+        }
+
+        .author-name {
+            font-weight: 800;
+            font-size: 15px;
+            color: #0f172a;
+        }
+
+        .author-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #059669;
+            background: #ecfdf5;
+            padding: 2px 8px;
+            border-radius: 6px;
+            border: 1px solid #a7f3d0;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .review-category-badge {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #334155;
+            display: inline-block;
+        }
+
+        .review-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+        }
+
+        .review-comment {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #334155;
+            margin: 0 0 14px 0;
+        }
+
+        /* Admin Reply Box */
+        .admin-reply-box {
+            background: #f8fafc;
+            border-left: 3.5px solid #2563eb;
+            border-radius: 10px;
+            padding: 14px 16px;
+            margin-top: 14px;
+        }
+
+        .admin-reply-header {
+            font-size: 12px;
+            font-weight: 800;
+            color: #1e40af;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .admin-reply-text {
+            font-size: 13.5px;
+            color: #1e293b;
+            line-height: 1.5;
+            margin: 0;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private Hostel & PG</h2>
+                <span>Resident Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/student-dashboard">Dashboard</a>
+            <a href="/student-food-menu">Food Menu</a>
+            <a href="/student-room">My Room</a>
+            <a href="/student-profile">Profile</a>
+            <a href="/student-fees">Rent & Fees</a>
+            <a href="/student-complaints">Complaints</a>
+            <a href="/student-reviews" class="active">Reviews & Feedback</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="container">
+
+        <!-- Hero -->
+        <section class="reviews-hero">
+            <div>
+                <span class="hero-badge">Hostel Experience & Community</span>
+                <h1>Resident Reviews & Ratings</h1>
+                <p>Share your honest experience about your stay, food quality, Wi-Fi, and housekeeping. All reviews are transparently visible to management to help improve your hostel experience.</p>
+            </div>
+            <div style="font-size: 52px; opacity: 0.9;">⭐</div>
+        </section>
+
+        <!-- Rating Overview Card -->
+        <div class="rating-overview-card">
+            <div class="rating-big-score">
+                <div class="big-number" id="dispAvgRating">5.0</div>
+                <div class="stars-gold" id="dispAvgStars">★★★★★</div>
+                <div style="font-size: 13px; color: #64748b; font-weight: 700;" id="dispTotalReviewsText">Based on 0 resident reviews</div>
+            </div>
+
+            <div class="rating-bars">
+                <div class="rating-bar-row">
+                    <span>5 Stars</span>
+                    <div class="bar-track"><div class="bar-fill" id="bar5" style="width: 0%;"></div></div>
+                    <span id="cnt5" style="text-align: right; width: 30px;">0</span>
+                </div>
+                <div class="rating-bar-row">
+                    <span>4 Stars</span>
+                    <div class="bar-track"><div class="bar-fill" id="bar4" style="width: 0%;"></div></div>
+                    <span id="cnt4" style="text-align: right; width: 30px;">0</span>
+                </div>
+                <div class="rating-bar-row">
+                    <span>3 Stars</span>
+                    <div class="bar-track"><div class="bar-fill" id="bar3" style="width: 0%;"></div></div>
+                    <span id="cnt3" style="text-align: right; width: 30px;">0</span>
+                </div>
+                <div class="rating-bar-row">
+                    <span>2 Stars</span>
+                    <div class="bar-track"><div class="bar-fill" id="bar2" style="width: 0%;"></div></div>
+                    <span id="cnt2" style="text-align: right; width: 30px;">0</span>
+                </div>
+                <div class="rating-bar-row">
+                    <span>1 Star</span>
+                    <div class="bar-track"><div class="bar-fill" id="bar1" style="width: 0%;"></div></div>
+                    <span id="cnt1" style="text-align: right; width: 30px;">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Submit Review Card -->
+        <div class="submit-review-card">
+            <div class="card-header-line">
+                <h2>✍️ Write a Review / Feedback</h2>
+                <span style="font-size: 13px; font-weight: 700; color: #64748b;">Help us serve you better</span>
+            </div>
+
+            <!-- Star Picker -->
+            <div class="star-picker">
+                <button type="button" class="star-btn" data-star="1" onclick="setRating(1)">★</button>
+                <button type="button" class="star-btn" data-star="2" onclick="setRating(2)">★</button>
+                <button type="button" class="star-btn" data-star="3" onclick="setRating(3)">★</button>
+                <button type="button" class="star-btn" data-star="4" onclick="setRating(4)">★</button>
+                <button type="button" class="star-btn active" data-star="5" onclick="setRating(5)">★</button>
+                <span class="star-hint-text" id="starHintText">5 Stars - Outstanding! Highly Recommended</span>
+            </div>
+
+            <!-- Category Picker -->
+            <label style="display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px;">Category / Aspect</label>
+            <div class="category-chips-group">
+                <button type="button" class="cat-chip active" data-cat="Overall Stay" onclick="selectCategory(this)">🏨 Overall Stay</button>
+                <button type="button" class="cat-chip" data-cat="Food & Mess" onclick="selectCategory(this)">🍲 Food & Mess Quality</button>
+                <button type="button" class="cat-chip" data-cat="Cleanliness & Hygiene" onclick="selectCategory(this)">🧹 Room Cleanliness & Hygiene</button>
+                <button type="button" class="cat-chip" data-cat="Wi-Fi & Amenities" onclick="selectCategory(this)">📶 High-Speed Wi-Fi & Power</button>
+                <button type="button" class="cat-chip" data-cat="Staff & Management" onclick="selectCategory(this)">🛡️ Warden & Staff Support</button>
+            </div>
+
+            <!-- Title & Comment -->
+            <input type="text" id="reviewTitle" class="form-input" placeholder="Give your review a short title (e.g. Great homely food & peaceful environment)">
+            <textarea id="reviewComment" class="form-textarea" rows="4" placeholder="Share your experience in detail. What did you like best? Any suggestions for management?" required></textarea>
+
+            <button type="button" class="btn-submit-review" id="btnSubmitReview" onclick="submitReview()">
+                <span>⭐ Submit My Review</span>
+            </button>
+        </div>
+
+        <!-- Reviews Tabs -->
+        <div class="tabs-nav">
+            <button type="button" class="tab-btn active" id="tabCommunity" onclick="switchTab('community')">
+                👥 Community Reviews (<span id="communityCount">0</span>)
+            </button>
+            <button type="button" class="tab-btn" id="tabMyReviews" onclick="switchTab('my')">
+                📝 My Submitted Reviews (<span id="myReviewsCount">0</span>)
+            </button>
+        </div>
+
+        <!-- Reviews List -->
+        <div class="reviews-list" id="reviewsContainer">
+            <div style="text-align: center; padding: 32px; color: #64748b;">Loading reviews...</div>
+        </div>
+
+    </main>
+
+    <script>
+        let currentRating = 5;
+        let currentCategory = "Overall Stay";
+        let activeTab = "community";
+
+        const ratingLabels = {
+            1: "1 Star - Needs Urgent Improvement",
+            2: "2 Stars - Below Average Experience",
+            3: "3 Stars - Average / Decent Stay",
+            4: "4 Stars - Very Good & Comfortable",
+            5: "5 Stars - Outstanding! Highly Recommended"
+        };
+
+        function setRating(val) {
+            currentRating = val;
+            document.querySelectorAll(".star-btn").forEach(btn => {
+                const s = Number(btn.getAttribute("data-star"));
+                if (s <= val) {
+                    btn.classList.add("active");
+                } else {
+                    btn.classList.remove("active");
+                }
+            });
+            document.getElementById("starHintText").textContent = ratingLabels[val] || `${val} Stars`;
+        }
+
+        function selectCategory(el) {
+            document.querySelectorAll(".cat-chip").forEach(c => c.classList.remove("active"));
+            el.classList.add("active");
+            currentCategory = el.getAttribute("data-cat");
+        }
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById("tabCommunity").classList.toggle("active", tab === "community");
+            document.getElementById("tabMyReviews").classList.toggle("active", tab === "my");
+            renderReviews();
+        }
+
+        let allCommunityReviews = [];
+        let myReviews = [];
+
+        async function loadAllReviews() {
+            try {
+                const res = await fetch("/api/reviews");
+                const data = await res.json();
+                if (data.success) {
+                    allCommunityReviews = data.reviews || [];
+                    document.getElementById("communityCount").textContent = allCommunityReviews.length;
+
+                    // Update stats
+                    const stats = data.stats || {};
+                    document.getElementById("dispAvgRating").textContent = (stats.average_rating || 5.0).toFixed(1);
+                    document.getElementById("dispTotalReviewsText").textContent = `Based on ${stats.total_reviews || 0} resident review${stats.total_reviews === 1 ? '' : 's'}`;
+
+                    // Stars text
+                    const roundedStars = Math.round(stats.average_rating || 5);
+                    document.getElementById("dispAvgStars").textContent = "★".repeat(roundedStars) + "☆".repeat(5 - roundedStars);
+
+                    // Bars
+                    const dist = stats.distribution || {};
+                    const total = stats.total_reviews || 1;
+                    for (let s = 1; s <= 5; s++) {
+                        const cnt = dist[s] || 0;
+                        document.getElementById(`cnt${s}`).textContent = cnt;
+                        const pct = Math.round((cnt / (stats.total_reviews || 1)) * 100);
+                        document.getElementById(`bar${s}`).style.width = `${pct}%`;
+                    }
+                }
+            } catch (err) {
+                console.error("Error loading community reviews:", err);
+            }
+        }
+
+        async function loadMyReviews() {
+            try {
+                const res = await fetch("/api/student-reviews/my");
+                const data = await res.json();
+                if (data.success) {
+                    myReviews = data.reviews || [];
+                    document.getElementById("myReviewsCount").textContent = myReviews.length;
+                }
+            } catch (err) {
+                console.error("Error loading my reviews:", err);
+            }
+        }
+
+        function renderReviews() {
+            const container = document.getElementById("reviewsContainer");
+            const list = (activeTab === "community") ? allCommunityReviews : myReviews;
+
+            if (!list || list.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 48px; background: white; border-radius: 16px; border: 1.5px solid #e2e8f0;">
+                        <div style="font-size: 40px; margin-bottom: 8px;">🌟</div>
+                        <h3 style="margin: 0 0 6px 0; color: #0f172a;">${activeTab === 'community' ? 'No community reviews yet' : 'You have not submitted a review yet'}</h3>
+                        <p style="margin: 0; color: #64748b; font-size: 14px;">${activeTab === 'community' ? 'Be the first resident to share your experience above!' : 'Submit your feedback using the form above to help us serve you better.'}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = list.map(r => {
+                const starsHtml = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+                const initial = (r.student_name || 'R').charAt(0).toUpperCase();
+
+                const adminReplyHtml = r.admin_reply ? `
+                    <div class="admin-reply-box">
+                        <div class="admin-reply-header">
+                            <span>🛡️ Official Management Response</span>
+                            <span style="font-size: 11px; opacity: 0.8; font-weight: normal;">• ${r.admin_replied_at || 'Recently'}</span>
+                        </div>
+                        <p class="admin-reply-text">${escapeHtml(r.admin_reply)}</p>
+                    </div>
+                ` : '';
+
+                return `
+                    <div class="review-card">
+                        <div class="review-top-meta">
+                            <div class="resident-author">
+                                <div class="author-avatar">${initial}</div>
+                                <div>
+                                    <div class="author-name">${escapeHtml(r.student_name || 'Resident')}</div>
+                                    <span class="author-badge">✓ Verified ${escapeHtml(r.resident_type || 'Resident')} ${r.room_no ? '• Room ' + r.room_no : ''}</span>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="stars-gold" style="font-size: 18px; margin: 0;">${starsHtml}</div>
+                                <span class="review-category-badge" style="margin-top: 4px;">${escapeHtml(r.category || 'Overall Stay')}</span>
+                                <div style="font-size: 11.5px; color: #94a3b8; margin-top: 3px;">${r.review_date || 'Recently'}</div>
+                            </div>
+                        </div>
+
+                        ${r.title ? `<h3 class="review-title">${escapeHtml(r.title)}</h3>` : ''}
+                        <p class="review-comment">${escapeHtml(r.comment)}</p>
+
+                        ${adminReplyHtml}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function submitReview() {
+            const title = document.getElementById("reviewTitle").value.trim();
+            const comment = document.getElementById("reviewComment").value.trim();
+
+            if (!comment) {
+                alert("Please write a few words about your experience in the review feedback box.");
+                return;
+            }
+
+            const btn = document.getElementById("btnSubmitReview");
+            btn.disabled = true;
+            btn.textContent = "Publishing Review...";
+
+            try {
+                const res = await fetch("/api/reviews", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        rating: currentRating,
+                        category: currentCategory,
+                        title: title,
+                        comment: comment
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert("🎉 " + data.message);
+                    document.getElementById("reviewTitle").value = "";
+                    document.getElementById("reviewComment").value = "";
+                    setRating(5);
+                    await loadAllReviews();
+                    await loadMyReviews();
+                    renderReviews();
+                } else {
+                    alert("Error: " + (data.error || "Failed to submit review."));
+                }
+            } catch (err) {
+                alert("Failed to submit review: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "⭐ Submit My Review";
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Init
+        (async function init() {
+            await loadAllReviews();
+            await loadMyReviews();
+            renderReviews();
+        })();
+    </script>
+</body>
+</html>

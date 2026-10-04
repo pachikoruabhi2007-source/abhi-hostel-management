@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Management | Hostel Admin Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4F46E5', // Indigo 600
+                        secondary: '#10B981', // Emerald 500
+                        dark: '#1F2937', // Gray 800
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Custom scrollbar for a clean, modern aesthetic */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+        .nav-active { background-color: #374151; border-left: 4px solid #4F46E5; }
+        .modal-enter { animation: fadeIn 0.2s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans h-screen flex overflow-hidden">
+
+    <!-- Sidebar -->
+    <aside class="w-64 bg-dark text-white flex flex-col hidden md:flex transition-all duration-300 z-20 absolute md:relative h-full" id="sidebar">
+        <div class="h-16 flex items-center px-6 border-b border-gray-700 justify-between">
+            <div class="flex items-center">
+                <i class="fa-solid fa-building-user text-2xl text-primary mr-3"></i>
+                <span class="text-xl font-bold tracking-wider">HostelHub</span>
+            </div>
+            <span class="text-xs font-semibold px-2 py-0.5 rounded bg-primary/20 text-indigo-400 border border-primary/30">Admin</span>
+        </div>
+        
+        <div class="flex-1 overflow-y-auto py-4">
+            <nav class="space-y-1">
+                <a href="/dashboard" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-chart-pie w-6"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="/rooms" class="nav-item nav-active flex items-center px-6 py-3 text-white transition-colors">
+                    <i class="fa-solid fa-bed w-6 text-primary"></i>
+                    <span class="font-semibold">Rooms</span>
+                </a>
+                <a href="/food-menu" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-utensils w-6"></i>
+                    <span>Food Menu</span>
+                </a>
+                <a href="/students" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-users w-6"></i>
+                    <span>Residents & Tenants</span>
+                </a>
+                <a href="/vacating-notices" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-door-open w-6"></i>
+                    <span>Vacating Notices</span>
+                </a>
+                <a href="/fees" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-file-invoice-dollar w-6"></i>
+                    <span>Fees & Dues</span>
+                </a>
+                <a href="/complaints" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-triangle-exclamation w-6"></i>
+                    <span>Complaints</span>
+                </a>
+                <a href="/reports" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-chart-line w-6"></i>
+                    <span>Reports</span>
+                </a>
+                <a href="/admin-reviews" class="nav-item flex items-center px-6 py-3 text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                    <i class="fa-solid fa-star w-6"></i>
+                    <span>Reviews</span>
+                </a>
+            </nav>
+        </div>
+        
+        <div class="p-4 border-t border-gray-700">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center">
+                    <div class="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-sm font-bold shadow">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </div>
+                    <div class="ml-3">
+                        <p class="text-sm font-medium text-white">Administrator</p>
+                        <a href="/profile" class="text-xs text-gray-400 hover:text-white transition-colors">My Profile</a>
+                    </div>
+                </div>
+                <a href="/logout" title="Logout" class="text-gray-400 hover:text-red-400 transition-colors p-2">
+                    <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                </a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content Container -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative">
+        
+        <!-- Top Navigation Header -->
+        <header class="h-16 bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 z-10 border-b border-gray-200">
+            <div class="flex items-center">
+                <button onclick="toggleSidebar()" class="md:hidden text-gray-500 hover:text-gray-700 focus:outline-none p-2 mr-2">
+                    <i class="fa-solid fa-bars text-xl"></i>
+                </button>
+                <div>
+                    <h1 id="page-title" class="text-xl font-bold text-gray-800">Rooms Management</h1>
+                    <p class="text-xs text-gray-500 hidden sm:block">Track room allocation, bed capacity, pricing, and live resident occupancy</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-3">
+                <button onclick="loadRooms()" title="Refresh Data" class="p-2 text-gray-500 hover:text-primary hover:bg-gray-100 rounded-lg transition-colors">
+                    <i class="fa-solid fa-rotate text-sm"></i>
+                </button>
+                <button onclick="openModal('roomModal')" class="bg-primary hover:bg-indigo-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-all shadow-sm flex items-center">
+                    <i class="fa-solid fa-plus mr-2"></i> Add New Room
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Content Area -->
+        <main class="flex-1 overflow-y-auto p-4 sm:p-6 bg-gray-50" id="main-content">
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                <!-- Stat Card 1 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200 flex items-center hover:shadow-md transition-shadow">
+                    <div class="p-3.5 rounded-xl bg-blue-50 text-blue-600 mr-4 border border-blue-100">
+                        <i class="fa-solid fa-door-open text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Total Rooms</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-total-rooms">0</p>
+                    </div>
+                </div>
+
+                <!-- Stat Card 2 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200 flex items-center hover:shadow-md transition-shadow">
+                    <div class="p-3.5 rounded-xl bg-green-50 text-green-600 mr-4 border border-green-100">
+                        <i class="fa-solid fa-bed text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Available Beds</p>
+                        <p class="text-2xl font-bold text-emerald-600" id="stat-avail-beds">0</p>
+                    </div>
+                </div>
+
+                <!-- Stat Card 3 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200 flex items-center hover:shadow-md transition-shadow">
+                    <div class="p-3.5 rounded-xl bg-purple-50 text-purple-600 mr-4 border border-purple-100">
+                        <i class="fa-solid fa-user-group text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Occupied Beds</p>
+                        <p class="text-2xl font-bold text-purple-700" id="stat-occupied-beds">0</p>
+                    </div>
+                </div>
+
+                <!-- Stat Card 4 -->
+                <div class="bg-white rounded-xl shadow-sm p-5 border border-gray-200 flex items-center hover:shadow-md transition-shadow">
+                    <div class="p-3.5 rounded-xl bg-amber-50 text-amber-600 mr-4 border border-amber-100">
+                        <i class="fa-solid fa-chart-pie text-xl"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-500 font-semibold uppercase tracking-wider">Occupancy Rate</p>
+                        <p class="text-2xl font-bold text-gray-900" id="stat-occupancy-rate">0%</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Room Occupancy Overview Progress Bar Card -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 mb-6">
+                <div class="flex items-center justify-between mb-2">
+                    <span class="text-sm font-semibold text-gray-700">Overall Bed Occupancy Progress</span>
+                    <span class="text-sm font-bold text-primary" id="occupancy-percentage-text">0%</span>
+                </div>
+                <div class="w-full bg-gray-100 rounded-full h-2.5 mb-4 overflow-hidden border border-gray-200">
+                    <div class="bg-primary h-2.5 rounded-full transition-all duration-500" id="occupancy-progress-bar" style="width: 0%"></div>
+                </div>
+                
+                <div class="grid grid-cols-3 gap-3 text-center">
+                    <div class="p-2.5 bg-green-50 rounded-lg border border-green-200">
+                        <div class="text-green-700 font-bold text-lg" id="dash-avail-rooms">0</div>
+                        <div class="text-xs text-green-800 font-medium">Available Rooms</div>
+                    </div>
+                    <div class="p-2.5 bg-red-50 rounded-lg border border-red-200">
+                        <div class="text-red-700 font-bold text-lg" id="dash-full-rooms">0</div>
+                        <div class="text-xs text-red-800 font-medium">Full Rooms</div>
+                    </div>
+                    <div class="p-2.5 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <div class="text-yellow-700 font-bold text-lg" id="dash-maint-rooms">0</div>
+                        <div class="text-xs text-yellow-800 font-medium">Maintenance / Empty</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Bar & Search -->
+            <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center mb-6 gap-4">
+                <div class="flex items-center bg-white border border-gray-200 rounded-lg p-1 shadow-sm">
+                    <button onclick="setFilter('all')" id="filter-all" class="filter-btn px-4 py-1.5 text-sm rounded-md font-semibold bg-gray-100 text-gray-900 transition-colors">
+                        All (<span id="count-all">0</span>)
+                    </button>
+                    <button onclick="setFilter('Available')" id="filter-available" class="filter-btn px-4 py-1.5 text-sm rounded-md font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        Available (<span id="count-available">0</span>)
+                    </button>
+                    <button onclick="setFilter('Full')" id="filter-full" class="filter-btn px-4 py-1.5 text-sm rounded-md font-medium text-gray-600 hover:bg-gray-50 transition-colors">
+                        Full (<span id="count-full">0</span>)
+                    </button>
+                </div>
+
+                <div class="relative flex-1 sm:max-w-xs">
+                    <input 
+                        type="text" 
+                        id="search-input" 
+                        placeholder="Search by room no or type..." 
+                        oninput="onSearchChange()"
+                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm bg-white shadow-sm"
+                    >
+                    <i class="fa-solid fa-search absolute left-3 top-2.5 text-gray-400 text-sm"></i>
+                </div>
+            </div>
+            
+            <!-- Rooms Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5" id="rooms-grid">
+                <!-- Dynamically populated from MySQL API -->
+                <div class="col-span-full text-center py-12 text-gray-400">
+                    <i class="fa-solid fa-circle-notch fa-spin text-3xl mb-3 text-primary"></i>
+                    <p>Loading hostel rooms from database...</p>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-gray-900 bg-opacity-50 z-10 hidden md:hidden"></div>
+
+    <!-- ==================== ADD ROOM MODAL ==================== -->
+    <div id="roomModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden modal-enter border border-gray-100">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-indigo-100 text-primary flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-door-open"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Add New Room</h3>
+                </div>
+                <button type="button" onclick="closeModal('roomModal')" class="text-gray-400 hover:text-gray-600 text-lg">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <form id="addRoomForm" onsubmit="handleAddRoom(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Room Number *</label>
+                    <input 
+                        type="text" 
+                        id="r_number" 
+                        placeholder="e.g. 101, 204, A-12" 
+                        required 
+                        class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent text-sm font-semibold"
+                    >
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Bed Capacity *</label>
+                        <select id="r_capacity" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-semibold bg-white" onchange="autoFillType()">
+                            <option value="1">1 Person (Single)</option>
+                            <option value="2" selected>2 Persons (Double)</option>
+                            <option value="3">3 Persons (Triple)</option>
+                            <option value="4">4 Persons (Four)</option>
+                            <option value="6">6 Persons (Dorm)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">AC Type</label>
+                        <select id="r_ac" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-semibold bg-white">
+                            <option value="Non-AC" selected>Non-AC</option>
+                            <option value="AC">AC</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Room Description / Type</label>
+                    <input 
+                        type="text" 
+                        id="r_type" 
+                        placeholder="e.g. 2 Sharing Non-AC, Deluxe Single" 
+                        class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                    >
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Monthly Rent per Bed (₹) *</label>
+                    <div class="relative">
+                        <span class="absolute left-3.5 top-2.5 font-bold text-gray-400">₹</span>
+                        <input 
+                            type="number" 
+                            id="r_rent" 
+                            value="6500" 
+                            min="500" 
+                            required 
+                            class="w-full pl-8 pr-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-bold"
+                        >
+                    </div>
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-100">
+                    <button type="button" onclick="closeModal('roomModal')" class="px-4 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" id="btnSaveRoom" class="px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-indigo-700 transition-colors flex items-center shadow-md">
+                        <i class="fa-solid fa-check mr-2"></i> Save Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ==================== EDIT ROOM MODAL ==================== -->
+    <div id="editRoomModal" class="fixed inset-0 bg-gray-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden modal-enter border border-gray-100">
+            <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 text-amber-600 flex items-center justify-center font-bold">
+                        <i class="fa-solid fa-pen-to-square"></i>
+                    </div>
+                    <h3 class="text-lg font-bold text-gray-800">Edit Room Details</h3>
+                </div>
+                <button type="button" onclick="closeModal('editRoomModal')" class="text-gray-400 hover:text-gray-600 text-lg">
+                    <i class="fa-solid fa-times"></i>
+                </button>
+            </div>
+
+            <form id="editRoomForm" onsubmit="handleEditRoom(event)" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Room Number</label>
+                    <input 
+                        type="text" 
+                        id="edit_r_number" 
+                        readonly 
+                        class="w-full px-3.5 py-2.5 border border-gray-200 rounded-lg bg-gray-100 text-gray-500 font-bold text-sm cursor-not-allowed"
+                    >
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Total Beds *</label>
+                        <input 
+                            type="number" 
+                            id="edit_r_capacity" 
+                            min="1" 
+                            required 
+                            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-semibold"
+                        >
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Occupied Beds *</label>
+                        <input 
+                            type="number" 
+                            id="edit_r_occupied" 
+                            min="0" 
+                            required 
+                            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-semibold"
+                        >
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">AC Specification</label>
+                        <select id="edit_r_ac" class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-semibold bg-white">
+                            <option value="Non-AC">Non-AC</option>
+                            <option value="AC">AC</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Rent / Bed (₹)</label>
+                        <input 
+                            type="number" 
+                            id="edit_r_rent" 
+                            required 
+                            class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm font-bold"
+                        >
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-gray-600 mb-1">Room Type</label>
+                    <input 
+                        type="text" 
+                        id="edit_r_type" 
+                        required 
+                        class="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary text-sm"
+                    >
+                </div>
+
+                <div class="pt-4 flex justify-end space-x-3 border-t border-gray-100">
+                    <button type="button" onclick="closeModal('editRoomModal')" class="px-4 py-2.5 text-sm font-semibold text-gray-600 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors">
+                        Cancel
+                    </button>
+                    <button type="submit" id="btnUpdateRoom" class="px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-lg hover:bg-indigo-700 transition-colors flex items-center shadow-md">
+                        <i class="fa-solid fa-save mr-2"></i> Update Room
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 bg-gray-900 text-white px-5 py-3.5 rounded-xl shadow-2xl transform translate-y-24 opacity-0 transition-all duration-300 z-50 flex items-center border border-gray-700">
+        <i class="fa-solid fa-circle-check text-emerald-400 mr-3 text-lg" id="toast-icon"></i>
+        <span id="toast-msg" class="text-sm font-medium">Action completed successfully.</span>
+    </div>
+
+    <!-- ==================== SCRIPT LOGIC ==================== -->
+    <script>
+        let allRooms = [];
+        let activeFilter = 'all';
+
+        // Toggle Sidebar on Mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('hidden');
+            overlay.classList.toggle('hidden');
+        }
+
+        // Show Toast Notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-msg');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = message;
+            if (isError) {
+                toastIcon.className = 'fa-solid fa-circle-xmark text-red-400 mr-3 text-lg';
+            } else {
+                toastIcon.className = 'fa-solid fa-circle-check text-emerald-400 mr-3 text-lg';
+            }
+
+            toast.classList.remove('translate-y-24', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-24', 'opacity-0');
+            }, 3200);
+        }
+
+        // Modal Controls
+        function openModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function autoFillType() {
+            const cap = document.getElementById('r_capacity').value;
+            const ac = document.getElementById('r_ac').value;
+            const typeInput = document.getElementById('r_type');
+            typeInput.value = `${cap} Sharing ${ac}`;
+        }
+
+        // Load Rooms from Live MySQL API
+        async function loadRooms() {
+            const grid = document.getElementById('rooms-grid');
+            try {
+                const response = await fetch('/api/rooms');
+                const rooms = await response.json();
+
+                if (!Array.isArray(rooms)) {
+                    grid.innerHTML = `<div class="col-span-full text-center py-8 text-red-500">Failed to load room data.</div>`;
+                    return;
+                }
+
+                allRooms = rooms;
+                updateStats(rooms);
+                renderRooms();
+            } catch (err) {
+                console.error("Error loading rooms:", err);
+                grid.innerHTML = `<div class="col-span-full text-center py-8 text-red-500">Network error fetching rooms from server.</div>`;
+            }
+        }
+
+        // Calculate and Render Overview Statistics
+        function updateStats(rooms) {
+            const totalRooms = rooms.length;
+            let totalBeds = 0;
+            let occupiedBeds = 0;
+            let availRooms = 0;
+            let fullRooms = 0;
+            let maintRooms = 0;
+
+            rooms.forEach(r => {
+                const cap = Number(r.total_beds) || 0;
+                const occ = Number(r.occupied_beds) || 0;
+                totalBeds += cap;
+                occupiedBeds += occ;
+
+                const availableBeds = cap - occ;
+                if (availableBeds > 0) {
+                    availRooms++;
+                } else if (cap > 0 && availableBeds <= 0) {
+                    fullRooms++;
+                } else {
+                    maintRooms++;
+                }
+            });
+
+            const availBeds = Math.max(0, totalBeds - occupiedBeds);
+            const occupancyRate = totalBeds > 0 ? Math.round((occupiedBeds / totalBeds) * 100) : 0;
+
+            document.getElementById('stat-total-rooms').innerText = totalRooms;
+            document.getElementById('stat-avail-beds').innerText = availBeds;
+            document.getElementById('stat-occupied-beds').innerText = occupiedBeds;
+            document.getElementById('stat-occupancy-rate').innerText = `${occupancyRate}%`;
+
+            document.getElementById('occupancy-percentage-text').innerText = `${occupancyRate}% (${occupiedBeds}/${totalBeds} Beds Occupied)`;
+            document.getElementById('occupancy-progress-bar').style.width = `${occupancyRate}%`;
+
+            document.getElementById('dash-avail-rooms').innerText = availRooms;
+            document.getElementById('dash-full-rooms').innerText = fullRooms;
+            document.getElementById('dash-maint-rooms').innerText = maintRooms;
+
+            // Update Counts in filter pills
+            document.getElementById('count-all').innerText = totalRooms;
+            document.getElementById('count-available').innerText = availRooms;
+            document.getElementById('count-full').innerText = fullRooms;
+        }
+
+        // Set Active Filter
+        function setFilter(filterType) {
+            activeFilter = filterType;
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('bg-gray-100', 'text-gray-900', 'font-semibold');
+                btn.classList.add('text-gray-600', 'font-medium');
+            });
+
+            if (filterType === 'all') {
+                const el = document.getElementById('filter-all');
+                el.classList.add('bg-gray-100', 'text-gray-900', 'font-semibold');
+            } else if (filterType === 'Available') {
+                const el = document.getElementById('filter-available');
+                el.classList.add('bg-gray-100', 'text-gray-900', 'font-semibold');
+            } else if (filterType === 'Full') {
+                const el = document.getElementById('filter-full');
+                el.classList.add('bg-gray-100', 'text-gray-900', 'font-semibold');
+            }
+
+            renderRooms();
+        }
+
+        function onSearchChange() {
+            renderRooms();
+        }
+
+        // Render Rooms in Tailwind Format
+        function renderRooms() {
+            const grid = document.getElementById('rooms-grid');
+            const searchVal = document.getElementById('search-input').value.toLowerCase().trim();
+
+            let filtered = allRooms.filter(r => {
+                const total = Number(r.total_beds) || 0;
+                const occ = Number(r.occupied_beds) || 0;
+                const status = (total - occ > 0) ? 'Available' : 'Full';
+
+                if (activeFilter !== 'all' && status !== activeFilter) {
+                    return false;
+                }
+
+                if (searchVal) {
+                    const matchNo = String(r.room_no).toLowerCase().includes(searchVal);
+                    const matchType = String(r.room_type || '').toLowerCase().includes(searchVal);
+                    return matchNo || matchType;
+                }
+
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-xl border border-gray-200">
+                        <i class="fa-solid fa-bed text-4xl text-gray-300 mb-3"></i>
+                        <h4 class="text-base font-bold text-gray-700">No rooms found</h4>
+                        <p class="text-sm text-gray-500 mt-1">Try adjusting your filters or click "+ Add New Room" above.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = '';
+            filtered.forEach(r => {
+                const total = Number(r.total_beds) || 1;
+                const occ = Number(r.occupied_beds) || 0;
+                const avail = total - occ;
+                const rent = Number(r.monthly_rent || 6500).toLocaleString('en-IN');
+                const isAvailable = avail > 0;
+                const status = isAvailable ? 'Available' : 'Full';
+                
+                const statusColor = isAvailable 
+                    ? 'text-emerald-700 bg-emerald-50 ring-emerald-600/20' 
+                    : 'text-rose-700 bg-rose-50 ring-rose-600/20';
+
+                const fillPct = Math.min(100, Math.round((occ / total) * 100));
+                const barColor = isAvailable ? 'bg-primary' : 'bg-rose-500';
+
+                const acBadge = (r.ac_type && r.ac_type.toLowerCase().includes('ac') && !r.ac_type.toLowerCase().includes('non'))
+                    ? `<span class="bg-blue-50 text-blue-700 text-xs px-2 py-0.5 rounded font-semibold border border-blue-200">❄️ AC</span>`
+                    : `<span class="bg-gray-100 text-gray-600 text-xs px-2 py-0.5 rounded font-semibold border border-gray-200">Non-AC</span>`;
+
+                const cardHtml = `
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-all duration-200 flex flex-col justify-between">
+                        <!-- Top Header -->
+                        <div class="p-5 border-b border-gray-100">
+                            <div class="flex justify-between items-start mb-2">
+                                <div>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="text-xl font-bold text-gray-800">Room ${r.room_no}</h3>
+                                        ${acBadge}
+                                    </div>
+                                    <p class="text-xs text-gray-500 mt-1">${r.room_type || 'Standard Room'}</p>
+                                </div>
+                                <span class="inline-flex items-center rounded-md px-2.5 py-1 text-xs font-bold ring-1 ring-inset ${statusColor}">
+                                    ${status}
+                                </span>
+                            </div>
+
+                            <div class="mt-3 flex items-baseline">
+                                <span class="text-lg font-extrabold text-gray-900">₹${rent}</span>
+                                <span class="text-xs font-semibold text-gray-400 ml-1">/ bed / month</span>
+                            </div>
+                        </div>
+
+                        <!-- Bottom Occupancy Progress -->
+                        <div class="p-5 bg-gray-50/70">
+                            <div class="flex justify-between items-center mb-1.5">
+                                <span class="text-xs font-semibold text-gray-600 flex items-center">
+                                    <i class="fa-solid fa-users mr-1.5 text-primary text-xs"></i> Occupancy
+                                </span>
+                                <span class="text-xs font-bold text-gray-800">${occ} / ${total} Beds (${avail} Free)</span>
+                            </div>
+                            <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden mb-4">
+                                <div class="${barColor} h-2 rounded-full transition-all duration-500" style="width: ${fillPct}%"></div>
+                            </div>
+
+                            <!-- Actions -->
+                            <div class="flex items-center justify-end gap-2 pt-2 border-t border-gray-200/60">
+                                <button 
+                                    type="button" 
+                                    onclick='openEditModal(${JSON.stringify(r)})' 
+                                    class="text-xs font-semibold px-3 py-1.5 bg-indigo-50 hover:bg-indigo-100 text-primary rounded-lg transition-colors flex items-center"
+                                >
+                                    <i class="fa-solid fa-pen mr-1.5"></i> Edit
+                                </button>
+                                <button 
+                                    type="button" 
+                                    onclick="deleteRoom(${r.room_no})" 
+                                    class="text-xs font-semibold px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 rounded-lg transition-colors flex items-center"
+                                >
+                                    <i class="fa-solid fa-trash mr-1.5"></i> Delete
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                grid.innerHTML += cardHtml;
+            });
+        }
+
+        // Handle Add Room Submission
+        async function handleAddRoom(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnSaveRoom');
+            const roomNo = document.getElementById('r_number').value.trim();
+            const cap = parseInt(document.getElementById('r_capacity').value);
+            const ac = document.getElementById('r_ac').value;
+            const rent = parseInt(document.getElementById('r_rent').value);
+            const desc = document.getElementById('r_type').value.trim() || `${cap} Sharing ${ac}`;
+
+            if (!roomNo) {
+                showToast("Please enter a room number", true);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Saving...`;
+
+            try {
+                const response = await fetch('/api/rooms', {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        room_no: roomNo,
+                        total_beds: cap,
+                        occupied_beds: 0,
+                        monthly_rent: rent,
+                        ac_type: ac,
+                        room_type: desc
+                    })
+                });
+
+                const data = await response.json();
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Save Room`;
+
+                if (data.success || response.ok) {
+                    closeModal('roomModal');
+                    document.getElementById('addRoomForm').reset();
+                    showToast(`Room ${roomNo} registered successfully!`);
+                    loadRooms();
+                } else {
+                    showToast(data.error || "Failed to add room", true);
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-check mr-2"></i> Save Room`;
+                console.error("Add room error:", err);
+                showToast("Network error saving room", true);
+            }
+        }
+
+        // Open Edit Modal with Room Data
+        function openEditModal(room) {
+            document.getElementById('edit_r_number').value = room.room_no;
+            document.getElementById('edit_r_capacity').value = room.total_beds;
+            document.getElementById('edit_r_occupied').value = room.occupied_beds;
+            document.getElementById('edit_r_type').value = room.room_type || '';
+            document.getElementById('edit_r_rent').value = room.monthly_rent || 6500;
+            document.getElementById('edit_r_ac').value = room.ac_type || 'Non-AC';
+            openModal('editRoomModal');
+        }
+
+        // Handle Edit Room Submission
+        async function handleEditRoom(e) {
+            e.preventDefault();
+            const btn = document.getElementById('btnUpdateRoom');
+            const roomNo = document.getElementById('edit_r_number').value;
+            const cap = parseInt(document.getElementById('edit_r_capacity').value);
+            const occ = parseInt(document.getElementById('edit_r_occupied').value);
+            const type = document.getElementById('edit_r_type').value.trim();
+            const rent = parseInt(document.getElementById('edit_r_rent').value);
+            const ac = document.getElementById('edit_r_ac').value;
+
+            if (occ > cap) {
+                showToast("Occupied beds cannot exceed total bed capacity!", true);
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-2"></i> Updating...`;
+
+            try {
+                const response = await fetch(`/api/rooms/${roomNo}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        room_type: type,
+                        total_beds: cap,
+                        occupied_beds: occ,
+                        monthly_rent: rent,
+                        ac_type: ac
+                    })
+                });
+
+                const data = await response.json();
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-save mr-2"></i> Update Room`;
+
+                if (data.message || response.ok) {
+                    closeModal('editRoomModal');
+                    showToast(`Room ${roomNo} updated successfully!`);
+                    loadRooms();
+                } else {
+                    showToast(data.error || "Failed to update room", true);
+                }
+            } catch (err) {
+                btn.disabled = false;
+                btn.innerHTML = `<i class="fa-solid fa-save mr-2"></i> Update Room`;
+                console.error("Update room error:", err);
+                showToast("Error updating room details", true);
+            }
+        }
+
+        // Delete Room
+        async function deleteRoom(roomNo) {
+            if (!confirm(`Are you sure you want to permanently delete Room ${roomNo}?`)) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`/api/rooms/${roomNo}`, {
+                    method: 'DELETE'
+                });
+                const data = await response.json();
+
+                if (data.message) {
+                    showToast(`Room ${roomNo} deleted successfully.`);
+                    loadRooms();
+                } else {
+                    showToast(data.error || "Could not delete room. Check if residents are assigned.", true);
+                }
+            } catch (err) {
+                console.error("Delete error:", err);
+                showToast("Error deleting room", true);
+            }
+        }
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadRooms();
+            autoFillType();
+        });
+    </script>
+</body>
+</html>

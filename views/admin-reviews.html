@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Reviews & Sentiment | Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --success: #059669;
+            --warning: #d97706;
+            --danger: #dc2626;
+            --border-color: #e2e8f0;
+            --bg-page: #f8fafc;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-main);
+            margin: 0;
+            padding-bottom: 60px;
+        }
+
+        .container {
+            max-width: 1240px;
+            margin: 0 auto;
+            padding: 24px 20px;
+        }
+
+        /* Hero */
+        .reviews-hero {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            color: white;
+            padding: 34px 32px;
+            border-radius: 20px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .reviews-hero h1 {
+            margin: 0 0 6px 0;
+            font-size: 28px;
+            font-weight: 800;
+        }
+
+        .reviews-hero p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 15px;
+            max-width: 620px;
+            line-height: 1.5;
+        }
+
+        /* KPI Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 900px) {
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 540px) {
+            .kpi-grid { grid-template-columns: 1fr; }
+        }
+
+        .kpi-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 20px 22px;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .kpi-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .icon-rating { background: #fef3c7; color: #d97706; }
+        .icon-total { background: #eff6ff; color: #2563eb; }
+        .icon-pos { background: #ecfdf5; color: #059669; }
+        .icon-crit { background: #fef2f2; color: #dc2626; }
+
+        .kpi-info span {
+            display: block;
+            font-size: 12.5px;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 4px;
+        }
+
+        .kpi-info strong {
+            font-size: 26px;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1;
+        }
+
+        /* Filter Toolbar */
+        .filter-toolbar {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+        }
+
+        .filters-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 8px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            font-size: 13.5px;
+            font-weight: 700;
+            color: #1e293b;
+            background: #f8fafc;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Review Cards */
+        .admin-review-card {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 18px;
+            box-shadow: 0 2px 10px rgba(15, 23, 42, 0.03);
+            position: relative;
+        }
+
+        .review-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .reviewer-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .reviewer-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 18px;
+        }
+
+        .reviewer-name {
+            font-size: 15.5px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .reviewer-sub {
+            font-size: 12px;
+            color: #64748b;
+            margin-top: 2px;
+        }
+
+        .stars-gold {
+            color: #f59e0b;
+            font-size: 18px;
+            letter-spacing: 2px;
+        }
+
+        .category-badge {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 10px;
+            border-radius: 999px;
+            background: #f1f5f9;
+            color: #334155;
+            display: inline-block;
+        }
+
+        .status-badge-published {
+            background: #ecfdf5;
+            color: #059669;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .status-badge-featured {
+            background: #fef3c7;
+            color: #d97706;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .status-badge-hidden {
+            background: #fef2f2;
+            color: #dc2626;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+        }
+
+        .review-text-title {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            margin: 0 0 6px 0;
+        }
+
+        .review-text-body {
+            font-size: 14px;
+            color: #334155;
+            line-height: 1.6;
+            margin: 0 0 16px 0;
+        }
+
+        /* Reply Container */
+        .reply-section {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 14px;
+        }
+
+        .existing-reply {
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px dashed #cbd5e1;
+        }
+
+        .reply-form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .reply-input {
+            flex: 1;
+            padding: 9px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 13.5px;
+            outline: none;
+            background: white;
+        }
+
+        .btn-reply-send {
+            padding: 9px 18px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            white-space: nowrap;
+        }
+
+        .actions-row {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .btn-action-small {
+            background: none;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            color: #475569;
+            transition: all 0.15s;
+        }
+
+        .btn-action-small:hover {
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+
+        .btn-action-delete {
+            color: #dc2626;
+            border-color: #fecaca;
+            background: #fef2f2;
+        }
+
+        .btn-action-delete:hover {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Hostel Management</h2>
+                <span>Admin Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu">Food Menu</a>
+            <a href="/vacating-notices">Transfer / Vacating</a>
+            <a href="/fees">Fees & Rent</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reports">Reports</a>
+            <a href="/admin-reviews" class="active">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="container">
+
+        <!-- Hero -->
+        <section class="reviews-hero">
+            <div>
+                <span class="dashboard-label">QUALITY & SENTIMENT</span>
+                <h1>Resident Reviews & Feedback Management</h1>
+                <p>Monitor resident ratings, respond to feedback officially, and track overall satisfaction across meals, housekeeping, and facilities.</p>
+            </div>
+            <div style="font-size: 48px; opacity: 0.9;">⭐</div>
+        </section>
+
+        <!-- KPI Summary Cards -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-icon icon-rating">⭐</div>
+                <div class="kpi-info">
+                    <span>Average Rating</span>
+                    <strong id="kpiAvgRating">5.0 / 5.0</strong>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon icon-total">💬</div>
+                <div class="kpi-info">
+                    <span>Total Reviews</span>
+                    <strong id="kpiTotalReviews">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon icon-pos">👍</div>
+                <div class="kpi-info">
+                    <span>Positive Reviews</span>
+                    <strong id="kpiPositiveCount">0</strong>
+                </div>
+            </div>
+
+            <div class="kpi-card">
+                <div class="kpi-icon icon-crit">⚠️</div>
+                <div class="kpi-info">
+                    <span>Critical / Attention</span>
+                    <strong id="kpiCriticalCount">0</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+            <div class="filters-group">
+                <span style="font-size: 13.5px; font-weight: 700; color: #475569;">Filter By:</span>
+                
+                <select id="filterRating" class="filter-select" onchange="loadAdminReviews()">
+                    <option value="all">All Star Ratings</option>
+                    <option value="5">5 Stars (Outstanding)</option>
+                    <option value="4">4 Stars (Good)</option>
+                    <option value="3">3 Stars (Average)</option>
+                    <option value="2">2 Stars (Below Avg)</option>
+                    <option value="1">1 Star (Critical)</option>
+                </select>
+
+                <select id="filterCategory" class="filter-select" onchange="loadAdminReviews()">
+                    <option value="all">All Categories</option>
+                    <option value="Overall Stay">Overall Stay</option>
+                    <option value="Food & Mess">Food & Mess</option>
+                    <option value="Cleanliness & Hygiene">Cleanliness & Hygiene</option>
+                    <option value="Wi-Fi & Amenities">Wi-Fi & Amenities</option>
+                    <option value="Staff & Management">Staff & Management</option>
+                </select>
+
+                <select id="filterStatus" class="filter-select" onchange="loadAdminReviews()">
+                    <option value="all">All Statuses</option>
+                    <option value="Published">Published</option>
+                    <option value="Featured">Featured</option>
+                    <option value="Hidden">Hidden</option>
+                </select>
+            </div>
+
+            <button type="button" onclick="loadAdminReviews()" style="background: none; border: 1.5px solid #cbd5e1; padding: 8px 14px; border-radius: 10px; font-size: 13px; font-weight: 700; cursor: pointer; color: #475569;">
+                ↻ Refresh Reviews
+            </button>
+        </div>
+
+        <!-- Reviews List -->
+        <div id="adminReviewsList">
+            <div style="text-align: center; padding: 48px; background: white; border-radius: 16px; border: 1.5px solid #e2e8f0; color: #64748b;">
+                Loading resident reviews...
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        async function loadAdminReviews() {
+            const rating = document.getElementById("filterRating").value;
+            const category = document.getElementById("filterCategory").value;
+            const status = document.getElementById("filterStatus").value;
+
+            const url = `/api/admin/reviews?rating=${encodeURIComponent(rating)}&category=${encodeURIComponent(category)}&status=${encodeURIComponent(status)}`;
+
+            try {
+                const res = await fetch(url);
+                const data = await res.json();
+
+                if (!data.success) {
+                    alert("Error: " + (data.error || "Failed to load reviews."));
+                    return;
+                }
+
+                // Update KPIs
+                const stats = data.stats || {};
+                document.getElementById("kpiAvgRating").textContent = (stats.average_rating || 5.0).toFixed(1) + " / 5.0";
+                document.getElementById("kpiTotalReviews").textContent = stats.total_reviews || 0;
+                document.getElementById("kpiPositiveCount").textContent = stats.positive_count || 0;
+                document.getElementById("kpiCriticalCount").textContent = stats.critical_count || 0;
+
+                renderAdminReviews(data.reviews || []);
+            } catch (err) {
+                console.error("Error loading admin reviews:", err);
+            }
+        }
+
+        function renderAdminReviews(reviews) {
+            const container = document.getElementById("adminReviewsList");
+
+            if (!reviews || reviews.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 48px; background: white; border-radius: 16px; border: 1.5px solid #e2e8f0;">
+                        <div style="font-size: 40px; margin-bottom: 8px;">🌟</div>
+                        <h3 style="margin: 0 0 6px 0; color: #0f172a;">No reviews found matching this filter</h3>
+                        <p style="margin: 0; color: #64748b; font-size: 14px;">Resident reviews will appear here once submitted.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = reviews.map(r => {
+                const starsHtml = "★".repeat(r.rating) + "☆".repeat(5 - r.rating);
+                const initial = (r.student_name || 'R').charAt(0).toUpperCase();
+
+                const statusBadge = r.status === 'Featured'
+                    ? '<span class="status-badge-featured">⭐ Featured</span>'
+                    : (r.status === 'Hidden' ? '<span class="status-badge-hidden">👁️ Hidden</span>' : '<span class="status-badge-published">✓ Published</span>');
+
+                return `
+                    <div class="admin-review-card">
+                        <div class="review-card-header">
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">${initial}</div>
+                                <div>
+                                    <div class="reviewer-name">${escapeHtml(r.student_name || 'Resident')}</div>
+                                    <div class="reviewer-sub">
+                                        ${r.room_no ? 'Room ' + r.room_no + ' • ' : ''}
+                                        ${escapeHtml(r.resident_type || 'Resident')} • 
+                                        ${r.phone || r.email || 'No contact'}
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="text-align: right;">
+                                <div class="stars-gold">${starsHtml}</div>
+                                <div style="display: flex; gap: 6px; justify-content: flex-end; align-items: center; margin-top: 4px;">
+                                    <span class="category-badge">${escapeHtml(r.category || 'Overall Stay')}</span>
+                                    ${statusBadge}
+                                </div>
+                                <div style="font-size: 11.5px; color: #94a3b8; margin-top: 3px;">${r.review_date || 'Recently'}</div>
+                            </div>
+                        </div>
+
+                        ${r.title ? `<h3 class="review-text-title">${escapeHtml(r.title)}</h3>` : ''}
+                        <p class="review-text-body">${escapeHtml(r.comment)}</p>
+
+                        <!-- Reply Section -->
+                        <div class="reply-section">
+                            ${r.admin_reply ? `
+                                <div class="existing-reply">
+                                    <div style="font-size: 12px; font-weight: 800; color: #1e40af; margin-bottom: 2px;">
+                                        🛡️ Your Official Response • <span style="font-weight: normal; opacity: 0.8;">${r.admin_replied_at || 'Recently'}</span>
+                                    </div>
+                                    <p style="margin: 0; font-size: 13.5px; color: #1e293b;">${escapeHtml(r.admin_reply)}</p>
+                                </div>
+                            ` : ''}
+                            <div class="reply-form-row">
+                                <input type="text" id="reply-input-${r.review_id}" class="reply-input" placeholder="${r.admin_reply ? 'Update your response to resident...' : 'Write an official management reply (e.g. Thank you! We have addressed this with housekeeping...)'}">
+                                <button type="button" class="btn-reply-send" onclick="sendAdminReply(${r.review_id})">
+                                    ${r.admin_reply ? 'Update Reply' : 'Post Reply'}
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Actions Row -->
+                        <div class="actions-row">
+                            <button type="button" class="btn-action-small" onclick="toggleStatus(${r.review_id}, '${r.status === 'Featured' ? 'Published' : 'Featured'}')">
+                                ${r.status === 'Featured' ? 'Unfeature' : '⭐ Feature'}
+                            </button>
+                            <button type="button" class="btn-action-small" onclick="toggleStatus(${r.review_id}, '${r.status === 'Hidden' ? 'Published' : 'Hidden'}')">
+                                ${r.status === 'Hidden' ? 'Publish' : '👁️ Hide'}
+                            </button>
+                            <button type="button" class="btn-action-small btn-action-delete" onclick="deleteReview(${r.review_id})">
+                                🗑️ Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        async function sendAdminReply(reviewId) {
+            const input = document.getElementById(`reply-input-${reviewId}`);
+            const reply = input.value.trim();
+
+            if (!reply) {
+                alert("Please write a response before submitting.");
+                return;
+            }
+
+            try {
+                const res = await fetch(`/api/admin/reviews/${reviewId}/reply`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ reply: reply })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert("✅ " + data.message);
+                    input.value = "";
+                    loadAdminReviews();
+                } else {
+                    alert("Error: " + (data.error || "Failed to post reply."));
+                }
+            } catch (err) {
+                alert("Error connecting to server: " + err.message);
+            }
+        }
+
+        async function toggleStatus(reviewId, newStatus) {
+            try {
+                const res = await fetch(`/api/admin/reviews/${reviewId}/status`, {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    loadAdminReviews();
+                } else {
+                    alert("Error: " + (data.error || "Failed to update status"));
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        }
+
+        async function deleteReview(reviewId) {
+            if (!confirm("Are you sure you want to permanently delete this review?")) return;
+
+            try {
+                const res = await fetch(`/api/admin/reviews/${reviewId}`, {
+                    method: "DELETE"
+                });
+                const data = await res.json();
+                if (data.success) {
+                    loadAdminReviews();
+                } else {
+                    alert("Error: " + (data.error || "Failed to delete review"));
+                }
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return "";
+            return String(text)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Init
+        loadAdminReviews();
+    </script>
+</body>
+</html>

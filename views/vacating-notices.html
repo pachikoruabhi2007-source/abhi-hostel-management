@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transfer & Vacating Notices | Private Hostel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .notice-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 22px;
+            border-radius: 14px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .stat-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 26px;
+        }
+
+        .icon-blue { background: #eff6ff; color: #2563eb; }
+        .icon-amber { background: #fffbeb; color: #d97706; }
+        .icon-emerald { background: #ecfdf5; color: #059669; }
+        .icon-purple { background: #f5f3ff; color: #7c3aed; }
+
+        .stat-details span {
+            font-size: 13px;
+            color: #64748b;
+            font-weight: 600;
+            display: block;
+        }
+
+        .stat-details strong {
+            font-size: 24px;
+            color: #0f172a;
+            font-weight: 800;
+        }
+
+        .badge-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pending { background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }
+        .status-approved { background: #eff6ff; color: #1d4ed8; border: 1px solid #bfdbfe; }
+        .status-cleared { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .status-cancelled { background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; }
+
+        .badge-type {
+            font-size: 11px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        .type-jobholder { background: #eff6ff; color: #1d4ed8; }
+        .type-transfer { background: #fdf2f8; color: #be185d; }
+        .type-student { background: #f0fdf4; color: #15803d; }
+
+        .action-btn-sm {
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-approve { background: #2563eb; color: white; }
+        .btn-approve:hover { background: #1d4ed8; }
+
+        .btn-clear { background: #059669; color: white; }
+        .btn-clear:hover { background: #047857; }
+
+        .btn-view { background: #f1f5f9; color: #334155; }
+        .btn-view:hover { background: #e2e8f0; }
+
+        /* Modal styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-box {
+            background: white;
+            border-radius: 16px;
+            max-width: 550px;
+            width: 90%;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 1px solid #e2e8f0;
+        }
+
+        @media (max-width: 800px) {
+            .notice-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Hostel Management</h2>
+                <span>Admin Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu">Food Menu</a>
+            <a href="/vacating-notices" class="active">Transfer / Vacating</a>
+            <a href="/fees">Fees & Rent</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reports">Reports</a>
+            <a href="/admin-reviews">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero">
+        <div>
+            <span class="dashboard-label">TRANSFERS & RELOCATIONS</span>
+            <h1>Vacating & Transfer Notice Center</h1>
+            <p>Process departure notices for relocated jobholders, transferred employees, and completing residents. Manage checkout clearances and deposit returns.</p>
+        </div>
+        <div class="page-hero-icon">📦</div>
+    </section>
+
+    <!-- Stats Summary -->
+    <section class="modern-section" style="padding-bottom: 0;">
+        <div class="notice-stats">
+            <div class="stat-card">
+                <div class="stat-icon icon-blue">📋</div>
+                <div class="stat-details">
+                    <span>Total Notices</span>
+                    <strong id="statTotalNotices">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-amber">⏳</div>
+                <div class="stat-details">
+                    <span>Pending Clearance</span>
+                    <strong id="statPendingNotices">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-purple">✅</div>
+                <div class="stat-details">
+                    <span>Approved Departure</span>
+                    <strong id="statApprovedNotices">0</strong>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon icon-emerald">💰</div>
+                <div class="stat-details">
+                    <span>Deposit Refunded</span>
+                    <strong id="statRefundedAmount">₹0</strong>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Submit Notice Form -->
+    <section class="modern-section">
+        <div class="section-header">
+            <div>
+                <span class="section-label">NEW NOTICE</span>
+                <h2>Record Departure / Transfer Notice</h2>
+                <p>Register a resident's planned transfer or vacating date to initiate bed release and clearance.</p>
+            </div>
+            <div class="section-icon">📝</div>
+        </div>
+
+        <form id="noticeForm" class="modern-form" onsubmit="submitNotice(event)">
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Resident Name</label>
+                    <input type="text" id="noticeName" placeholder="Resident full name" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Room Number</label>
+                    <input type="text" id="noticeRoom" placeholder="Example: 201" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Resident Category</label>
+                    <select id="noticeType" required>
+                        <option value="Transfer">Transfer / Relocated Employee 🔄</option>
+                        <option value="Jobholder">Jobholder / Working Professional 💼</option>
+                        <option value="Student">Student / Intern 🎓</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Reason for Moving</label>
+                    <select id="noticeReason" required>
+                        <option value="Job Transfer">Job Transfer to another city / branch</option>
+                        <option value="Project Deputation End">Client / Project Deputation Complete</option>
+                        <option value="Personal Relocation">Personal Relocation / Family</option>
+                        <option value="Course Completed">Academic Course / Training Ended</option>
+                        <option value="New Accommodation">Shifting to Own Apartment / Flat</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Notice Submission Date</label>
+                    <input type="date" id="noticeDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Planned Departure / Vacate Date</label>
+                    <input type="date" id="expectedDate" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Security Deposit to Refund (₹)</label>
+                    <input type="number" id="depositRefund" placeholder="Example: 8000" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label>Forwarding Contact / Bank UPI (Optional)</label>
+                    <input type="text" id="noticeNotes" placeholder="e.g. UPI ID or forwarding phone number">
+                </div>
+            </div>
+
+            <button type="submit" class="primary-button">
+                ➕ Submit Departure Notice
+            </button>
+        </form>
+    </section>
+
+    <!-- Notices Directory Table -->
+    <section class="modern-section">
+        <div class="section-header">
+            <div>
+                <span class="section-label">ACTIVE NOTICES</span>
+                <h2>Departure & Clearance Directory</h2>
+                <p>Track move-out dates, room key handovers, and security deposit clearance.</p>
+            </div>
+            <div class="section-icon">🗂️</div>
+        </div>
+
+        <div class="table-wrapper">
+            <table class="modern-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Resident</th>
+                        <th>Room</th>
+                        <th>Category</th>
+                        <th>Reason</th>
+                        <th>Vacate Date</th>
+                        <th>Deposit Refund</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="noticesTableBody">
+                    <tr>
+                        <td colspan="9" style="text-align:center; padding: 24px;">Loading notices...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Detail / Action Modal -->
+    <div id="actionModal" class="modal-overlay">
+        <div class="modal-box">
+            <h3 id="modalTitle" style="font-size: 20px; font-weight: 800; margin-bottom: 12px;">Process Clearance</h3>
+            <p id="modalDesc" style="color: #64748b; font-size: 14px; margin-bottom: 20px;"></p>
+
+            <input type="hidden" id="modalNoticeId">
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Status Update</label>
+                <select id="modalStatusSelect" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;">
+                    <option value="Pending Review">Pending Review</option>
+                    <option value="Approved">Approved (Bed marked for release)</option>
+                    <option value="Cleared & Refunded">Cleared & Deposit Refunded</option>
+                    <option value="Cancelled">Cancelled (Resident Staying)</option>
+                </select>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 16px;">
+                <label>Deposit Refund Amount (₹)</label>
+                <input type="number" id="modalRefundAmount" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;" placeholder="Amount in ₹">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 24px;">
+                <label>Clearance Remarks & UPI / Check Reference</label>
+                <textarea id="modalNotesText" rows="3" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid #cbd5e1;" placeholder="Key handover confirmed, room inspected, deposit refunded via UPI..."></textarea>
+            </div>
+
+            <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                <button type="button" class="btn-view" style="padding: 10px 18px;" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn-approve" style="padding: 10px 20px;" onclick="saveModalChanges()">Save Clearance</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set today as default notice date
+        document.getElementById('noticeDate').value = new Date().toISOString().split('T')[0];
+
+        let allNotices = [];
+
+        async function loadNotices() {
+            try {
+                const res = await fetch('/api/vacating-notices');
+                allNotices = await res.json();
+                renderNoticesTable(allNotices);
+                updateStats(allNotices);
+            } catch (err) {
+                console.error("Error loading notices:", err);
+                document.getElementById('noticesTableBody').innerHTML = `
+                    <tr><td colspan="9" style="text-align:center; color: #ef4444; padding: 20px;">Failed to load notices.</td></tr>
+                `;
+            }
+        }
+
+        function updateStats(notices) {
+            document.getElementById('statTotalNotices').textContent = notices.length;
+            const pending = notices.filter(n => n.status === 'Pending Review').length;
+            const approved = notices.filter(n => n.status === 'Approved').length;
+            const refundedTotal = notices
+                .filter(n => n.status === 'Cleared & Refunded')
+                .reduce((sum, n) => sum + (Number(n.deposit_refund_amount) || 0), 0);
+
+            document.getElementById('statPendingNotices').textContent = pending;
+            document.getElementById('statApprovedNotices').textContent = approved;
+            document.getElementById('statRefundedAmount').textContent = '₹' + refundedTotal.toLocaleString('en-IN');
+        }
+
+        function renderNoticesTable(notices) {
+            const tbody = document.getElementById('noticesTableBody');
+            if (!notices || notices.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="9" style="text-align: center; color: #64748b; padding: 30px;">
+                            No vacating or transfer notices submitted yet.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = notices.map(n => {
+                let statusClass = 'status-pending';
+                if (n.status === 'Approved') statusClass = 'status-approved';
+                if (n.status === 'Cleared & Refunded') statusClass = 'status-cleared';
+                if (n.status === 'Cancelled') statusClass = 'status-cancelled';
+
+                let typeClass = 'type-jobholder';
+                if (n.resident_type === 'Transfer') typeClass = 'type-transfer';
+                if (n.resident_type === 'Student') typeClass = 'type-student';
+
+                const refund = Number(n.deposit_refund_amount) || 0;
+
+                return `
+                    <tr>
+                        <td>#${n.notice_id}</td>
+                        <td>
+                            <strong>${n.resident_name}</strong>
+                        </td>
+                        <td>
+                            <span class="room-badge">🏠 ${n.room_no || 'N/A'}</span>
+                        </td>
+                        <td>
+                            <span class="badge-type ${typeClass}">${n.resident_type}</span>
+                        </td>
+                        <td>
+                            <span style="font-size: 13px; color: #334155; font-weight: 600;">${n.reason}</span>
+                        </td>
+                        <td>
+                            <strong>${n.expected_vacate_date || 'Flexible'}</strong>
+                        </td>
+                        <td>
+                            <strong style="color: #059669;">₹${refund.toLocaleString('en-IN')}</strong>
+                        </td>
+                        <td>
+                            <span class="badge-status ${statusClass}">
+                                ${n.status}
+                            </span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <button class="action-btn-sm btn-approve" onclick="openActionModal(${n.notice_id})">
+                                    ⚙️ Process
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function submitNotice(e) {
+            e.preventDefault();
+            const data = {
+                resident_name: document.getElementById('noticeName').value.trim(),
+                room_no: document.getElementById('noticeRoom').value.trim(),
+                resident_type: document.getElementById('noticeType').value,
+                reason: document.getElementById('noticeReason').value,
+                notice_date: document.getElementById('noticeDate').value,
+                expected_vacate_date: document.getElementById('expectedDate').value,
+                deposit_refund_amount: Number(document.getElementById('depositRefund').value) || 0,
+                notes: document.getElementById('noticeNotes').value.trim()
+            };
+
+            try {
+                const res = await fetch('/api/vacating-notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    alert(result.message);
+                    document.getElementById('noticeForm').reset();
+                    document.getElementById('noticeDate').value = new Date().toISOString().split('T')[0];
+                    loadNotices();
+                } else {
+                    alert(result.error || 'Failed to submit notice');
+                }
+            } catch (err) {
+                alert('Server error submitting notice');
+            }
+        }
+
+        function openActionModal(id) {
+            const notice = allNotices.find(n => n.notice_id === id);
+            if (!notice) return;
+
+            document.getElementById('modalNoticeId').value = notice.notice_id;
+            document.getElementById('modalTitle').textContent = `Clearance: ${notice.resident_name} (Room ${notice.room_no})`;
+            document.getElementById('modalDesc').textContent = `Notice for ${notice.reason}. Departure planned for ${notice.expected_vacate_date || 'unspecified date'}.`;
+            document.getElementById('modalStatusSelect').value = notice.status || 'Pending Review';
+            document.getElementById('modalRefundAmount').value = notice.deposit_refund_amount || 0;
+            document.getElementById('modalNotesText').value = notice.notes || '';
+
+            document.getElementById('actionModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('actionModal').style.display = 'none';
+        }
+
+        async function saveModalChanges() {
+            const id = document.getElementById('modalNoticeId').value;
+            const data = {
+                status: document.getElementById('modalStatusSelect').value,
+                deposit_refund_amount: Number(document.getElementById('modalRefundAmount').value) || 0,
+                notes: document.getElementById('modalNotesText').value.trim()
+            };
+
+            try {
+                const res = await fetch(`/api/vacating-notices/${id}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                const result = await res.json();
+                if (result.success) {
+                    closeModal();
+                    loadNotices();
+                } else {
+                    alert(result.error || 'Failed to update notice');
+                }
+            } catch (err) {
+                alert('Error updating notice');
+            }
+        }
+
+        // Load initially
+        loadNotices();
+    </script>
+</body>
+</html>

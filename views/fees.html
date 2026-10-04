@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Rent & Fee Management | Hostel Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .rent-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .badge-jobholder { background: #eff6ff; color: #1d4ed8; }
+        .badge-transfer { background: #fdf2f8; color: #be185d; }
+        .badge-student { background: #f0fdf4; color: #15803d; }
+
+        .type-badge-advance {
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .type-badge-monthly {
+            background: #e0f2fe;
+            color: #0369a1;
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* Monthly Filter Toolbar */
+        .monthly-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            flex-wrap: wrap;
+            background: white;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+        }
+
+        .filter-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .filter-select {
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            font-size: 14px;
+            font-weight: 700;
+            color: #0f172a;
+            background: #f8fafc;
+            outline: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-select:focus {
+            border-color: #2563eb;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .btn-bill-new-month {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+            transition: all 0.2s;
+        }
+
+        .btn-bill-new-month:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.35);
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-card {
+            background: white;
+            width: 100%;
+            max-width: 520px;
+            border-radius: 20px;
+            box-shadow: 0 25px 60px rgba(15, 23, 42, 0.25);
+            overflow: hidden;
+            animation: modalFadeIn 0.25s ease-out;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 20px 24px;
+            background: #f8fafc;
+            border-bottom: 1.5px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+            font-size: 18px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-footer {
+            padding: 16px 24px;
+            background: #f8fafc;
+            border-top: 1.5px solid #e2e8f0;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 10px;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .info-callout {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            color: #1e40af;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Hostel Management</h2>
+                <span>Admin Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu">Food Menu</a>
+            <a href="/vacating-notices">Transfer / Vacating</a>
+            <a href="/fees" class="active">Fees & Rent</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reports">Reports</a>
+            <a href="/admin-reviews">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <!-- Page Hero -->
+    <section class="page-hero fees-hero">
+        <div>
+            <span class="dashboard-label">FINANCE & BILLING</span>
+            <h1>Monthly Stay Fee & Rent Management</h1>
+            <p>Track month-by-month rent collections, advance joining fees, and live outstanding balances for all hostel residents.</p>
+        </div>
+        <div class="page-hero-icon">💰</div>
+    </section>
+
+    <!-- Main Container -->
+    <main style="max-width: 1280px; margin: 0 auto; padding: 24px 20px;">
+
+        <!-- Monthly Controls Toolbar -->
+        <div class="monthly-toolbar">
+            <div class="filter-controls">
+                <span style="font-size: 13.5px; font-weight: 700; color: #475569;">📅 Billing Cycle Filter:</span>
+                <select id="filterMonthSelect" class="filter-select" onchange="onMonthChange()">
+                    <option value="all">All Monthly Cycles & Invoices</option>
+                </select>
+                <button type="button" onclick="loadFees()" style="background: none; border: 1px solid #cbd5e1; padding: 8px 12px; border-radius: 8px; font-size: 13px; font-weight: 700; cursor: pointer; color: #475569;">
+                    ↻ Refresh
+                </button>
+            </div>
+
+            <button type="button" class="btn-bill-new-month" onclick="openBillMonthModal()">
+                <span>➕</span> Bill Next Month's Stay Fees
+            </button>
+        </div>
+
+        <!-- Fee Overview Summary Cards -->
+        <section class="modern-section" style="padding-top: 0;">
+            <div class="section-header" style="margin-bottom: 18px;">
+                <div>
+                    <span class="section-label">FINANCIAL SUMMARY</span>
+                    <h2 id="summaryCycleTitle">Monthly Rent Collection Statistics</h2>
+                    <p id="summaryCycleDesc">Month-by-month receivables, collected revenue, and outstanding balance.</p>
+                </div>
+                <div class="section-icon">📊</div>
+            </div>
+
+            <div class="fee-summary-grid">
+                <div class="fee-summary-card">
+                    <div class="fee-summary-icon">👥</div>
+                    <div>
+                        <span>Active Residents</span>
+                        <strong id="feeStudentCount">0</strong>
+                    </div>
+                </div>
+
+                <div class="fee-summary-card">
+                    <div class="fee-summary-icon">💰</div>
+                    <div>
+                        <span>Total Expected (Receivables)</span>
+                        <strong id="totalFeeAmount">₹0</strong>
+                    </div>
+                </div>
+
+                <div class="fee-summary-card">
+                    <div class="fee-summary-icon">🟢</div>
+                    <div>
+                        <span>Total Amount Collected</span>
+                        <strong id="totalPaidAmount">₹0</strong>
+                    </div>
+                </div>
+
+                <div class="fee-summary-card">
+                    <div class="fee-summary-icon">🟠</div>
+                    <div>
+                        <span>Pending / Remaining Balance</span>
+                        <strong id="totalPendingAmount">₹0</strong>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Resident Fee Records -->
+        <section class="modern-section">
+            <div class="section-header">
+                <div>
+                    <span class="section-label">PAYMENT DIRECTORY</span>
+                    <h2>Resident Monthly Invoices & Dues</h2>
+                    <p>Collect monthly stay fees, update payment records, or correct balances for any resident.</p>
+                </div>
+                <div class="section-icon">💳</div>
+            </div>
+
+            <div class="table-wrapper">
+                <table class="modern-table fee-table">
+                    <thead>
+                        <tr>
+                            <th>Resident</th>
+                            <th>Room</th>
+                            <th>Billing Month & Type</th>
+                            <th>Monthly Rate</th>
+                            <th>Total Due</th>
+                            <th>Amount Paid</th>
+                            <th>Pending Balance</th>
+                            <th>Status</th>
+                            <th>Quick Collect (₹)</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="feeTableBody">
+                        <tr>
+                            <td colspan="10" class="loading-cell">Loading monthly fee records...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Modal: Bill Next Month's Stay Fees -->
+    <div id="billMonthModal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3>🗓️ Bill Next Month's Stay Fees</h3>
+                <button type="button" onclick="closeBillMonthModal()" style="background:none; border:none; font-size: 20px; font-weight: bold; cursor: pointer; color: #64748b;">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="info-callout">
+                    💡 <strong>Flexible Stay Billing:</strong> Residents stay month-by-month as long as they wish. Generating a new billing cycle creates the recurring monthly stay fee invoice for all active residents based on their monthly room rent.
+                </div>
+
+                <div class="form-group">
+                    <label for="bmMonthPicker">Billing Month (Year & Month)</label>
+                    <input type="month" id="bmMonthPicker" class="form-control" onchange="onMonthPickerChange()">
+                </div>
+
+                <div class="form-group">
+                    <label for="bmMonthName">Display Name (Visible to Residents)</label>
+                    <input type="text" id="bmMonthName" class="form-control" placeholder="e.g. November 2026">
+                </div>
+
+                <div class="form-group">
+                    <label for="bmDueDate">Payment Due Date / Reminder</label>
+                    <input type="text" id="bmDueDate" class="form-control" placeholder="e.g. 10th of the month" value="10th of the month">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="closeBillMonthModal()" style="padding: 10px 18px; border-radius: 10px; border: 1.5px solid #cbd5e1; background: white; font-weight: 700; cursor: pointer; color: #475569;">
+                    Cancel
+                </button>
+                <button type="button" class="btn-bill-new-month" id="btnSubmitBillMonth" onclick="submitBillMonth()">
+                    ✓ Confirm & Generate Invoices
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentFilterMonth = "all";
+
+        function getMonthNameFromCode(code) {
+            if (!code || !code.includes('-')) return code;
+            const [year, month] = code.split('-');
+            const date = new Date(Number(year), Number(month) - 1, 1);
+            return date.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        function initMonthPickerDefault() {
+            const now = new Date();
+            // Default to next month or current month
+            const nextMonthDate = new Date(now.getFullYear(), now.getMonth() + 1, 1);
+            const yyyy = nextMonthDate.getFullYear();
+            const mm = String(nextMonthDate.getMonth() + 1).padStart(2, '0');
+            const defaultCode = `${yyyy}-${mm}`;
+            
+            const picker = document.getElementById("bmMonthPicker");
+            if (picker) {
+                picker.value = defaultCode;
+                document.getElementById("bmMonthName").value = getMonthNameFromCode(defaultCode);
+            }
+        }
+
+        function onMonthPickerChange() {
+            const picker = document.getElementById("bmMonthPicker");
+            if (picker && picker.value) {
+                document.getElementById("bmMonthName").value = getMonthNameFromCode(picker.value);
+            }
+        }
+
+        function openBillMonthModal() {
+            initMonthPickerDefault();
+            document.getElementById("billMonthModal").style.display = "flex";
+        }
+
+        function closeBillMonthModal() {
+            document.getElementById("billMonthModal").style.display = "none";
+        }
+
+        async function submitBillMonth() {
+            const picker = document.getElementById("bmMonthPicker").value;
+            const monthName = document.getElementById("bmMonthName").value.trim();
+            const dueDate = document.getElementById("bmDueDate").value.trim();
+
+            if (!picker || !monthName) {
+                alert("Please select a billing month and enter the display name.");
+                return;
+            }
+
+            const btn = document.getElementById("btnSubmitBillMonth");
+            btn.disabled = true;
+            btn.textContent = "Generating Invoices...";
+
+            try {
+                const res = await fetch("/api/admin/fees/bill-month", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        billing_month: picker,
+                        month_name: monthName,
+                        due_date: dueDate
+                    })
+                });
+
+                const data = await res.json();
+                if (data.error) {
+                    alert("Error: " + data.error);
+                } else {
+                    alert(`✅ ${data.message}`);
+                    closeBillMonthModal();
+                    currentFilterMonth = picker;
+                    await loadSummary();
+                    await loadFees();
+                }
+            } catch (err) {
+                alert("Failed to generate monthly bills: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "✓ Confirm & Generate Invoices";
+            }
+        }
+
+        async function loadSummary() {
+            try {
+                const res = await fetch(`/api/admin/fees/summary?month=${encodeURIComponent(currentFilterMonth)}`);
+                const summary = await res.json();
+
+                if (!summary || summary.error) return;
+
+                document.getElementById("feeStudentCount").textContent = summary.total_residents || 0;
+                document.getElementById("totalFeeAmount").textContent = "₹" + (summary.total_receivable || 0).toLocaleString("en-IN");
+                document.getElementById("totalPaidAmount").textContent = "₹" + (summary.total_collected || 0).toLocaleString("en-IN");
+                document.getElementById("totalPendingAmount").textContent = "₹" + (summary.total_pending || 0).toLocaleString("en-IN");
+
+                // Update select dropdown
+                const select = document.getElementById("filterMonthSelect");
+                const prevVal = select.value;
+                select.innerHTML = '<option value="all">All Monthly Cycles & Invoices</option>';
+
+                if (Array.isArray(summary.available_months)) {
+                    summary.available_months.forEach(m => {
+                        const opt = document.createElement("option");
+                        opt.value = m.billing_month;
+                        opt.textContent = `${m.month_name} (${m.billing_month})`;
+                        if (m.billing_month === currentFilterMonth) {
+                            opt.selected = true;
+                        }
+                        select.appendChild(opt);
+                    });
+                }
+
+                if (currentFilterMonth !== "all") {
+                    select.value = currentFilterMonth;
+                    document.getElementById("summaryCycleTitle").textContent = `Collection Statistics: ${select.options[select.selectedIndex]?.text || currentFilterMonth}`;
+                } else {
+                    document.getElementById("summaryCycleTitle").textContent = "Overall Rent Collection Statistics";
+                }
+            } catch (e) {
+                console.warn("Could not load summary:", e);
+            }
+        }
+
+        async function onMonthChange() {
+            currentFilterMonth = document.getElementById("filterMonthSelect").value;
+            await loadSummary();
+            await loadFees();
+        }
+
+        async function loadFees() {
+            try {
+                const response = await fetch(`/api/admin/fees?month=${encodeURIComponent(currentFilterMonth)}`);
+                const data = await response.json();
+
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                const tableBody = document.getElementById("feeTableBody");
+                tableBody.innerHTML = "";
+
+                if (!data || data.length === 0) {
+                    tableBody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding: 32px; color: #64748b;">No fee records found for this selection.</td></tr>`;
+                    return;
+                }
+
+                data.forEach(item => {
+                    const totalFee = Number(item.total_fee) || 0;
+                    const paidAmount = Number(item.paid_amount) || 0;
+                    const pendingAmount = Number(item.pending_amount) !== null && !isNaN(Number(item.pending_amount))
+                        ? Number(item.pending_amount)
+                        : Math.max(0, totalFee - paidAmount);
+                    const status = item.status || (pendingAmount === 0 ? "Paid" : (paidAmount > 0 ? "Partial" : "Pending"));
+                    const statusClass = status === "Paid" ? "fee-paid" : (status === "Partial" ? "fee-partial" : "fee-pending");
+
+                    const isAdvance = (item.fee_type || '').includes('Advance');
+                    const feeTypeBadge = isAdvance
+                        ? `<span class="type-badge-advance">Joining Advance</span>`
+                        : `<span class="type-badge-monthly">Monthly Stay Fee</span>`;
+
+                    const row = document.createElement("tr");
+                    row.innerHTML = `
+                        <td>
+                            <div class="fee-student-cell">
+                                <div class="fee-avatar">
+                                    ${(item.name || 'R').charAt(0).toUpperCase()}
+                                </div>
+                                <div>
+                                    <strong>${item.name}</strong>
+                                    <div style="font-size: 11.5px; color: #64748b;">${item.phone || item.email || 'No phone'}</div>
+                                    <span class="rent-badge badge-${(item.resident_type || 'student').toLowerCase()}" style="margin-top: 2px;">
+                                        ${item.resident_type || 'Resident'}
+                                    </span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight: 700; color: #1e293b;">${item.room_no ? 'Room ' + item.room_no : '<span style="color:#94a3b8;">Unassigned</span>'}</span>
+                        </td>
+                        <td>
+                            <div>
+                                <strong style="font-size: 13px; color: #0f172a;">${item.month_name || 'Current Month'}</strong>
+                                <div style="margin-top: 3px;">${feeTypeBadge}</div>
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-weight: 600; color: #475569;">₹${Number(item.monthly_rent_rate || totalFee).toLocaleString("en-IN")}/mo</span>
+                        </td>
+                        <td>
+                            <strong class="fee-total">₹${totalFee.toLocaleString("en-IN")}</strong>
+                        </td>
+                        <td>
+                            <span style="color: #059669; font-weight: 800;">₹${paidAmount.toLocaleString("en-IN")}</span>
+                        </td>
+                        <td>
+                            <span style="color: ${pendingAmount > 0 ? '#d97706' : '#059669'}; font-weight: 800;">₹${pendingAmount.toLocaleString("en-IN")}</span>
+                        </td>
+                        <td>
+                            <span class="fee-status ${statusClass}">
+                                <span class="status-dot-small"></span>
+                                ${status}
+                            </span>
+                        </td>
+                        <td>
+                            <input type="number" id="pay-input-${item.fee_id || item.user_id}" class="payment-input" placeholder="₹ Amount" min="1" max="${pendingAmount > 0 ? pendingAmount : ''}" style="width: 105px; padding: 6px 10px; border-radius: 8px; border: 1.5px solid #cbd5e1; font-weight: 600;">
+                        </td>
+                        <td>
+                            <div class="fee-action-buttons" style="display: flex; gap: 6px;">
+                                <button type="button" style="padding: 6px 12px; border-radius: 8px; background: #2563eb; color: white; border: none; font-weight: 700; cursor: pointer;" onclick="updatePaymentRecord(${item.fee_id}, ${item.user_id})">
+                                    + Collect
+                                </button>
+                                <button type="button" style="padding: 6px 10px; border-radius: 8px; background: #f1f5f9; color: #334155; border: 1px solid #cbd5e1; font-weight: 600; cursor: pointer; font-size: 12px;" onclick="correctPaymentRecord(${item.fee_id}, ${item.user_id})">
+                                    Set Total
+                                </button>
+                            </div>
+                        </td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+
+            } catch (error) {
+                console.error("Error loading fees:", error);
+                document.getElementById("feeTableBody").innerHTML = `<tr><td colspan="10" style="text-align:center; color:#ef4444; padding:24px;">Failed to load fee records.</td></tr>`;
+            }
+        }
+
+        async function updatePaymentRecord(feeId, userId) {
+            const input = document.getElementById(`pay-input-${feeId || userId}`);
+            const amount = Number(input.value);
+
+            if (!amount || amount <= 0) {
+                alert("Please enter a valid payment amount greater than 0");
+                return;
+            }
+
+            try {
+                const response = await fetch("/api/admin/fees", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fee_id: feeId, user_id: userId, payment_amount: amount })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                alert("Payment collected successfully!");
+                input.value = "";
+                await loadSummary();
+                await loadFees();
+            } catch (err) {
+                alert("Error recording payment: " + err.message);
+            }
+        }
+
+        async function correctPaymentRecord(feeId, userId) {
+            const input = document.getElementById(`pay-input-${feeId || userId}`);
+            const amount = Number(input.value);
+
+            if (input.value === "" || isNaN(amount) || amount < 0) {
+                alert("Please enter the total corrected amount paid in the input box first");
+                return;
+            }
+
+            if (!confirm(`Are you sure you want to set total amount paid to ₹${amount}?`)) return;
+
+            try {
+                const response = await fetch("/api/admin/fees/correct", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ fee_id: feeId, user_id: userId, paid_amount: amount })
+                });
+
+                const data = await response.json();
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                alert("Payment record updated successfully!");
+                input.value = "";
+                await loadSummary();
+                await loadFees();
+            } catch (err) {
+                alert("Error updating payment: " + err.message);
+            }
+        }
+
+        // Initialize on page load
+        (async function init() {
+            await loadSummary();
+            await loadFees();
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Food & Mess Menu Management | Hostel Admin</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --bg-page: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --accent-gold: #d97706;
+            --accent-gold-bg: #fffbeb;
+            --accent-green: #059669;
+            --accent-green-bg: #ecfdf5;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-dark);
+            margin: 0;
+            min-height: 100vh;
+        }
+
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .main-container {
+            flex: 1;
+            padding: 30px;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 100%);
+            color: white;
+            padding: 28px 32px;
+            border-radius: 18px;
+            margin-bottom: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+            box-shadow: 0 10px 25px -5px rgba(37, 99, 235, 0.25);
+        }
+
+        .header-section h1 {
+            margin: 0 0 6px 0;
+            font-size: 26px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-section p {
+            margin: 0;
+            opacity: 0.9;
+            font-size: 14.5px;
+        }
+
+        .header-badge {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .content-grid-2 {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 960px) {
+            .content-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 26px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.04);
+            margin-bottom: 24px;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .card-header-row h2 {
+            font-size: 18px;
+            font-weight: 800;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: #334155;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-dark);
+            background: #fff;
+            transition: all 0.2s ease;
+            box-sizing: border-box;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+        }
+
+        .meal-section-box {
+            background: #f8fafc;
+            border: 1.5px solid #e2e8f0;
+            border-radius: 14px;
+            padding: 18px;
+            margin-bottom: 20px;
+            transition: all 0.2s ease;
+        }
+
+        .meal-section-box:hover {
+            border-color: var(--primary-border);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .meal-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .meal-title-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .badge-breakfast { background: #fef3c7; color: #b45309; }
+        .badge-lunch { background: #dbeafe; color: #1e40af; }
+        .badge-dinner { background: #ede9fe; color: #6d28d9; }
+
+        .special-input-wrapper {
+            background: #fffbeb;
+            border: 1.5px dashed #f59e0b;
+            border-radius: 10px;
+            padding: 10px 14px;
+            margin-top: 10px;
+        }
+
+        .special-input-wrapper label {
+            color: #b45309 !important;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 4px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            border: none;
+            padding: 13px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.4);
+        }
+
+        /* Preset Chips */
+        .preset-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 18px;
+        }
+
+        .preset-chip {
+            background: #f1f5f9;
+            color: #334155;
+            border: 1px solid #cbd5e1;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .preset-chip:hover {
+            background: #e2e8f0;
+            color: #0f172a;
+            border-color: #94a3b8;
+        }
+
+        /* Resident Preview Box */
+        .resident-preview-container {
+            border: 2px solid #e2e8f0;
+            border-radius: 18px;
+            overflow: hidden;
+            background: white;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+        }
+
+        .preview-top-bar {
+            background: #0f172a;
+            color: #94a3b8;
+            padding: 10px 16px;
+            font-size: 12px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .preview-content {
+            padding: 22px;
+        }
+
+        .preview-meal-card {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 14px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .preview-special-pill {
+            background: #fffbeb;
+            color: #b45309;
+            border: 1px solid #fde68a;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 12.5px;
+            font-weight: 700;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* 7-Day Table */
+        .schedule-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+        }
+
+        .schedule-table th, .schedule-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .schedule-table th {
+            background: #f8fafc;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            font-size: 11.5px;
+            letter-spacing: 0.04em;
+        }
+
+        .schedule-table tr:hover td {
+            background: #f8fafc;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private Hostel & PG</h2>
+                <span>Admin Operations</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu" class="active">Food Menu</a>
+            <a href="/fees">Rent & Fees</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/vacating-notices">Notices</a>
+            <a href="/reports">Analytics</a>
+            <a href="/admin-reviews">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/settings">Settings</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <div class="main-container">
+
+        <!-- Top Header -->
+        <div class="header-section">
+            <div>
+                <h1><span>🍽️</span> Daily Food & Mess Menu Management</h1>
+                <p>Update breakfast, lunch, and dinner day-to-day. Residents will see live updates on their portal in read-only mode.</p>
+            </div>
+            <div class="header-badge">
+                👨‍🍳 Kitchen & Mess System
+            </div>
+        </div>
+
+        <!-- Main Form & Live Preview Grid -->
+        <div class="content-grid-2">
+
+            <!-- LEFT: Update Menu Form -->
+            <div>
+                <div class="glass-card">
+                    <div class="card-header-row">
+                        <h2><i data-lucide="calendar" style="width: 20px; height: 20px; color: var(--primary);"></i> Select Date & Update Menu</h2>
+                        <span id="saveStatus" style="font-size: 12.5px; font-weight: 600; color: #059669; display: none;">✓ Updated</span>
+                    </div>
+
+                    <!-- Date & Day Selector -->
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 16px;">
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Menu Date</label>
+                            <input type="date" id="menuDateInput" class="form-input" onchange="onDateChanged()">
+                        </div>
+                        <div class="form-group" style="margin-bottom: 0;">
+                            <label>Day of Week</label>
+                            <input type="text" id="dayNameInput" class="form-input" readonly style="background: #f1f5f9; font-weight: 700; color: #1e293b;">
+                        </div>
+                    </div>
+
+                    <!-- Quick Preset Templates -->
+                    <div>
+                        <label style="font-size: 12px; font-weight: 700; color: #64748b; text-transform: uppercase; margin-bottom: 6px; display: block;">
+                            ⚡ Quick-Fill Menu Presets
+                        </label>
+                        <div class="preset-container">
+                            <button type="button" class="preset-chip" onclick="applyPreset('sunday')">🍗 Sunday Feast (Biryani + Gulab Jamun)</button>
+                            <button type="button" class="preset-chip" onclick="applyPreset('south')">🥞 South Indian Special (Dosa + Dal Tadka)</button>
+                            <button type="button" class="preset-chip" onclick="applyPreset('north')">🍛 North Indian Delight (Puri + Paneer)</button>
+                            <button type="button" class="preset-chip" onclick="applyPreset('chinese')">🍜 Saturday Indo-Chinese Special</button>
+                        </div>
+                    </div>
+
+                    <form id="foodMenuForm" onsubmit="saveFoodMenu(event)">
+
+                        <!-- 1. MORNING TIFFIN -->
+                        <div class="meal-section-box">
+                            <div class="meal-title-row">
+                                <div class="meal-title-badge badge-breakfast">
+                                    <span>🌅</span> Morning Tiffin / Breakfast
+                                </div>
+                                <input type="text" id="breakfastTime" class="form-input" style="width: 170px; padding: 4px 8px; font-size: 12px;" value="7:30 AM - 10:00 AM" placeholder="Timing">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label>Menu Items</label>
+                                <textarea id="breakfastItems" class="form-textarea" rows="2" placeholder="e.g. Masala Dosa, Sambar, Coconut Chutney, Tea/Coffee" oninput="updateLivePreview()" required></textarea>
+                            </div>
+
+                            <div class="special-input-wrapper">
+                                <label>⭐ Today's Tiffin Special</label>
+                                <input type="text" id="breakfastSpecial" class="form-input" placeholder="e.g. Hot Crispy Medu Vada (2 pcs) or Kesari Bath" oninput="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <!-- 2. LUNCH -->
+                        <div class="meal-section-box">
+                            <div class="meal-title-row">
+                                <div class="meal-title-badge badge-lunch">
+                                    <span>☀️</span> Homely Lunch
+                                </div>
+                                <input type="text" id="lunchTime" class="form-input" style="width: 170px; padding: 4px 8px; font-size: 12px;" value="12:30 PM - 3:00 PM" placeholder="Timing">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label>Menu Items</label>
+                                <textarea id="lunchItems" class="form-textarea" rows="2" placeholder="e.g. Steamed Rice, Dal Tadka, Aloo Gobi Fry, Tomato Rasam, Fresh Curd, Papad" oninput="updateLivePreview()" required></textarea>
+                            </div>
+
+                            <div class="special-input-wrapper">
+                                <label>⭐ Today's Lunch Special</label>
+                                <input type="text" id="lunchSpecial" class="form-input" placeholder="e.g. Chicken Dum Biryani / Paneer Butter Masala" oninput="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <!-- 3. DINNER -->
+                        <div class="meal-section-box">
+                            <div class="meal-title-row">
+                                <div class="meal-title-badge badge-dinner">
+                                    <span>🌙</span> Night Dinner
+                                </div>
+                                <input type="text" id="dinnerTime" class="form-input" style="width: 170px; padding: 4px 8px; font-size: 12px;" value="7:30 PM - 10:00 PM" placeholder="Timing">
+                            </div>
+
+                            <div class="form-group" style="margin-bottom: 10px;">
+                                <label>Menu Items</label>
+                                <textarea id="dinnerItems" class="form-textarea" rows="2" placeholder="e.g. Soft Phulkas (3 pcs), Mix Veg Curry, Jeera Rice, Dal Fry, Buttermilk" oninput="updateLivePreview()" required></textarea>
+                            </div>
+
+                            <div class="special-input-wrapper">
+                                <label>⭐ Today's Dinner Special</label>
+                                <input type="text" id="dinnerSpecial" class="form-input" placeholder="e.g. Gulab Jamun / Fruit Custard" oninput="updateLivePreview()">
+                            </div>
+                        </div>
+
+                        <!-- 4. SPECIAL ANNOUNCEMENT & FEAST TOGGLE -->
+                        <div class="form-group">
+                            <label>📢 Special Announcement / Chef Note</label>
+                            <input type="text" id="specialAnnouncement" class="form-input" placeholder="e.g. Sunday Royal Feast: Extra Biryani Counter open till 3:30 PM!" oninput="updateLivePreview()">
+                        </div>
+
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 22px;">
+                            <input type="checkbox" id="isFeastDay" style="width: 18px; height: 18px; cursor: pointer;" onchange="updateLivePreview()">
+                            <label for="isFeastDay" style="margin: 0; font-size: 14px; font-weight: 700; cursor: pointer; color: #b45309;">
+                                🏆 Mark as Special Feast Day (Highlights banner on student portal)
+                            </label>
+                        </div>
+
+                        <button type="submit" class="btn-primary" id="saveMenuBtn">
+                            <i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i>
+                            Save & Publish Menu to Residents
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- RIGHT: Live Resident Preview -->
+            <div>
+                <div style="position: sticky; top: 20px;">
+                    <div class="resident-preview-container">
+                        <div class="preview-top-bar">
+                            <span>📱 RESIDENT PORTAL LIVE PREVIEW</span>
+                            <span style="color: #4ade80;">● Strictly Read-Only</span>
+                        </div>
+
+                        <div class="preview-content">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                                <div>
+                                    <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: #0f172a;">Today's Mess Menu</h3>
+                                    <span id="prevDateDay" style="font-size: 13px; color: #64748b; font-weight: 600;">--</span>
+                                </div>
+                                <span id="prevFeastBadge" style="display: none; background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 12px; font-size: 11.5px; font-weight: 800;">
+                                    🎉 FEAST DAY
+                                </span>
+                            </div>
+
+                            <!-- Announcement Banner -->
+                            <div id="prevAnnounceBox" style="display: none; background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 10px 12px; margin-bottom: 14px; font-size: 12.5px; color: #1e40af; font-weight: 600;">
+                                📢 <span id="prevAnnounceText"></span>
+                            </div>
+
+                            <!-- Breakfast Card -->
+                            <div class="preview-meal-card">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                    <strong style="color: #b45309; font-size: 14px;">🌅 Morning Tiffin</strong>
+                                    <span id="prevBTime" style="font-size: 11.5px; color: #64748b; font-weight: 600;">7:30 AM - 10:00 AM</span>
+                                </div>
+                                <div id="prevBItems" style="font-size: 13px; color: #334155; line-height: 1.4;">--</div>
+                                <div id="prevBSpecialBox" class="preview-special-pill" style="display: none;">
+                                    ⭐ <span>Special: <strong id="prevBSpecialText"></strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Lunch Card -->
+                            <div class="preview-meal-card">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                    <strong style="color: #1e40af; font-size: 14px;">☀️ Homely Lunch</strong>
+                                    <span id="prevLTime" style="font-size: 11.5px; color: #64748b; font-weight: 600;">12:30 PM - 3:00 PM</span>
+                                </div>
+                                <div id="prevLItems" style="font-size: 13px; color: #334155; line-height: 1.4;">--</div>
+                                <div id="prevLSpecialBox" class="preview-special-pill" style="display: none;">
+                                    ⭐ <span>Special: <strong id="prevLSpecialText"></strong></span>
+                                </div>
+                            </div>
+
+                            <!-- Dinner Card -->
+                            <div class="preview-meal-card">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 6px;">
+                                    <strong style="color: #6d28d9; font-size: 14px;">🌙 Night Dinner</strong>
+                                    <span id="prevDTime" style="font-size: 11.5px; color: #64748b; font-weight: 600;">7:30 PM - 10:00 PM</span>
+                                </div>
+                                <div id="prevDItems" style="font-size: 13px; color: #334155; line-height: 1.4;">--</div>
+                                <div id="prevDSpecialBox" class="preview-special-pill" style="display: none;">
+                                    ⭐ <span>Special: <strong id="prevDSpecialText"></strong></span>
+                                </div>
+                            </div>
+
+                            <div style="text-align: center; margin-top: 10px;">
+                                <span style="font-size: 11.5px; color: #94a3b8;">🔒 Residents cannot edit this menu. Managed exclusively by Admin.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Weekly Schedule Table -->
+        <div class="glass-card" style="margin-top: 10px;">
+            <div class="card-header-row">
+                <h2><i data-lucide="list" style="width: 20px; height: 20px; color: var(--primary);"></i> 7-Day Food Menu Schedule</h2>
+                <span style="font-size: 12.5px; color: #64748b;">Click on any row to edit that day's menu</span>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table class="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>Date & Day</th>
+                            <th>Morning Tiffin</th>
+                            <th>Homely Lunch</th>
+                            <th>Night Dinner</th>
+                            <th>Specials</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weeklyTableBody">
+                        <tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">Loading schedule...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+        const presets = {
+            sunday: {
+                breakfast: "Ghee Masala Dosa, Hot Sambar, Allam Chutney, Filter Coffee",
+                bSpecial: "Crispy Medu Vada (2 pcs)",
+                lunch: "Hyderabadi Chicken Dum Biryani / Paneer Biryani, Mirchi Ka Salan, Raita, Gulab Jamun",
+                lSpecial: "Sunday Royal Feast: Biryani & Ice Cream",
+                dinner: "Butter Phulka (3 pcs), Kadai Paneer, Jeera Rice, Dal Tadka, Fruit Custard",
+                dSpecial: "Fruit Custard & Sweet Corn Soup",
+                announce: "🎉 Sunday Special Feast Day: Special Biryani Counter open till 3:30 PM!",
+                isFeast: true
+            },
+            south: {
+                breakfast: "Steamed Idli (3 pcs), Vada, Coconut Chutney, Tomato Chutney, Tea/Coffee",
+                bSpecial: "Carrot Halwa / Kesari Bath",
+                lunch: "Steamed Sona Masoori Rice, Dal Palak, Aloo Gobi Fry, Tomato Rasam, Fresh Curd, Appalam",
+                lSpecial: "Special Aloo Gobi Dry Fry",
+                dinner: "Soft Chapatis, Mix Veg Kurma, Veg Pulao, Dal Fry, Buttermilk",
+                dSpecial: "Semiya Payasam (Kheer)",
+                announce: "Authentic South Indian Homely Meals served with fresh curd.",
+                isFeast: false
+            },
+            north: {
+                breakfast: "Puri Sabzi (3 puris) with Aloo Masala, Poha, Coconut Chutney, Tea/Coffee",
+                bSpecial: "Hot Sweet Jalebi",
+                lunch: "Steamed Rice, Dal Makhani, Paneer Butter Masala, Jeera Rice, Curd, Fryums",
+                lSpecial: "Rich Dal Makhani & Paneer",
+                dinner: "Tawa Paratha, Chana Masala, Veg Pulao, Dal Tadka, Cut Fruits",
+                dSpecial: "Gulab Jamun Sweet",
+                announce: "North-Indian Special menu with rich gravies and sweets.",
+                isFeast: false
+            },
+            chinese: {
+                breakfast: "Rava Dosa / Onion Uttapam, Coconut Chutney, Sambar, Tea/Coffee",
+                bSpecial: "Crispy Onion Pakoda",
+                lunch: "Bagara Rice, Dal Tadka, Meal Maker / Soya Chunks Curry, Mirchi Bhajji, Curd",
+                lSpecial: "Telangana Bagara Rice & Dal",
+                dinner: "Ghee Chapatis, Veg Manchurian Gravy, Fried Rice, Sweet Corn Soup",
+                dSpecial: "Indo-Chinese Fusion Night",
+                announce: "Saturday night Indo-Chinese dinner special!",
+                isFeast: false
+            }
+        };
+
+        function applyPreset(key) {
+            const p = presets[key];
+            if (!p) return;
+            document.getElementById('breakfastItems').value = p.breakfast;
+            document.getElementById('breakfastSpecial').value = p.bSpecial;
+            document.getElementById('lunchItems').value = p.lunch;
+            document.getElementById('lunchSpecial').value = p.lSpecial;
+            document.getElementById('dinnerItems').value = p.dinner;
+            document.getElementById('dinnerSpecial').value = p.dSpecial;
+            document.getElementById('specialAnnouncement').value = p.announce;
+            document.getElementById('isFeastDay').checked = p.isFeast;
+            updateLivePreview();
+        }
+
+        async function onDateChanged() {
+            const dateVal = document.getElementById('menuDateInput').value;
+            if (!dateVal) return;
+
+            const parts = dateVal.split("-");
+            const dt = new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2]));
+            const dayName = daysOfWeek[dt.getDay()];
+            document.getElementById('dayNameInput').value = dayName;
+
+            // Fetch existing data for this date if present
+            try {
+                const res = await fetch(`/api/food-menu/date/${dateVal}`);
+                const data = await res.json();
+                if (data && data.success && data.menu) {
+                    const m = data.menu;
+                    document.getElementById('breakfastItems').value = m.breakfast_items || "";
+                    document.getElementById('breakfastSpecial').value = m.breakfast_special || "";
+                    document.getElementById('breakfastTime').value = m.breakfast_time || "7:30 AM - 10:00 AM";
+                    document.getElementById('lunchItems').value = m.lunch_items || "";
+                    document.getElementById('lunchSpecial').value = m.lunch_special || "";
+                    document.getElementById('lunchTime').value = m.lunch_time || "12:30 PM - 3:00 PM";
+                    document.getElementById('dinnerItems').value = m.dinner_items || "";
+                    document.getElementById('dinnerSpecial').value = m.dinner_special || "";
+                    document.getElementById('dinnerTime').value = m.dinner_time || "7:30 PM - 10:00 PM";
+                    document.getElementById('specialAnnouncement').value = m.special_announcement || "";
+                    document.getElementById('isFeastDay').checked = Boolean(m.is_feast_day);
+                } else {
+                    // Pre-fill smart defaults based on day
+                    if (dayName === "Sunday") applyPreset('sunday');
+                    else if (dayName === "Saturday") applyPreset('chinese');
+                    else if (dayName === "Tuesday" || dayName === "Thursday") applyPreset('north');
+                    else applyPreset('south');
+                }
+            } catch (e) {
+                console.warn("Could not load date menu:", e);
+            }
+
+            updateLivePreview();
+        }
+
+        function updateLivePreview() {
+            const dateVal = document.getElementById('menuDateInput').value;
+            const dayName = document.getElementById('dayNameInput').value;
+            document.getElementById('prevDateDay').textContent = `${dayName}, ${dateVal}`;
+
+            const isFeast = document.getElementById('isFeastDay').checked;
+            document.getElementById('prevFeastBadge').style.display = isFeast ? "inline-block" : "none";
+
+            const ann = document.getElementById('specialAnnouncement').value.trim();
+            const annBox = document.getElementById('prevAnnounceBox');
+            if (ann) {
+                document.getElementById('prevAnnounceText').textContent = ann;
+                annBox.style.display = "block";
+            } else {
+                annBox.style.display = "none";
+            }
+
+            // Breakfast
+            document.getElementById('prevBTime').textContent = document.getElementById('breakfastTime').value || "7:30 AM - 10:00 AM";
+            document.getElementById('prevBItems').textContent = document.getElementById('breakfastItems').value || "No items listed yet";
+            const bSpec = document.getElementById('breakfastSpecial').value.trim();
+            const bSpecBox = document.getElementById('prevBSpecialBox');
+            if (bSpec) {
+                document.getElementById('prevBSpecialText').textContent = bSpec;
+                bSpecBox.style.display = "flex";
+            } else {
+                bSpecBox.style.display = "none";
+            }
+
+            // Lunch
+            document.getElementById('prevLTime').textContent = document.getElementById('lunchTime').value || "12:30 PM - 3:00 PM";
+            document.getElementById('prevLItems').textContent = document.getElementById('lunchItems').value || "No items listed yet";
+            const lSpec = document.getElementById('lunchSpecial').value.trim();
+            const lSpecBox = document.getElementById('prevLSpecialBox');
+            if (lSpec) {
+                document.getElementById('prevLSpecialText').textContent = lSpec;
+                lSpecBox.style.display = "flex";
+            } else {
+                lSpecBox.style.display = "none";
+            }
+
+            // Dinner
+            document.getElementById('prevDTime').textContent = document.getElementById('dinnerTime').value || "7:30 PM - 10:00 PM";
+            document.getElementById('prevDItems').textContent = document.getElementById('dinnerItems').value || "No items listed yet";
+            const dSpec = document.getElementById('dinnerSpecial').value.trim();
+            const dSpecBox = document.getElementById('prevDSpecialBox');
+            if (dSpec) {
+                document.getElementById('prevDSpecialText').textContent = dSpec;
+                dSpecBox.style.display = "flex";
+            } else {
+                dSpecBox.style.display = "none";
+            }
+        }
+
+        async function saveFoodMenu(e) {
+            e.preventDefault();
+            const saveBtn = document.getElementById('saveMenuBtn');
+            saveBtn.disabled = true;
+            saveBtn.innerHTML = '<span>Saving to Portal...</span>';
+
+            const payload = {
+                menu_date: document.getElementById('menuDateInput').value,
+                day_name: document.getElementById('dayNameInput').value,
+                breakfast_items: document.getElementById('breakfastItems').value,
+                breakfast_special: document.getElementById('breakfastSpecial').value,
+                breakfast_time: document.getElementById('breakfastTime').value,
+                lunch_items: document.getElementById('lunchItems').value,
+                lunch_special: document.getElementById('lunchSpecial').value,
+                lunch_time: document.getElementById('lunchTime').value,
+                dinner_items: document.getElementById('dinnerItems').value,
+                dinner_special: document.getElementById('dinnerSpecial').value,
+                dinner_time: document.getElementById('dinnerTime').value,
+                special_announcement: document.getElementById('specialAnnouncement').value,
+                is_feast_day: document.getElementById('isFeastDay').checked ? 1 : 0
+            };
+
+            try {
+                const res = await fetch('/api/food-menu/update', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i> Save & Publish Menu to Residents';
+                lucide.createIcons();
+
+                if (res.ok && data.success) {
+                    const status = document.getElementById('saveStatus');
+                    status.style.display = "inline-block";
+                    status.textContent = data.message || "✓ Updated!";
+                    setTimeout(() => { status.style.display = "none"; }, 4000);
+                    loadWeeklyTable();
+                } else {
+                    alert("Error saving menu: " + (data.error || "Failed"));
+                }
+            } catch (err) {
+                saveBtn.disabled = false;
+                saveBtn.innerHTML = '<i data-lucide="check-circle-2" style="width: 18px; height: 18px;"></i> Save & Publish Menu to Residents';
+                lucide.createIcons();
+                alert("Network error updating menu.");
+            }
+        }
+
+        async function loadWeeklyTable() {
+            try {
+                const res = await fetch('/api/food-menu/week');
+                const data = await res.json();
+                const tbody = document.getElementById('weeklyTableBody');
+
+                if (data && data.success && data.menus && data.menus.length > 0) {
+                    tbody.innerHTML = data.menus.map(m => {
+                        const specials = [
+                            m.breakfast_special ? `🌅 ${m.breakfast_special}` : null,
+                            m.lunch_special ? `☀️ ${m.lunch_special}` : null,
+                            m.dinner_special ? `🌙 ${m.dinner_special}` : null
+                        ].filter(Boolean).join("<br>");
+
+                        return `
+                            <tr style="cursor: pointer;" onclick="selectDateToEdit('${m.menu_date}')">
+                                <td>
+                                    <strong>${m.day_name}</strong><br>
+                                    <span style="font-size: 12px; color: #64748b;">${m.menu_date}</span>
+                                    ${m.is_feast_day ? '<br><span style="font-size: 11px; color: #b45309; font-weight: 800;">🎉 FEAST</span>' : ''}
+                                </td>
+                                <td style="max-width: 220px; font-size: 12.5px; color: #334155;">${m.breakfast_items || '--'}</td>
+                                <td style="max-width: 240px; font-size: 12.5px; color: #334155;">${m.lunch_items || '--'}</td>
+                                <td style="max-width: 240px; font-size: 12.5px; color: #334155;">${m.dinner_items || '--'}</td>
+                                <td style="font-size: 12px; color: #b45309; font-weight: 600;">${specials || 'Standard'}</td>
+                                <td>
+                                    <button type="button" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer;">
+                                        Edit
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+                    }).join("");
+                } else {
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 20px;">No menus scheduled yet.</td></tr>';
+                }
+            } catch (e) {
+                console.warn("Could not load weekly schedule:", e);
+            }
+        }
+
+        function selectDateToEdit(dateStr) {
+            document.getElementById('menuDateInput').value = dateStr;
+            onDateChanged();
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        window.addEventListener('load', () => {
+            lucide.createIcons();
+            // Set default date to today
+            const todayStr = new Date().toISOString().split("T")[0];
+            document.getElementById('menuDateInput').value = todayStr;
+            onDateChanged();
+            loadWeeklyTable();
+        });
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+</html>

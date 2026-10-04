@@ -1,0 +1,2581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Admission & Registration | HostelHub</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --primary-light: #EEF2FF;
+            --secondary: #10B981;
+            --dark: #0F172A;
+            --card-bg: #FFFFFF;
+            --border-color: #E2E8F0;
+            --text-main: #1E293B;
+            --text-muted: #64748B;
+            --bg-color: #F8FAFC;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background: linear-gradient(135deg, #F0F4FF 0%, #F8FAFC 50%, #EEF2F6 100%);
+            color: var(--text-main);
+            min-height: 100vh;
+            padding-bottom: 60px;
+        }
+
+        /* Top Header */
+        .top-nav {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            padding: 14px 24px;
+        }
+
+        .nav-inner {
+            max-width: 1040px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--dark);
+        }
+
+        .brand-badge {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary) 0%, #7C3AED 100%);
+            color: white;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .brand-title {
+            font-size: 19px;
+            font-weight: 800;
+            letter-spacing: -0.3px;
+        }
+
+        .brand-subtitle {
+            display: block;
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .btn-nav-login {
+            background: white;
+            border: 1.5px solid var(--border-color);
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 13.5px;
+            padding: 8px 18px;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+
+        .btn-nav-login:hover {
+            background: var(--primary-light);
+            border-color: var(--primary);
+        }
+
+        /* Main Container */
+        .register-container {
+            max-width: 880px;
+            margin: 32px auto;
+            padding: 0 20px;
+        }
+
+        .register-hero {
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--primary-light);
+            color: var(--primary);
+            font-size: 12px;
+            font-weight: 800;
+            padding: 4px 14px;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 10px;
+        }
+
+        .register-hero h1 {
+            font-size: 32px;
+            font-weight: 800;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .register-hero p {
+            color: var(--text-muted);
+            font-size: 14.5px;
+            max-width: 620px;
+            margin: 0 auto;
+            line-height: 1.5;
+        }
+
+        /* Interactive Step Progress Bar */
+        .steps-progress-card {
+            background: white;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            padding: 20px 28px;
+            margin-bottom: 24px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, 0.04);
+        }
+
+        .steps-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .steps-bar::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            right: 50px;
+            height: 3px;
+            background: #E2E8F0;
+            z-index: 1;
+        }
+
+        .steps-progress-line {
+            position: absolute;
+            top: 20px;
+            left: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4F46E5, #10B981);
+            z-index: 2;
+            transition: width 0.4s ease;
+            width: 0%;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 3;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            background: white;
+            padding: 0 10px;
+            cursor: default;
+        }
+
+        .step-bubble {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: #F1F5F9;
+            color: #94A3B8;
+            border: 2px solid #E2E8F0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 15px;
+            transition: all 0.3s;
+            margin-bottom: 8px;
+        }
+
+        .step-item.active .step-bubble {
+            background: #4F46E5;
+            color: white;
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 5px rgba(79, 70, 229, 0.2);
+        }
+
+        .step-item.completed .step-bubble {
+            background: #10B981;
+            color: white;
+            border-color: #10B981;
+        }
+
+        .step-label {
+            font-size: 12.5px;
+            font-weight: 700;
+            color: #94A3B8;
+            transition: color 0.3s;
+        }
+
+        .step-item.active .step-label {
+            color: #4F46E5;
+        }
+
+        .step-item.completed .step-label {
+            color: #10B981;
+        }
+
+        /* Step Card Container */
+        .wizard-step-section {
+            display: none;
+            animation: fadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .wizard-step-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .register-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+            overflow: hidden;
+            margin-bottom: 24px;
+        }
+
+        .step-header {
+            padding: 26px 34px 20px;
+            border-bottom: 1px solid var(--border-color);
+            background: linear-gradient(180deg, #FFFFFF 0%, #F8FAFC 100%);
+        }
+
+        .step-header h2 {
+            font-size: 20px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .step-header p {
+            font-size: 13.5px;
+            color: var(--text-muted);
+        }
+
+        .step-body {
+            padding: 32px 34px;
+        }
+
+        /* Form Controls */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-col-full {
+            grid-column: 1 / -1;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-group label .req {
+            color: #EF4444;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: #94A3B8;
+            font-size: 14px;
+            pointer-events: none;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            height: 48px;
+            padding: 0 14px 0 40px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: inherit;
+            color: var(--text-main);
+            background: white;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus, .form-select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 14px;
+            background: none;
+            border: none;
+            color: #94A3B8;
+            cursor: pointer;
+            font-size: 15px;
+        }
+
+        .toggle-password-btn:hover {
+            color: var(--text-main);
+        }
+
+        /* Shadcn / Radix Style InputOTP Card Component */
+        .shadcn-otp-card {
+            width: 100%;
+            max-width: 460px;
+            margin: 22px auto 0;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            border-radius: 16px;
+            padding: 28px 24px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .shadcn-otp-header {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 14px;
+            text-align: center;
+        }
+
+        .shadcn-icon-glow {
+            position: relative;
+            width: 72px;
+            height: 72px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+        }
+
+        .shadcn-icon-circle {
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            background: #FFFFFF;
+            border: 1px solid #E2E8F0;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #4F46E5;
+        }
+
+        .shadcn-otp-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #0F172A;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        .shadcn-otp-desc {
+            font-size: 13.5px;
+            color: #64748B;
+            margin: 4px 0 0 0;
+            letter-spacing: -0.006em;
+            line-height: 1.45;
+        }
+
+        .shadcn-separator {
+            height: 1px;
+            background: #E2E8F0;
+            width: 100%;
+            border: none;
+            margin: 2px 0;
+        }
+
+        /* 6 InputOTP Slots */
+        .shadcn-otp-group {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 12px 0 6px;
+        }
+
+        .shadcn-otp-slot {
+            width: 52px;
+            height: 56px;
+            border: 1.5px solid #CBD5E1;
+            border-radius: 10px;
+            font-size: 22px;
+            font-weight: 700;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            text-align: center;
+            color: #0F172A;
+            background: #FFFFFF;
+            outline: none;
+            transition: all 0.15s ease-in-out;
+        }
+
+        .shadcn-otp-slot:focus {
+            border-color: #4F46E5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.18);
+            transform: translateY(-1px);
+        }
+
+        .shadcn-otp-slot.filled {
+            border-color: #475569;
+            background: #F8FAFC;
+        }
+
+        .shadcn-btn-continue {
+            width: 100%;
+            height: 46px;
+            background: #0F172A;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 10px;
+            font-size: 14.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, 0.1);
+            margin-top: 10px;
+        }
+
+        .shadcn-btn-continue:hover {
+            background: #1E293B;
+            transform: translateY(-1px);
+        }
+
+        .shadcn-btn-continue:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .shadcn-otp-footer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-size: 13px;
+            color: #64748B;
+            flex-wrap: wrap;
+        }
+
+        .shadcn-link-btn {
+            background: none;
+            border: none;
+            color: #4F46E5;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+        }
+
+        .shadcn-link-btn:hover {
+            color: #4338CA;
+        }
+
+        /* Verified Gmail Banner */
+        .verified-badge-banner {
+            background: #ECFDF5;
+            border: 1px solid #A7F3D0;
+            border-radius: 14px;
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 16px;
+        }
+
+        .verified-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #065F46;
+            font-weight: 700;
+            font-size: 14px;
+        }
+
+        /* ID Upload Dropzone */
+        .id-upload-dropzone {
+            border: 2px dashed #C7D2FE;
+            border-radius: 14px;
+            background: #FFFFFF;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .id-upload-dropzone:hover {
+            border-color: #4F46E5;
+            background: #F8FAFC;
+            box-shadow: 0 4px 14px rgba(79, 70, 229, 0.08);
+        }
+
+        .id-upload-dropzone.dragover {
+            border-color: #2563EB;
+            background: #EFF6FF;
+        }
+
+        /* Room Selection Cards */
+        .rooms-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .room-card {
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            background: white;
+        }
+
+        .room-card:hover {
+            border-color: #CBD5E1;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(15, 23, 42, 0.05);
+        }
+
+        .room-card.selected {
+            border-color: var(--primary);
+            background: #F5F7FF;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.2);
+        }
+
+        .room-card.full {
+            opacity: 0.55;
+            cursor: not-allowed;
+            background: #F8FAFC;
+        }
+
+        .room-card-head {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 8px;
+        }
+
+        .room-number-title {
+            font-size: 17px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .room-ac-pill {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        .room-ac-pill.ac {
+            background: #EFF6FF;
+            color: #2563EB;
+            border: 1px solid #BFDBFE;
+        }
+
+        .room-ac-pill.non-ac {
+            background: #F1F5F9;
+            color: #475569;
+            border: 1px solid #CBD5E1;
+        }
+
+        .room-details-text {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .room-bottom-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 10px;
+            border-top: 1px solid #E2E8F0;
+        }
+
+        .room-rent-tag {
+            font-size: 15px;
+            font-weight: 800;
+            color: #0F172A;
+        }
+
+        .room-rent-tag span {
+            font-size: 11px;
+            font-weight: 600;
+            color: #64748B;
+        }
+
+        .room-beds-pill {
+            font-size: 11.5px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+
+        .beds-available {
+            background: #DCFCE7;
+            color: #166534;
+        }
+
+        .beds-full {
+            background: #FEE2E2;
+            color: #991B1B;
+        }
+
+        /* Option cards for Occupation */
+        .option-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .option-card {
+            border: 2px solid var(--border-color);
+            border-radius: 14px;
+            padding: 16px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .option-card:hover {
+            border-color: #CBD5E1;
+            transform: translateY(-2px);
+        }
+
+        .option-card.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+
+        .option-card .opt-icon {
+            font-size: 22px;
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        .option-card .opt-title {
+            font-size: 13.5px;
+            font-weight: 800;
+            color: var(--dark);
+        }
+
+        .option-card .opt-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Stay type selector */
+        .stay-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .stay-card {
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 18px;
+            display: flex;
+            align-items: flex-start;
+            gap: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .stay-card:hover {
+            border-color: #CBD5E1;
+        }
+
+        .stay-card.selected {
+            border-color: var(--primary);
+            background: #F8FAFF;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+        }
+
+        .stay-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 19px;
+            flex-shrink: 0;
+        }
+
+        .stay-card h4 {
+            font-size: 15px;
+            font-weight: 800;
+            color: var(--dark);
+            margin-bottom: 4px;
+        }
+
+        .stay-card p {
+            font-size: 12px;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .stay-badge {
+            display: inline-block;
+            font-size: 11.5px;
+            font-weight: 800;
+            color: #065F46;
+            background: #D1FAE5;
+            padding: 2px 8px;
+            border-radius: 6px;
+        }
+
+        /* Summary Preview Card */
+        .admission-summary-box {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            color: white;
+            border-radius: 18px;
+            padding: 22px 26px;
+            margin-top: 24px;
+        }
+
+        .summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+            padding-bottom: 12px;
+            margin-bottom: 16px;
+        }
+
+        .summary-header h4 {
+            font-size: 15px;
+            font-weight: 800;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #93C5FD;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .summary-items-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 14px;
+            margin-bottom: 16px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 10px 14px;
+        }
+
+        .summary-item .label {
+            font-size: 11px;
+            color: #94A3B8;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .summary-item .value {
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-top: 3px;
+        }
+
+        .summary-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-top: 14px;
+            border-top: 1px solid rgba(255, 255, 255, 0.12);
+        }
+
+        .summary-rent-val {
+            font-size: 22px;
+            font-weight: 800;
+            color: #34D399;
+        }
+
+        /* Wizard Nav Buttons */
+        .step-footer-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 34px;
+            background: #F8FAFC;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-wizard-next, .btn-wizard-submit {
+            background: linear-gradient(135deg, var(--primary) 0%, #4338CA 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            box-shadow: 0 6px 18px rgba(79, 70, 229, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s;
+            margin-left: auto;
+        }
+
+        .btn-wizard-next:hover, .btn-wizard-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 22px rgba(79, 70, 229, 0.45);
+        }
+
+        .btn-wizard-next:disabled, .btn-wizard-submit:disabled {
+            background: #94A3B8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-wizard-back {
+            background: white;
+            color: var(--text-main);
+            border: 1.5px solid var(--border-color);
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .btn-wizard-back:hover {
+            background: #F1F5F9;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            padding: 14px 22px;
+            background: #0F172A;
+            color: white;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 999;
+            transform: translateY(40px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            pointer-events: none;
+            max-width: 440px;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .toast.error { background: #DC2626; }
+        .toast.success { background: #059669; }
+
+        @media (max-width: 768px) {
+            .form-grid, .stay-type-grid, .option-cards-grid, .summary-items-grid {
+                grid-template-columns: 1fr;
+            }
+            .step-header, .step-body, .step-footer-actions {
+                padding: 20px;
+            }
+            .steps-bar::before, .steps-progress-line {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="top-nav">
+        <div class="nav-inner">
+            <a href="/" class="nav-brand">
+                <div class="brand-badge">
+                    <i class="fa-solid fa-hotel"></i>
+                </div>
+                <div>
+                    <span class="brand-title">HostelHub</span>
+                    <span class="brand-subtitle">Resident Admission & PG System</span>
+                </div>
+            </a>
+            <div>
+                <a href="/login" class="btn-nav-login">
+                    <i class="fa-solid fa-arrow-right-to-bracket mr-1"></i> Sign In
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="register-container">
+
+        <div class="register-hero">
+            <div class="hero-tag">
+                <i class="fa-solid fa-id-card"></i> Official Resident Admission
+            </div>
+            <h1>Hostel Registration & Admission</h1>
+            <p>
+                Follow the 3 simple steps below: Verify your Gmail with OTP, create your login password, and select your preferred room & entry details.
+            </p>
+        </div>
+
+        <!-- Interactive Step Progress Bar -->
+        <div class="steps-progress-card">
+            <div class="steps-bar">
+                <div class="steps-progress-line" id="stepsProgressLine"></div>
+
+                <!-- Step 1 Indicator -->
+                <div class="step-item active" id="stepIndicator1">
+                    <div class="step-bubble" id="stepBubble1">1</div>
+                    <div class="step-label">Verify Gmail (OTP)</div>
+                </div>
+
+                <!-- Step 2 Indicator -->
+                <div class="step-item" id="stepIndicator2">
+                    <div class="step-bubble" id="stepBubble2">2</div>
+                    <div class="step-label">Create Password</div>
+                </div>
+
+                <!-- Step 3 Indicator -->
+                <div class="step-item" id="stepIndicator3">
+                    <div class="step-bubble" id="stepBubble3">3</div>
+                    <div class="step-label">Room & Stay Details</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- THE 3-STEP WIZARD FORM -->
+        <form id="admissionWizardForm" onsubmit="handleFinalRegistration(event)">
+
+            <!-- ========================================== -->
+            <!-- STEP 1: ENTER MAIL & VERIFY WITH OTP      -->
+            <!-- ========================================== -->
+            <div class="wizard-step-section active" id="wizardStep1">
+                <div class="register-card">
+                    <div class="step-header">
+                        <h2>
+                            <i class="fa-brands fa-google text-primary" style="color: #EA4335;"></i>
+                            Step 1: Enter Gmail & Verify With OTP
+                        </h2>
+                        <p>We will send a 6-digit verification code to your Gmail to ensure future rent receipts and notices are delivered safely.</p>
+                    </div>
+
+                    <div class="step-body">
+                        <div class="form-grid">
+                            <!-- Full Name -->
+                            <div class="form-group">
+                                <label for="name">Resident Full Name <span class="req">*</span></label>
+                                <div class="input-wrapper">
+                                    <i class="fa-regular fa-user input-icon"></i>
+                                    <input
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        class="form-input"
+                                        placeholder="e.g. Abhi Pachikoru"
+                                        required
+                                        autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Mobile Phone -->
+                            <div class="form-group">
+                                <label for="phone">Mobile Phone Number <span class="req">*</span></label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-phone input-icon"></i>
+                                    <input
+                                        type="tel"
+                                        id="phone"
+                                        name="phone"
+                                        class="form-input"
+                                        placeholder="10-digit mobile number"
+                                        pattern="[0-9]{10}"
+                                        maxlength="10"
+                                        required
+                                        autocomplete="off"
+                                    >
+                                </div>
+                            </div>
+
+                            <!-- Gmail Input Field -->
+                            <div class="form-group form-col-full">
+                                <label for="email">
+                                    Google Email Address (Gmail or College Google ID) <span class="req">*</span>
+                                </label>
+                                <div class="input-wrapper">
+                                    <i class="fa-brands fa-google input-icon" style="color: #EA4335;"></i>
+                                    <input
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        class="form-input"
+                                        placeholder="yourname@gmail.com or @college.ac.in"
+                                        required
+                                        autocomplete="off"
+                                        oninput="onGmailInputChanged()"
+                                        onblur="checkEmailAlreadyRegistered()"
+                                    >
+                                </div>
+                                <div id="emailRegisteredWarning" style="display: none; margin-top: 6px; padding: 8px 12px; background: #FEF2F2; border: 1px solid #FCA5A5; border-radius: 8px; color: #991B1B; font-size: 12.5px; font-weight: 500;">
+                                    <i class="fa-solid fa-circle-exclamation"></i> <span id="emailRegisteredWarningText">This email is already registered. Please sign in instead.</span>
+                                </div>
+                                <span style="font-size: 11.5px; color: #64748B;">
+                                    🔒 Enter the Google email address you will use for signing in with Google.
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Send OTP Button Section -->
+                        <div id="sendOtpButtonSection" style="margin-top: 20px;">
+                            <button
+                                type="button"
+                                id="btnSendOtp"
+                                onclick="sendGmailVerificationOtp()"
+                                style="background: #4F46E5; color: white; border: none; padding: 12px 28px; border-radius: 12px; font-weight: 700; font-size: 14.5px; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 14px rgba(79, 70, 229, 0.3);"
+                            >
+                                <i class="fa-regular fa-paper-plane"></i>
+                                <span id="btnSendOtpText">Send 6-Digit OTP to Gmail</span>
+                            </button>
+                        </div>
+
+                        <!-- Shadcn / Radix Style InputOTP Card Component -->
+                        <div id="otpInputContainer" class="shadcn-otp-card" style="display: none;">
+                            <!-- Header with floating blurred icon circle -->
+                            <div class="shadcn-otp-header">
+                                <div class="shadcn-icon-glow">
+                                    <div class="shadcn-icon-circle">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor">
+                                            <path d="M13 19c0-3.31 2.69-6 6-6c1.1 0 2.12.3 3 .81V6a2 2 0 0 0-2-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h9.09c-.05-.33-.09-.66-.09-1M4 8V6l8 5l8-5v2l-8 5zm13.75 14.16l-2.75-3L16.16 18l1.59 1.59L21.34 16l1.16 1.41z"/>
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                <div style="display: flex; flex-direction: column; gap: 4px;">
+                                    <h3 class="shadcn-otp-title">Enter your one-time password</h3>
+                                    <p class="shadcn-otp-desc">
+                                        We've sent a 6-digit code to <strong id="otpRecipientEmail" style="color: #0F172A;">your email</strong>. Please enter it below.
+                                        <br><span style="font-size: 11.5px; color: #64748B;">(If not in your Inbox, please check your <strong>Spam / Junk</strong> folder)</span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <hr class="shadcn-separator">
+
+                            <!-- Form with 6 InputOTP Slots -->
+                            <div>
+                                <!-- Hidden full OTP input -->
+                                <input type="hidden" name="otp" id="gmailOtpInput" value="">
+
+                                <div class="shadcn-otp-group" id="otpSlotsGroup">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="0" autocomplete="one-time-code">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="1">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="2">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="3">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="4">
+                                    <input type="text" inputmode="numeric" pattern="[0-9]*" maxlength="1" class="shadcn-otp-slot" data-index="5">
+                                </div>
+
+                                <div id="otpStatusMsg" style="text-align: center; font-size: 12.5px; min-height: 18px; margin: 8px 0; font-weight: 600; color: #DC2626;"></div>
+
+                                <button
+                                    type="button"
+                                    id="btnVerifyOtp"
+                                    onclick="verifyGmailOtp()"
+                                    class="shadcn-btn-continue"
+                                >
+                                    <span>Continue</span>
+                                </button>
+                            </div>
+
+                            <hr class="shadcn-separator">
+
+                            <!-- Footer -->
+                            <div class="shadcn-otp-footer">
+                                <span>Experiencing issues receiving the code?</span>
+                                <button
+                                    type="button"
+                                    id="btnResendOtp"
+                                    onclick="sendGmailVerificationOtp(true)"
+                                    class="shadcn-link-btn"
+                                >
+                                    Resend Code
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Verified Success Banner -->
+                        <div id="verifiedSuccessBanner" class="verified-badge-banner" style="display: none;">
+                            <div class="verified-left">
+                                <i class="fa-solid fa-circle-check" style="font-size: 20px; color: #059669;"></i>
+                                <div>
+                                    <div>Gmail Verified & Active!</div>
+                                    <span id="verifiedEmailDisplay" style="font-size: 12px; font-weight: 500; color: #065F46;"></span>
+                                </div>
+                            </div>
+                            <span style="font-size: 12px; font-weight: 800; background: #D1FAE5; color: #065F46; padding: 4px 10px; border-radius: 999px;">
+                                Ready for Step 2
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="step-footer-actions">
+                        <span style="font-size: 12.5px; color: #64748B;">Step 1 of 3: Verify Gmail to continue</span>
+                        <button
+                            type="button"
+                            id="btnGoToStep2"
+                            class="btn-wizard-next"
+                            onclick="goToStep(2)"
+                            disabled
+                        >
+                            <span>Next: Create Password</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- STEP 2: CREATE YOUR LOGIN PASSWORD         -->
+            <!-- ========================================== -->
+            <div class="wizard-step-section" id="wizardStep2">
+                <div class="register-card">
+                    <div class="step-header">
+                        <h2>
+                            <i class="fa-solid fa-lock text-primary"></i>
+                            Step 2: Create Your Login Password
+                        </h2>
+                        <p>Create a secure password that you will use to log in to your resident portal anytime.</p>
+                    </div>
+
+                    <div class="step-body">
+                        <div class="form-grid">
+                            <!-- Password -->
+                            <div class="form-group">
+                                <label for="password">Create Password <span class="req">*</span></label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-lock input-icon"></i>
+                                    <input
+                                        type="password"
+                                        id="password"
+                                        name="password"
+                                        class="form-input"
+                                        placeholder="Minimum 6 characters"
+                                        minlength="6"
+                                        required
+                                        oninput="validatePasswordsMatch()"
+                                    >
+                                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('password', 'passEyeIcon1')">
+                                        <i class="fa-regular fa-eye" id="passEyeIcon1"></i>
+                                    </button>
+                                </div>
+                                <span style="font-size: 11.5px; color: #64748B;">At least 6 characters</span>
+                            </div>
+
+                            <!-- Confirm Password -->
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm Password <span class="req">*</span></label>
+                                <div class="input-wrapper">
+                                    <i class="fa-solid fa-shield-halved input-icon"></i>
+                                    <input
+                                        type="password"
+                                        id="confirm_password"
+                                        class="form-input"
+                                        placeholder="Re-enter your password"
+                                        minlength="6"
+                                        required
+                                        oninput="validatePasswordsMatch()"
+                                    >
+                                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('confirm_password', 'passEyeIcon2')">
+                                        <i class="fa-regular fa-eye" id="passEyeIcon2"></i>
+                                    </button>
+                                </div>
+                                <span id="passMatchStatus" style="font-size: 11.5px; font-weight: 700; color: #64748B;"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-footer-actions">
+                        <button type="button" class="btn-wizard-back" onclick="goToStep(1)">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Email
+                        </button>
+                        <button
+                            type="button"
+                            id="btnGoToStep3"
+                            class="btn-wizard-next"
+                            onclick="goToStep(3)"
+                            disabled
+                        >
+                            <span>Next: Choose Room & Stay Details</span>
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ========================================== -->
+            <!-- STEP 3: ROOM SELECTION, OCCUPATION, JOIN   -->
+            <!--         DATE & STAY TYPE                   -->
+            <!-- ========================================== -->
+            <div class="wizard-step-section" id="wizardStep3">
+                <div class="register-card">
+                    <div class="step-header">
+                        <h2>
+                            <i class="fa-solid fa-bed text-primary"></i>
+                            Step 3: Select Room, Occupation, Entry Date & Stay Type
+                        </h2>
+                        <p>Choose which room you want, your occupation, date of joining, and stay plan.</p>
+                    </div>
+
+                    <div class="step-body">
+
+                        <!-- 1. WHICH ROOM THEY WANT (ROOM NO) -->
+                        <div style="margin-bottom: 28px;">
+                            <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+                                <label style="font-size: 14px; font-weight: 800; color: var(--dark); display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-door-open" style="color: #4F46E5;"></i> Which Room Do You Want? (Select Room No) <span class="req">*</span>
+                                </label>
+                                <span style="font-size: 12px; color: var(--text-muted);">Loaded live from hostel inventory</span>
+                            </div>
+
+                            <!-- Hidden input for room_no -->
+                            <input type="hidden" name="room_no" id="selectedRoomInput" value="">
+
+                            <!-- Room Cards Grid -->
+                            <div id="roomsLoadingState" style="text-align: center; padding: 24px; color: #64748B;">
+                                <i class="fa-solid fa-circle-notch fa-spin text-primary mr-2"></i> Loading available hostel rooms...
+                            </div>
+                            <div class="rooms-grid" id="publicRoomsGrid" style="display: none;"></div>
+                        </div>
+
+                        <!-- 2. OCCUPATION PROFILE -->
+                        <div style="margin-bottom: 26px;">
+                            <label style="font-size: 14px; font-weight: 800; color: var(--dark); margin-bottom: 10px; display: block;">
+                                <i class="fa-solid fa-briefcase text-primary"></i> Your Occupation / What are you doing? <span class="req">*</span>
+                            </label>
+
+                            <input type="hidden" name="resident_type" id="residentTypeInput" value="Jobholder">
+
+                            <div class="option-cards-grid">
+                                <div class="option-card selected" id="optJobholder" onclick="selectOccupation('Jobholder', 'optJobholder')">
+                                    <div class="opt-icon"><i class="fa-solid fa-briefcase"></i></div>
+                                    <div class="opt-title">Job Holder</div>
+                                    <div class="opt-sub">IT / Corporate / Govt</div>
+                                </div>
+                                <div class="option-card" id="optStudent" onclick="selectOccupation('Student', 'optStudent')">
+                                    <div class="opt-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+                                    <div class="opt-title">Student</div>
+                                    <div class="opt-sub">College / Coaching</div>
+                                </div>
+                                <div class="option-card" id="optTransfer" onclick="selectOccupation('Job Transfer', 'optTransfer')">
+                                    <div class="opt-icon"><i class="fa-solid fa-building-user"></i></div>
+                                    <div class="opt-title">Job Transfer</div>
+                                    <div class="opt-sub">Temporary Posting</div>
+                                </div>
+                                <div class="option-card" id="optOther" onclick="selectOccupation('Other', 'optOther')">
+                                    <div class="opt-icon"><i class="fa-solid fa-user-gear"></i></div>
+                                    <div class="opt-title">Other Work</div>
+                                    <div class="opt-sub">Business / Freelancer</div>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group" id="groupCompany">
+                                    <label for="company_or_college" id="labelCompany">Company / Employer Name</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-regular fa-building input-icon"></i>
+                                        <input
+                                            type="text"
+                                            id="company_or_college"
+                                            name="company_or_college"
+                                            class="form-input"
+                                            placeholder="e.g. Infosys, TCS, Amazon, Deloitte"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="form-group" id="groupDesignation">
+                                    <label for="designation_or_course" id="labelDesignation">Job Title / Designation</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-id-badge input-icon"></i>
+                                        <input
+                                            type="text"
+                                            id="designation_or_course"
+                                            name="designation_or_course"
+                                            class="form-input"
+                                            placeholder="e.g. Software Engineer, Analyst"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="form-group form-col-full" id="groupOtherWork" style="display: none;">
+                                    <label for="other_work">Specify Nature of Your Work / Business</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-pen-to-square input-icon"></i>
+                                        <input
+                                            type="text"
+                                            id="other_work"
+                                            name="other_work"
+                                            class="form-input"
+                                            placeholder="Describe your trade, profession or independent work"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- MANDATORY GOVERNMENT ID PROOF (AADHAAR / PAN) -->
+                        <div style="margin-bottom: 26px; background: #F8FAFC; border: 1.5px solid #C7D2FE; border-radius: 16px; padding: 20px;">
+                            <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px;">
+                                <label style="font-size: 14px; font-weight: 800; color: var(--dark); margin: 0; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fa-solid fa-id-card" style="color: #4F46E5;"></i> Government ID Verification (Aadhaar / PAN Card) <span class="req">*</span>
+                                </label>
+                                <span style="font-size: 11.5px; background: #EEF2FF; color: #4338CA; padding: 4px 10px; border-radius: 20px; font-weight: 700; border: 1px solid #C7D2FE;">
+                                    Mandatory Verification
+                                </span>
+                            </div>
+
+                            <p style="font-size: 12.5px; color: #64748B; margin-bottom: 14px; line-height: 1.5;">
+                                Valid government-issued proof (12-digit Aadhaar Card or 10-character PAN Card) must and should be provided for room admission & police compliance.
+                            </p>
+
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="id_proof_type">Select ID Proof Type <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-address-card input-icon"></i>
+                                        <select id="id_proof_type" name="id_proof_type" class="form-select" required onchange="onIdTypeChanged()">
+                                            <option value="Aadhaar Card" selected>Aadhaar Card (12 Digits)</option>
+                                            <option value="PAN Card">PAN Card (10 Characters)</option>
+                                            <option value="Passport">Passport</option>
+                                            <option value="Voter ID">Voter ID</option>
+                                            <option value="Driving License">Driving License</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="id_proof_number">Government ID Number <span class="req">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-fingerprint input-icon" id="idProofIcon"></i>
+                                        <input
+                                            type="text"
+                                            id="id_proof_number"
+                                            name="id_proof_number"
+                                            class="form-input"
+                                            placeholder="Enter 12-digit Aadhaar (e.g. 5678 1234 9012)"
+                                            maxlength="14"
+                                            required
+                                            autocomplete="off"
+                                            oninput="validateIdProofLive(this)"
+                                        >
+                                    </div>
+                                    <span id="idProofValidationMsg" style="font-size: 11.5px; font-weight: 700; color: #64748B; margin-top: 4px; display: block;">
+                                        Must be 12 numeric digits (e.g. 5678 1234 9012)
+                                    </span>
+                                </div>
+
+                                <!-- Document Upload Area -->
+                                <div class="form-group form-col-full" style="margin-top: 14px; grid-column: span 2;">
+                                    <label style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                        <span style="font-weight: 700; color: #0F172A; font-size: 13px;">Upload Valid ID Proof Document (Photo or PDF) <span class="req">*</span></span>
+                                        <span style="font-size: 11.5px; color: #64748B;">JPG, PNG, WebP or PDF (Up to 10MB)</span>
+                                    </label>
+
+                                    <input type="hidden" name="id_proof_file" id="idProofFileInput" value="" required>
+                                    <input type="hidden" name="id_proof_filename" id="idProofFilenameInput" value="">
+                                    <input type="file" id="idProofNativeFile" accept="image/*,application/pdf" style="display: none;" onchange="handleIdProofFileSelected(event)">
+
+                                    <div id="idProofUploadBox" class="id-upload-dropzone" onclick="document.getElementById('idProofNativeFile').click()" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleDrop(event)">
+                                        <div id="idUploadEmptyState" style="text-align: center; padding: 22px 16px;">
+                                            <div style="width: 48px; height: 48px; border-radius: 12px; background: #EEF2FF; color: #4F46E5; display: inline-flex; align-items: center; justify-content: center; font-size: 20px; margin-bottom: 8px;">
+                                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                            </div>
+                                            <div style="font-weight: 700; font-size: 13.5px; color: #0F172A; margin-bottom: 3px;">Click to Browse or Drag & Drop Document Copy</div>
+                                            <div style="font-size: 11.5px; color: #64748B;">Clear photo of Aadhaar (front/back) or PAN card is mandatory for police verification.</div>
+                                        </div>
+
+                                        <div id="idUploadActiveState" style="display: none; padding: 14px 18px; align-items: center; justify-content: space-between; gap: 14px; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px;">
+                                            <div style="display: flex; align-items: center; gap: 12px;">
+                                                <div id="idUploadThumbnail" style="width: 44px; height: 44px; border-radius: 8px; background: #DCFCE7; color: #15803D; display: flex; align-items: center; justify-content: center; font-size: 20px; overflow: hidden; flex-shrink: 0;">
+                                                    <i class="fa-solid fa-file-pdf"></i>
+                                                </div>
+                                                <div>
+                                                    <div id="idUploadedFileName" style="font-weight: 700; font-size: 13.5px; color: #14532D; word-break: break-all;">document.pdf</div>
+                                                    <div style="font-size: 11.5px; color: #15803D; font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                                        <i class="fa-solid fa-circle-check"></i> <span id="idUploadedFileSize">1.2 MB</span> • Verified & Ready
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="event.stopPropagation(); removeUploadedIdProof();" style="background: white; border: 1px solid #FCA5A5; color: #DC2626; border-radius: 8px; padding: 6px 12px; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 4px;">
+                                                <i class="fa-solid fa-trash-can"></i> Remove
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    <div style="margin-top: 8px; font-size: 11.5px; color: #475569; display: flex; align-items: center; gap: 8px; background: #F1F5F9; padding: 8px 12px; border-radius: 8px;">
+                                        <i class="fa-solid fa-shield-halved" style="color: #2563EB; font-size: 14px;"></i>
+                                        <span><strong>Security & Confidentiality:</strong> Your uploaded document is stored in an encrypted private directory. It can <strong>only</strong> be viewed by you and authorized hostel admins. Other residents or third parties cannot access it.</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. DATE OF JOIN / HOSTEL ENTRY DATE -->
+                        <div style="margin-bottom: 26px;">
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="entry_date" style="color: #4F46E5; font-weight: 800;">
+                                        <i class="fa-regular fa-calendar-check"></i> Date of Join (Hostel Entry Date) <span class="req">*</span>
+                                    </label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-calendar-day input-icon" style="color: #4F46E5;"></i>
+                                        <input
+                                            type="date"
+                                            id="entry_date"
+                                            name="entry_date"
+                                            class="form-input"
+                                            style="border-color: #C7D2FE; font-weight: 700;"
+                                            required
+                                            onchange="updateSummaryPreview()"
+                                        >
+                                    </div>
+                                    <span style="font-size: 11.5px; color: #64748B;">Date when you plan to join and move into the room</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="native_city">Hometown / Native City</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-location-dot input-icon"></i>
+                                        <input
+                                            type="text"
+                                            id="native_city"
+                                            name="native_city"
+                                            class="form-input"
+                                            placeholder="e.g. Hyderabad, Vijayawada, Bangalore"
+                                        >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. MONTHLY STAY OR DAILY STAY -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="font-size: 14px; font-weight: 800; color: var(--dark); margin-bottom: 10px; display: block;">
+                                <i class="fa-solid fa-clock-rotate-left text-primary"></i> Stay Type: Monthly Stay or Daily Stay <span class="req">*</span>
+                            </label>
+
+                            <input type="hidden" name="stay_type" id="stayTypeInput" value="Monthly Stay">
+
+                            <div class="stay-type-grid">
+                                <div class="stay-card selected" id="stayMonthlyCard" onclick="selectStayType('Monthly Stay', 'stayMonthlyCard')">
+                                    <div class="stay-icon"><i class="fa-regular fa-calendar-days"></i></div>
+                                    <div>
+                                        <h4>Monthly Stay (Standard)</h4>
+                                        <p>Month-to-month regular accommodation. Best for jobholders & students.</p>
+                                        <span class="stay-badge" id="monthlyBadgeRent">₹6,500 / month approx</span>
+                                    </div>
+                                </div>
+
+                                <div class="stay-card" id="stayDailyCard" onclick="selectStayType('Daily Stay (Days)', 'stayDailyCard')">
+                                    <div class="stay-icon" style="background: #E0E7FF; color: #4338CA;"><i class="fa-solid fa-clock"></i></div>
+                                    <div>
+                                        <h4>Daily Stay (Days)</h4>
+                                        <p>Short-term per-day stay for exams, interviews, temporary tasks.</p>
+                                        <span class="stay-badge" style="background: #EDE9FE; color: #6D28D9;">₹500 / day rate</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-grid">
+                                <div class="form-group" id="groupMonthlyDuration">
+                                    <label for="stay_months">Monthly Stay Plan</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-infinity input-icon" style="color: var(--primary);"></i>
+                                        <select id="stay_months" name="stay_months" class="form-select" onchange="updateSummaryPreview()">
+                                            <option value="1" selected>Monthly Flexible Stay (Stay as many months as you wish)</option>
+                                        </select>
+                                    </div>
+                                    <span style="font-size: 11.5px; color: #64748b; margin-top: 4px; display: block;">
+                                        ✨ <strong>Flexible Living:</strong> Pay 1st month advance to join. After each month completed, pay regular monthly stay fee. Stay as many months as you want!
+                                    </span>
+                                </div>
+
+                                <div class="form-group" id="groupDailyDuration" style="display: none;">
+                                    <label for="stay_days">Number of Days Stay</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-calendar-day input-icon"></i>
+                                        <input
+                                            type="number"
+                                            id="stay_days"
+                                            name="stay_days"
+                                            class="form-input"
+                                            value="5"
+                                            min="1"
+                                            max="90"
+                                            oninput="updateSummaryPreview()"
+                                        >
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="food_plan">Food & Mess Option</label>
+                                    <div class="input-wrapper">
+                                        <i class="fa-solid fa-utensils input-icon"></i>
+                                        <select id="food_plan" name="food_plan" class="form-select" onchange="updateSummaryPreview()">
+                                            <option value="With Food">With Food (Breakfast, Lunch & Dinner)</option>
+                                            <option value="Without Food">Without Food (Room Stay Only)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- LIVE ADMISSION SUMMARY CARD -->
+                        <div class="admission-summary-box">
+                            <div class="summary-header">
+                                <h4><i class="fa-solid fa-file-invoice"></i> Admission Confirmation Summary</h4>
+                                <span style="font-size: 12px; color: #94A3B8;">Verified Official Admission</span>
+                            </div>
+
+                            <div class="summary-items-grid">
+                                <div class="summary-item">
+                                    <div class="label">Resident</div>
+                                    <div class="value" id="sumResidentName">Rahul Sharma</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Verified Gmail</div>
+                                    <div class="value" id="sumResidentEmail" style="word-break: break-all;">user@gmail.com</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Selected Room</div>
+                                    <div class="value" id="sumSelectedRoom" style="color: #6EE7B7;">Room 101</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Date of Join</div>
+                                    <div class="value" id="sumJoinDate">Today</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Occupation</div>
+                                    <div class="value" id="sumOccupation">Jobholder</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Stay Plan</div>
+                                    <div class="value" id="sumStayType">Monthly Stay</div>
+                                </div>
+                                <div class="summary-item">
+                                    <div class="label">Government ID</div>
+                                    <div class="value" id="sumIdProof" style="color: #6EE7B7;">Aadhaar (Pending)</div>
+                                </div>
+                            </div>
+
+                            <div class="summary-footer">
+                                <div>
+                                    <span style="font-size: 12px; color: #94A3B8;">Initial Room Rent / Due:</span>
+                                    <div class="summary-rent-val" id="sumRentAmount">₹6,500</div>
+                                </div>
+                                <div style="text-align: right; font-size: 11.5px; color: #94A3B8;">
+                                    Confirmation email will be delivered to your Gmail inbox.
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="step-footer-actions">
+                        <button type="button" class="btn-wizard-back" onclick="goToStep(2)">
+                            <i class="fa-solid fa-arrow-left"></i> Back to Password
+                        </button>
+                        <button
+                            type="submit"
+                            id="btnFinalSubmit"
+                            class="btn-wizard-submit"
+                        >
+                            <span>Complete Registration & Confirm Admission</span>
+                            <i class="fa-solid fa-check-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+    </main>
+
+    <!-- Compliance Footer Bar for Razorpay & Legal Compliance -->
+    <footer style="margin: 30px auto 40px; text-align: center; font-size: 13px; color: #64748b; max-width: 900px; padding: 0 16px;">
+        <div style="display: flex; justify-content: center; gap: 18px; flex-wrap: wrap; margin-bottom: 8px;">
+            <a href="/" style="color: #475569; text-decoration: none; font-weight: 600;">Home</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="/about" style="color: #475569; text-decoration: none; font-weight: 600;">About Us</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="/contact" style="color: #475569; text-decoration: none; font-weight: 600;">Contact Support</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="/terms" style="color: #475569; text-decoration: none; font-weight: 600;">Terms & Conditions</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="/privacy" style="color: #475569; text-decoration: none; font-weight: 600;">Privacy Policy</a>
+            <span style="color: #cbd5e1;">•</span>
+            <a href="/refund-policy" style="color: #475569; text-decoration: none; font-weight: 600;">Refund & Cancellation</a>
+        </div>
+        <div>&copy; 2026 Executive PG & Private Hostel | Support: <a href="mailto:pachikoruabhi2007@gmail.com" style="color:#2563eb; text-decoration:none;">pachikoruabhi2007@gmail.com</a> | Helpline: <a href="tel:+919704844011" style="color:#2563eb; text-decoration:none;">+91 9704844011</a></div>
+    </footer>
+
+    <!-- Global Toast Alert -->
+    <div id="toast" class="toast">
+        <i class="fa-solid fa-circle-check" id="toastIcon"></i>
+        <span id="toastMsg">Notification message</span>
+    </div>
+
+    <!-- SCRIPT LOGIC -->
+    <script>
+        // State variables
+        let currentStep = 1;
+        let isGmailVerified = false;
+        let verifiedGmailAddress = "";
+        let publicRooms = [];
+        let selectedRoomNo = "";
+        let selectedRoomRent = 6500;
+
+        // Initialize on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Set default date of join to today
+            const today = new Date().toISOString().split('T')[0];
+            const dateInput = document.getElementById('entry_date');
+            dateInput.value = today;
+            dateInput.min = today;
+
+            // Fetch live public rooms
+            loadPublicRooms();
+            updateSummaryPreview();
+            setupOtpSlots();
+        });
+
+        // Step Navigation Controller
+        function goToStep(targetStep) {
+            if (targetStep === 2) {
+                if (!isGmailVerified) {
+                    showToast("Please enter and verify your 6-digit Gmail OTP first.", true);
+                    return;
+                }
+                const name = document.getElementById('name').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                if (!name || !phone) {
+                    showToast("Please provide your full name and 10-digit mobile number.", true);
+                    return;
+                }
+            }
+
+            if (targetStep === 3) {
+                const pass = document.getElementById('password').value;
+                const confirm = document.getElementById('confirm_password').value;
+                if (!pass || pass.length < 6) {
+                    showToast("Password must be at least 6 characters long.", true);
+                    return;
+                }
+                if (pass !== confirm) {
+                    showToast("Passwords do not match.", true);
+                    return;
+                }
+                updateSummaryPreview();
+            }
+
+            // Update Active Step DOM
+            document.querySelectorAll('.wizard-step-section').forEach(s => s.classList.remove('active'));
+            document.getElementById(`wizardStep${targetStep}`).classList.add('active');
+
+            // Update Progress Indicators
+            currentStep = targetStep;
+            updateStepIndicators(targetStep);
+
+            // Smooth scroll to top of card
+            window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+
+        function updateStepIndicators(step) {
+            for (let i = 1; i <= 3; i++) {
+                const ind = document.getElementById(`stepIndicator${i}`);
+                const bub = document.getElementById(`stepBubble${i}`);
+                ind.classList.remove('active', 'completed');
+
+                if (i < step) {
+                    ind.classList.add('completed');
+                    bub.innerHTML = '<i class="fa-solid fa-check"></i>';
+                } else if (i === step) {
+                    ind.classList.add('active');
+                    bub.textContent = i;
+                } else {
+                    bub.textContent = i;
+                }
+            }
+
+            // Progress line
+            const line = document.getElementById('stepsProgressLine');
+            if (step === 1) line.style.width = '0%';
+            if (step === 2) line.style.width = '50%';
+            if (step === 3) line.style.width = '100%';
+        }
+
+        // Validate Google email pattern
+        function isValidGmailFormat(email) {
+            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return re.test((email || "").trim());
+        }
+
+        function onGmailInputChanged() {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            if (isGmailVerified && email !== verifiedGmailAddress) {
+                isGmailVerified = false;
+                verifiedGmailAddress = "";
+                document.getElementById('verifiedSuccessBanner').style.display = 'none';
+                document.getElementById('sendOtpButtonSection').style.display = 'block';
+                document.getElementById('otpInputContainer').style.display = 'none';
+                document.getElementById('btnGoToStep2').disabled = true;
+            }
+            const warning = document.getElementById('emailRegisteredWarning');
+            if (warning) warning.style.display = 'none';
+            const sendBtn = document.getElementById('btnSendOtp');
+            if (sendBtn) {
+                sendBtn.disabled = false;
+                sendBtn.style.opacity = '1';
+                sendBtn.style.cursor = 'pointer';
+            }
+        }
+
+        async function checkEmailAlreadyRegistered() {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const warning = document.getElementById('emailRegisteredWarning');
+            const sendBtn = document.getElementById('btnSendOtp');
+            if (!email || !isValidGmailFormat(email)) {
+                if (warning) warning.style.display = 'none';
+                return;
+            }
+            try {
+                const res = await fetch(`/api/check-email-availability?email=${encodeURIComponent(email)}`);
+                const data = await res.json();
+                if (!data.available) {
+                    if (warning) {
+                        warning.style.display = 'block';
+                        document.getElementById('emailRegisteredWarningText').textContent = data.message || "This Gmail address is already registered. Please sign in instead.";
+                    }
+                    if (sendBtn) {
+                        sendBtn.disabled = true;
+                        sendBtn.style.opacity = '0.5';
+                        sendBtn.style.cursor = 'not-allowed';
+                    }
+                } else {
+                    if (warning) warning.style.display = 'none';
+                    if (sendBtn) {
+                        sendBtn.disabled = false;
+                        sendBtn.style.opacity = '1';
+                        sendBtn.style.cursor = 'pointer';
+                    }
+                }
+            } catch (e) {
+                console.warn("Email check error:", e);
+            }
+        }
+
+        // Send OTP to Gmail
+        async function sendGmailVerificationOtp(isResend = false) {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            const name = document.getElementById('name').value.trim();
+
+            if (!name) {
+                showToast("Please enter your Full Name first.", true);
+                document.getElementById('name').focus();
+                return;
+            }
+
+            if (!isValidGmailFormat(email)) {
+                showToast("Please enter a valid Google email address.", true);
+                document.getElementById('email').focus();
+                return;
+            }
+
+            const sendBtn = document.getElementById('btnSendOtp');
+            const sendBtnText = document.getElementById('btnSendOtpText');
+            sendBtn.disabled = true;
+            sendBtnText.textContent = "Sending code to your Gmail...";
+
+            try {
+                const response = await fetch('/api/register/send-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, name: name })
+                });
+
+                const data = await response.json();
+                sendBtn.disabled = false;
+                sendBtnText.textContent = isResend ? "Resend Verification Code" : "Send 6-Digit OTP to Gmail";
+
+                if (response.ok && data.success) {
+                    showToast(`✓ Verification code sent! Check your Inbox or Spam folder.`);
+                    const container = document.getElementById('otpInputContainer');
+                    container.style.display = 'flex';
+                    document.getElementById('otpRecipientEmail').textContent = email;
+                    
+                    document.getElementById('otpStatusMsg').textContent = `Code sent! If not in your Inbox, please check your Spam/Junk folder.`;
+                    document.getElementById('otpStatusMsg').style.color = '#15803D';
+                    
+                    // Clear and focus first OTP slot
+                    const slots = document.querySelectorAll('.shadcn-otp-slot');
+                    slots.forEach(s => { s.value = ''; s.classList.remove('filled'); });
+                    document.getElementById('gmailOtpInput').value = '';
+                    if (slots.length > 0) slots[0].focus();
+
+                    // Scroll to OTP card smoothly
+                    container.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                } else {
+                    showToast(data.error || "Could not send OTP to this Gmail. Check if the email is valid.", true);
+                }
+            } catch (err) {
+                sendBtn.disabled = false;
+                sendBtnText.textContent = "Send 6-Digit OTP to Gmail";
+                console.error("Send OTP error:", err);
+                showToast("Network error trying to deliver code to your Gmail.", true);
+            }
+        }
+
+        // Verify the 6-digit OTP
+        async function verifyGmailOtp() {
+            const email = document.getElementById('email').value.trim().toLowerCase();
+            
+            // Recompute from slots
+            const slots = document.querySelectorAll('.shadcn-otp-slot');
+            let otp = '';
+            slots.forEach(s => otp += (s.value || ''));
+            document.getElementById('gmailOtpInput').value = otp;
+
+            const statusMsg = document.getElementById('otpStatusMsg');
+
+            if (!otp || otp.length < 6) {
+                statusMsg.textContent = "Please enter all 6 digits of the code.";
+                statusMsg.style.color = "#DC2626";
+                showToast("Your one-time password must be 6 characters.", true);
+                return;
+            }
+
+            const verifyBtn = document.getElementById('btnVerifyOtp');
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i> Verifying...`;
+
+            try {
+                const response = await fetch('/api/register/verify-otp', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: email, otp: otp })
+                });
+
+                const data = await response.json();
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = `<span>Continue</span>`;
+
+                if (response.ok && data.success) {
+                    isGmailVerified = true;
+                    verifiedGmailAddress = email;
+
+                    statusMsg.textContent = "✓ Code verified successfully!";
+                    statusMsg.style.color = "#16A34A";
+                    showToast("✓ Gmail verified and linked successfully!");
+
+                    setTimeout(() => {
+                        document.getElementById('otpInputContainer').style.display = 'none';
+                        document.getElementById('sendOtpButtonSection').style.display = 'none';
+
+                        // Show success banner
+                        document.getElementById('verifiedEmailDisplay').textContent = email;
+                        document.getElementById('verifiedSuccessBanner').style.display = 'flex';
+
+                        // Enable Next button & Auto-Advance to Step 2
+                        document.getElementById('btnGoToStep2').disabled = false;
+                        goToStep(2);
+                    }, 600);
+                } else {
+                    statusMsg.textContent = data.error || "Incorrect verification code. Please check your Gmail.";
+                    statusMsg.style.color = "#DC2626";
+                    showToast(data.error || "Incorrect verification code.", true);
+                    if (slots.length > 0) slots[0].focus();
+                }
+            } catch (err) {
+                verifyBtn.disabled = false;
+                verifyBtn.innerHTML = `<span>Continue</span>`;
+                console.error("Verify OTP error:", err);
+                statusMsg.textContent = "Error verifying code. Please try again.";
+                statusMsg.style.color = "#DC2626";
+                showToast("Error checking verification code.", true);
+            }
+        }
+
+        // Setup 6-Slot InputOTP listeners (Auto-advance, Backspace, Paste)
+        function setupOtpSlots() {
+            const slots = document.querySelectorAll('.shadcn-otp-slot');
+            const hiddenOtpInput = document.getElementById('gmailOtpInput');
+
+            slots.forEach((slot, index) => {
+                slot.addEventListener('input', (e) => {
+                    const val = slot.value.replace(/\D/g, '');
+                    slot.value = val ? val[val.length - 1] : '';
+
+                    if (slot.value) {
+                        slot.classList.add('filled');
+                        if (index < slots.length - 1) {
+                            slots[index + 1].focus();
+                        }
+                    } else {
+                        slot.classList.remove('filled');
+                    }
+
+                    updateCombinedOtp();
+                });
+
+                slot.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace') {
+                        if (!slot.value && index > 0) {
+                            slots[index - 1].focus();
+                            slots[index - 1].value = '';
+                            slots[index - 1].classList.remove('filled');
+                            updateCombinedOtp();
+                        } else {
+                            slot.value = '';
+                            slot.classList.remove('filled');
+                            updateCombinedOtp();
+                        }
+                    } else if (e.key === 'ArrowLeft' && index > 0) {
+                        slots[index - 1].focus();
+                    } else if (e.key === 'ArrowRight' && index < slots.length - 1) {
+                        slots[index + 1].focus();
+                    }
+                });
+
+                slot.addEventListener('paste', (e) => {
+                    e.preventDefault();
+                    const pasteData = (e.clipboardData || window.clipboardData).getData('text');
+                    const cleanDigits = pasteData.replace(/\D/g, '').slice(0, 6);
+
+                    if (cleanDigits.length > 0) {
+                        cleanDigits.split('').forEach((char, i) => {
+                            if (slots[i]) {
+                                slots[i].value = char;
+                                slots[i].classList.add('filled');
+                            }
+                        });
+                        const focusIdx = Math.min(cleanDigits.length, slots.length - 1);
+                        slots[focusIdx].focus();
+                        updateCombinedOtp();
+
+                        if (cleanDigits.length === 6) {
+                            verifyGmailOtp();
+                        }
+                    }
+                });
+            });
+
+            function updateCombinedOtp() {
+                let code = '';
+                slots.forEach(s => code += (s.value || ''));
+                hiddenOtpInput.value = code;
+
+                if (code.length === 6) {
+                    verifyGmailOtp();
+                }
+            }
+        }
+
+        // Step 2 Password Validation
+        function validatePasswordsMatch() {
+            const p1 = document.getElementById('password').value;
+            const p2 = document.getElementById('confirm_password').value;
+            const statusEl = document.getElementById('passMatchStatus');
+            const nextBtn = document.getElementById('btnGoToStep3');
+
+            if (!p1) {
+                statusEl.textContent = "";
+                nextBtn.disabled = true;
+                return;
+            }
+
+            if (p1.length < 6) {
+                statusEl.textContent = "Must be at least 6 characters";
+                statusEl.style.color = "#DC2626";
+                nextBtn.disabled = true;
+                return;
+            }
+
+            if (!p2) {
+                statusEl.textContent = "Please re-enter password to confirm";
+                statusEl.style.color = "#64748B";
+                nextBtn.disabled = true;
+                return;
+            }
+
+            if (p1 === p2) {
+                statusEl.textContent = "✓ Passwords match!";
+                statusEl.style.color = "#059669";
+                nextBtn.disabled = false;
+            } else {
+                statusEl.textContent = "Passwords do not match";
+                statusEl.style.color = "#DC2626";
+                nextBtn.disabled = true;
+            }
+        }
+
+        function togglePasswordVisibility(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.className = 'fa-regular fa-eye-slash';
+            } else {
+                input.type = 'password';
+                icon.className = 'fa-regular fa-eye';
+            }
+        }
+
+        // Load Public Rooms from live API
+        async function loadPublicRooms() {
+            const loading = document.getElementById('roomsLoadingState');
+            const grid = document.getElementById('publicRoomsGrid');
+
+            try {
+                const res = await fetch('/api/public/rooms');
+                const rooms = await res.json();
+                loading.style.display = 'none';
+                grid.style.display = 'grid';
+
+                publicRooms = rooms || [];
+                renderRoomCards(publicRooms);
+            } catch (err) {
+                console.warn("Public rooms fallback:", err);
+                loading.innerHTML = `<span style="color:#DC2626;">Could not fetch live room catalog. You can still proceed and have a room assigned upon arrival.</span>`;
+                // Render fallback option
+                renderRoomCards([]);
+            }
+        }
+
+        function renderRoomCards(rooms) {
+            const grid = document.getElementById('publicRoomsGrid');
+            grid.innerHTML = '';
+
+            // Card: "Let Warden Assign on Arrival"
+            const unassignedCard = document.createElement('div');
+            unassignedCard.className = 'room-card selected';
+            unassignedCard.id = 'roomCard_none';
+            unassignedCard.onclick = () => selectRoom('', 6500, 'roomCard_none');
+            unassignedCard.innerHTML = `
+                <div class="room-card-head">
+                    <span class="room-number-title">🏷️ Assign on Arrival</span>
+                    <span class="room-ac-pill non-ac">Flexible</span>
+                </div>
+                <div class="room-details-text">
+                    Choose or confirm your preferred bed in-person with the hostel warden when checking in.
+                </div>
+                <div class="room-bottom-meta">
+                    <div class="room-rent-tag">₹6,500 <span>/ month</span></div>
+                    <span class="room-beds-pill beds-available">✓ Open Choice</span>
+                </div>
+            `;
+            grid.appendChild(unassignedCard);
+
+            if (rooms && rooms.length > 0) {
+                rooms.forEach(r => {
+                    const total = Number(r.total_beds) || 1;
+                    const occ = Number(r.occupied_beds) || 0;
+                    const avail = Math.max(0, total - occ);
+                    const isFull = avail <= 0;
+                    const isAc = (r.ac_type && r.ac_type.toLowerCase().includes('ac') && !r.ac_type.toLowerCase().includes('non'));
+                    const rent = Number(r.monthly_rent) || 6500;
+
+                    const card = document.createElement('div');
+                    card.className = `room-card ${isFull ? 'full' : ''}`;
+                    card.id = `roomCard_${r.room_no}`;
+
+                    if (!isFull) {
+                        card.onclick = () => selectRoom(r.room_no, rent, `roomCard_${r.room_no}`);
+                    }
+
+                    card.innerHTML = `
+                        <div class="room-card-head">
+                            <span class="room-number-title">Room ${r.room_no}</span>
+                            <span class="room-ac-pill ${isAc ? 'ac' : 'non-ac'}">${isAc ? '❄️ AC' : 'Non-AC'}</span>
+                        </div>
+                        <div class="room-details-text">
+                            ${r.room_type || (total + ' Sharing')} • Floor Room
+                        </div>
+                        <div class="room-bottom-meta">
+                            <div class="room-rent-tag">₹${rent.toLocaleString('en-IN')} <span>/ mo</span></div>
+                            <span class="room-beds-pill ${isFull ? 'beds-full' : 'beds-available'}">
+                                ${isFull ? '🔴 Full' : `🟢 ${avail} Free`}
+                            </span>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+            }
+        }
+
+        function selectRoom(roomNo, rent, cardId) {
+            selectedRoomNo = roomNo;
+            selectedRoomRent = rent;
+            document.getElementById('selectedRoomInput').value = roomNo;
+
+            document.querySelectorAll('.room-card').forEach(c => c.classList.remove('selected'));
+            const card = document.getElementById(cardId);
+            if (card) card.classList.add('selected');
+
+            document.getElementById('monthlyBadgeRent').textContent = `₹${rent.toLocaleString('en-IN')} / month`;
+            updateSummaryPreview();
+        }
+
+        // Occupation selector
+        function selectOccupation(type, cardId) {
+            document.getElementById('residentTypeInput').value = type;
+            document.querySelectorAll('.option-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(cardId).classList.add('selected');
+
+            const otherGroup = document.getElementById('groupOtherWork');
+            const companyGroup = document.getElementById('groupCompany');
+            const desigGroup = document.getElementById('groupDesignation');
+
+            if (type === 'Other') {
+                otherGroup.style.display = 'flex';
+                companyGroup.style.display = 'none';
+                desigGroup.style.display = 'none';
+            } else {
+                otherGroup.style.display = 'none';
+                companyGroup.style.display = 'flex';
+                desigGroup.style.display = 'flex';
+
+                if (type === 'Student') {
+                    document.getElementById('labelCompany').textContent = "College / University Name";
+                    document.getElementById('company_or_college').placeholder = "e.g. Osmania, JNTU, CBIT, IIT";
+                    document.getElementById('labelDesignation').textContent = "Course / Degree & Year";
+                    document.getElementById('designation_or_course').placeholder = "e.g. B.Tech CSE 3rd Year";
+                } else {
+                    document.getElementById('labelCompany').textContent = "Company / Employer Name";
+                    document.getElementById('company_or_college').placeholder = "e.g. Infosys, TCS, Amazon, Deloitte";
+                    document.getElementById('labelDesignation').textContent = "Job Title / Designation";
+                    document.getElementById('designation_or_course').placeholder = "e.g. Software Engineer, Analyst";
+                }
+            }
+            updateSummaryPreview();
+        }
+
+        // Stay type selector
+        function selectStayType(type, cardId) {
+            document.getElementById('stayTypeInput').value = type;
+            document.querySelectorAll('.stay-card').forEach(c => c.classList.remove('selected'));
+            document.getElementById(cardId).classList.add('selected');
+
+            const isMonthly = (type === 'Monthly Stay');
+            document.getElementById('groupMonthlyDuration').style.display = isMonthly ? 'flex' : 'none';
+            document.getElementById('groupDailyDuration').style.display = isMonthly ? 'none' : 'flex';
+
+            updateSummaryPreview();
+        }
+
+        // ==================== GOVERNMENT ID VALIDATION ====================
+        function onIdTypeChanged() {
+            const type = document.getElementById('id_proof_type').value;
+            const input = document.getElementById('id_proof_number');
+            const msg = document.getElementById('idProofValidationMsg');
+            input.value = '';
+            input.style.borderColor = '';
+
+            if (type.includes('Aadhaar')) {
+                input.placeholder = 'Enter 12-digit Aadhaar (e.g. 5678 1234 9012)';
+                input.maxLength = 14; // 12 digits + 2 spaces
+                msg.textContent = 'Must be 12 numeric digits (e.g. 5678 1234 9012)';
+                msg.style.color = '#64748B';
+            } else if (type.includes('PAN')) {
+                input.placeholder = 'Enter 10-char PAN (e.g. ABCDE1234F)';
+                input.maxLength = 10;
+                msg.textContent = 'Must be 10 characters: 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F)';
+                msg.style.color = '#64748B';
+            } else if (type.includes('Passport')) {
+                input.placeholder = 'Enter Passport number (e.g. A1234567)';
+                input.maxLength = 9;
+                msg.textContent = 'Must be 1 letter followed by 7 digits';
+                msg.style.color = '#64748B';
+            } else {
+                input.placeholder = 'Enter Government ID number';
+                input.maxLength = 20;
+                msg.textContent = 'Enter a valid government-issued ID number';
+                msg.style.color = '#64748B';
+            }
+            updateSummaryPreview();
+        }
+
+        function validateIdProof(type, num) {
+            if (!num || !num.trim()) return false;
+            const clean = num.trim().toUpperCase().replace(/[\s-]/g, '');
+            if (type.includes('Aadhaar')) {
+                return /^[2-9]\d{11}$/.test(clean);
+            } else if (type.includes('PAN')) {
+                return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(clean);
+            } else if (type.includes('Passport')) {
+                return /^[A-Z][0-9]{7}$/.test(clean);
+            } else if (type.includes('Voter')) {
+                return /^[A-Z]{3}[0-9]{7}$/.test(clean);
+            }
+            return clean.length >= 6;
+        }
+
+        function validateIdProofLive(input) {
+            const type = document.getElementById('id_proof_type').value;
+            const msg = document.getElementById('idProofValidationMsg');
+
+            if (type.includes('Aadhaar')) {
+                // Keep only numbers and auto-space every 4 digits
+                let val = input.value.replace(/\D/g, '').slice(0, 12);
+                let formatted = '';
+                for (let i = 0; i < val.length; i++) {
+                    if (i > 0 && i % 4 === 0) formatted += ' ';
+                    formatted += val[i];
+                }
+                input.value = formatted;
+
+                if (val.length === 12) {
+                    if (val.startsWith('0') || val.startsWith('1')) {
+                        input.style.borderColor = '#EF4444';
+                        msg.textContent = '⚠ Aadhaar number cannot start with 0 or 1.';
+                        msg.style.color = '#DC2626';
+                    } else {
+                        input.style.borderColor = '#10B981';
+                        msg.textContent = '✓ Valid Aadhaar Card Number';
+                        msg.style.color = '#059669';
+                    }
+                } else {
+                    input.style.borderColor = '';
+                    msg.textContent = `${12 - val.length} more digit(s) needed for complete Aadhaar.`;
+                    msg.style.color = '#64748B';
+                }
+            } else if (type.includes('PAN')) {
+                let val = input.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 10);
+                input.value = val;
+
+                if (val.length === 10) {
+                    if (/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(val)) {
+                        input.style.borderColor = '#10B981';
+                        msg.textContent = '✓ Valid PAN Card Number';
+                        msg.style.color = '#059669';
+                    } else {
+                        input.style.borderColor = '#EF4444';
+                        msg.textContent = '⚠ Invalid PAN format. Must be 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F).';
+                        msg.style.color = '#DC2626';
+                    }
+                } else {
+                    input.style.borderColor = '';
+                    msg.textContent = `${10 - val.length} more char(s) needed. Format: ABCDE1234F`;
+                    msg.style.color = '#64748B';
+                }
+            } else {
+                input.value = input.value.toUpperCase();
+                if (input.value.length >= 6) {
+                    input.style.borderColor = '#10B981';
+                    msg.textContent = `✓ Valid ${type} format`;
+                    msg.style.color = '#059669';
+                }
+            }
+
+            updateSummaryPreview();
+        }
+
+        // Update live admission summary box
+        function updateSummaryPreview() {
+            const name = document.getElementById('name').value.trim() || 'Resident';
+            const email = document.getElementById('email').value.trim() || 'user@gmail.com';
+            const joinDate = document.getElementById('entry_date').value || 'Today';
+            const occ = document.getElementById('residentTypeInput').value || 'Jobholder';
+            const stayType = document.getElementById('stayTypeInput').value || 'Monthly Stay';
+            const food = document.getElementById('food_plan').value || 'With Food';
+            const idType = document.getElementById('id_proof_type') ? document.getElementById('id_proof_type').value : 'Aadhaar Card';
+            const idNum = document.getElementById('id_proof_number') ? document.getElementById('id_proof_number').value.trim() : '';
+
+            document.getElementById('sumResidentName').textContent = name;
+            document.getElementById('sumResidentEmail').textContent = email;
+            document.getElementById('sumSelectedRoom').textContent = selectedRoomNo ? `Room ${selectedRoomNo}` : 'Assign on Arrival';
+            document.getElementById('sumJoinDate').textContent = joinDate;
+            document.getElementById('sumOccupation').textContent = occ;
+            document.getElementById('sumStayType').textContent = stayType;
+
+            const sumId = document.getElementById('sumIdProof');
+            const hasDoc = !!(document.getElementById('idProofFileInput') && document.getElementById('idProofFileInput').value);
+            if (sumId) {
+                if (idNum) {
+                    const clean = idNum.replace(/[\s-]/g, '');
+                    const masked = clean.length > 4 ? `•••• •••• ${clean.slice(-4)}` : clean;
+                    sumId.textContent = `${idType.split(' ')[0]}: ${masked} ${hasDoc ? '(Doc ✓)' : '(Doc Req ⚠)'}`;
+                    sumId.style.color = hasDoc ? '#6EE7B7' : '#FCD34D';
+                } else {
+                    sumId.textContent = `${idType.split(' ')[0]} (Pending)`;
+                    sumId.style.color = '#FCD34D';
+                }
+            }
+
+            let estAmount = selectedRoomRent;
+            if (stayType === 'Daily Stay (Days)') {
+                const days = Number(document.getElementById('stay_days').value) || 1;
+                estAmount = days * 500;
+                document.getElementById('sumRentAmount').textContent = `₹${estAmount.toLocaleString('en-IN')} (${days} Days)`;
+            } else {
+                document.getElementById('sumRentAmount').textContent = `₹${estAmount.toLocaleString('en-IN')} (1st Month Advance)`;
+            }
+        }
+
+        // ==================== ID PROOF DOCUMENT UPLOAD HANDLERS ====================
+        function handleIdProofFileSelected(event) {
+            const file = event.target.files && event.target.files[0];
+            if (!file) return;
+            processIdProofFile(file);
+        }
+
+        function handleDragOver(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('idProofUploadBox').classList.add('dragover');
+        }
+
+        function handleDragLeave(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('idProofUploadBox').classList.remove('dragover');
+        }
+
+        function handleDrop(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('idProofUploadBox').classList.remove('dragover');
+            const file = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0];
+            if (file) processIdProofFile(file);
+        }
+
+        function processIdProofFile(file) {
+            if (file.size > 10 * 1024 * 1024) {
+                showToast("ID proof file size cannot exceed 10MB.", true);
+                return;
+            }
+
+            const isPdf = file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+            const isImg = file.type.startsWith('image/');
+            if (!isPdf && !isImg) {
+                showToast("Please upload an image (JPG, PNG, WebP) or PDF document.", true);
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const base64Data = e.target.result;
+                document.getElementById('idProofFileInput').value = base64Data;
+                document.getElementById('idProofFilenameInput').value = file.name;
+
+                // Reset box border
+                document.getElementById('idProofUploadBox').style.borderColor = '#86EFAC';
+                document.getElementById('idUploadEmptyState').style.display = 'none';
+                document.getElementById('idUploadActiveState').style.display = 'flex';
+                document.getElementById('idUploadedFileName').textContent = file.name;
+
+                const sizeKb = (file.size / 1024).toFixed(1);
+                const sizeMb = (file.size / (1024 * 1024)).toFixed(2);
+                document.getElementById('idUploadedFileSize').textContent = file.size > 1024 * 1024 ? `${sizeMb} MB` : `${sizeKb} KB`;
+
+                const thumb = document.getElementById('idUploadThumbnail');
+                if (isImg) {
+                    thumb.innerHTML = `<img src="${base64Data}" style="width: 100%; height: 100%; object-fit: cover;" alt="ID Preview">`;
+                } else {
+                    thumb.innerHTML = `<i class="fa-solid fa-file-pdf"></i>`;
+                }
+
+                showToast(`✓ Document "${file.name}" uploaded successfully.`);
+                updateSummaryPreview();
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUploadedIdProof() {
+            document.getElementById('idProofFileInput').value = '';
+            document.getElementById('idProofFilenameInput').value = '';
+            document.getElementById('idProofNativeFile').value = '';
+            document.getElementById('idProofUploadBox').style.borderColor = '#C7D2FE';
+            document.getElementById('idUploadActiveState').style.display = 'none';
+            document.getElementById('idUploadEmptyState').style.display = 'block';
+            updateSummaryPreview();
+        }
+
+        // Final registration submission
+        async function handleFinalRegistration(e) {
+            e.preventDefault();
+
+            if (!isGmailVerified) {
+                showToast("Please verify your Gmail address in Step 1 first.", true);
+                goToStep(1);
+                return;
+            }
+
+            const pass = document.getElementById('password').value;
+            const confirm = document.getElementById('confirm_password').value;
+            if (!pass || pass !== confirm) {
+                showToast("Passwords do not match.", true);
+                goToStep(2);
+                return;
+            }
+
+            // Mandatory Government ID Validation
+            const idType = document.getElementById('id_proof_type').value;
+            const idNum = document.getElementById('id_proof_number').value.trim();
+            if (!validateIdProof(idType, idNum)) {
+                showToast(`Please enter a valid government-verified ${idType} number.`, true);
+                document.getElementById('id_proof_number').focus();
+                return;
+            }
+
+            // Mandatory Government ID Document Upload Validation
+            const idDoc = document.getElementById('idProofFileInput').value;
+            if (!idDoc) {
+                showToast(`Document upload is mandatory! Please upload a valid photo or PDF of your ${idType}.`, true);
+                const uploadBox = document.getElementById('idProofUploadBox');
+                uploadBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                uploadBox.style.borderColor = '#EF4444';
+                return;
+            }
+
+            const submitBtn = document.getElementById('btnFinalSubmit');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> <span>Confirming Admission & Sending Welcome Email...</span>`;
+
+            const form = document.getElementById('admissionWizardForm');
+            const formData = new FormData(form);
+            const payload = Object.fromEntries(formData.entries());
+
+            try {
+                const response = await fetch('/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json'
+                    },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    showToast('✓ Registration confirmed! Welcome email sent to your Gmail.');
+                    setTimeout(() => {
+                        window.location.href = data.redirectUrl || '/login?registered=true';
+                    }, 1500);
+                } else {
+                    submitBtn.disabled = false;
+                    submitBtn.innerHTML = `<span>Complete Registration & Confirm Admission</span> <i class="fa-solid fa-check-circle"></i>`;
+                    showToast(data.error || 'Registration failed. Please check your details.', true);
+                }
+            } catch (err) {
+                console.warn("Direct submit fallback:", err);
+                form.submit();
+            }
+        }
+
+        // Toast Feedback
+        function showToast(msg, isError = false) {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toastMsg');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastMsg.textContent = msg;
+            toast.className = 'toast show ' + (isError ? 'error' : 'success');
+            toastIcon.className = isError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 4500);
+        }
+    </script>
+</body>
+</html>

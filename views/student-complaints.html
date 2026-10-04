@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Student Complaints</title>
+
+    <link rel="stylesheet"
+          href="/style.css">
+
+</head>
+
+<body>
+
+    <nav>
+
+        <h2>Hostel Management System</h2>
+
+        <div>
+
+            <a href="/student-dashboard">
+                Dashboard
+            </a>
+
+            <a href="/student-food-menu">
+                Food Menu
+            </a>
+
+            <a href="/student-profile">
+                My Profile
+            </a>
+
+            <a href="/student-room">
+                My Room
+            </a>
+
+            <a href="/student-fees">
+                Fees
+            </a>
+
+            <a href="/student-reviews">
+                Reviews
+            </a>
+
+            <a href="/logout">
+                Logout
+            </a>
+
+        </div>
+
+    </nav>
+
+
+    <main>
+
+        <section class="dashboard-container">
+
+            <h1>Student Complaints</h1>
+
+
+            <!-- Submit Complaint -->
+
+            <div class="card">
+
+                <h3>Submit a Complaint</h3>
+
+                <form id="complaintForm">
+
+                    <label for="complaintText">
+                        Complaint
+                    </label>
+
+                    <br>
+
+                    <textarea
+                        id="complaintText"
+                        name="complaint_text"
+                        rows="5"
+                        maxlength="255"
+                        placeholder="Enter your complaint"
+                        required></textarea>
+
+                    <br><br>
+
+                    <button type="submit">
+                        Submit Complaint
+                    </button>
+
+                </form>
+
+            </div>
+
+
+            <br>
+
+
+            <!-- Complaint Status -->
+
+            <div class="card">
+
+                <h3>My Complaints</h3>
+
+                <div id="complaintsList">
+
+                    Loading complaints...
+
+                </div>
+
+            </div>
+
+
+        </section>
+
+    </main>
+
+
+    <script>
+
+        // Submit complaint
+
+        document
+            .getElementById("complaintForm")
+            .addEventListener("submit", function(event) {
+
+                event.preventDefault();
+
+                const complaintText =
+                    document.getElementById("complaintText").value;
+
+
+                fetch("/api/student-complaints", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        complaint_text: complaintText
+                    })
+
+                })
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    if (data.error) {
+
+                        alert(data.error);
+                        return;
+
+                    }
+
+                    alert("Complaint submitted successfully!");
+
+                    document
+                        .getElementById("complaintForm")
+                        .reset();
+
+                    loadComplaints();
+
+                })
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    alert("Unable to submit complaint.");
+
+                });
+
+            });
+
+
+        // Load complaints
+
+        function loadComplaints() {
+
+            fetch("/api/student-complaints")
+
+                .then(response => response.json())
+
+                .then(data => {
+
+                    const list =
+                        document.getElementById("complaintsList");
+
+
+                    if (data.error) {
+
+                        list.innerHTML =
+                            "<p>" + data.error + "</p>";
+
+                        return;
+
+                    }
+
+
+                    if (data.length === 0) {
+
+                        list.innerHTML =
+                            "<p>No complaints submitted yet.</p>";
+
+                        return;
+
+                    }
+
+
+                    list.innerHTML = "";
+
+
+                    data.forEach(complaint => {
+
+                        const div =
+                            document.createElement("div");
+
+                        div.className = "card";
+
+
+                        div.innerHTML = `
+
+                            <p>
+                                <strong>Complaint:</strong>
+                                ${complaint.complaint_text}
+                            </p>
+
+                            <p>
+                                <strong>Status:</strong>
+                                ${complaint.status}
+                            </p>
+
+                        `;
+
+
+                        list.appendChild(div);
+
+                    });
+
+                })
+
+                .catch(error => {
+
+                    console.error(error);
+
+                    document.getElementById(
+                        "complaintsList"
+                    ).innerHTML =
+                        "<p>Unable to load complaints.</p>";
+
+                });
+
+        }
+
+
+        // Load complaints when page opens
+
+        loadComplaints();
+
+    </script>
+
+</body>
+
+</html>

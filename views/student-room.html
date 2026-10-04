@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Room & Amenities | Private Hostel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/style.css">
+
+    <style>
+        .room-container {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .room-card-main {
+            background: white;
+            border-radius: 20px;
+            padding: 36px;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, 0.06);
+            border: 1px solid #e2e8f0;
+        }
+
+        .room-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #f1f5f9;
+            padding-bottom: 24px;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .room-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 18px;
+        }
+
+        .room-field {
+            background: #f8fafc;
+            padding: 14px 18px;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .room-field span {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .room-field strong {
+            font-size: 16px;
+            color: #0f172a;
+        }
+
+        .amenity-chips {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #f1f5f9;
+        }
+
+        .chip {
+            background: #eff6ff;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="modern-nav">
+        <div class="nav-brand">
+            <div class="brand-icon">🏨</div>
+            <div>
+                <h2>Private Hostel & PG</h2>
+                <span>Resident Portal</span>
+            </div>
+        </div>
+
+        <div class="nav-links">
+            <a href="/student-dashboard">Dashboard</a>
+            <a href="/student-food-menu">Food Menu</a>
+            <a href="/student-room" class="active">My Room</a>
+            <a href="/student-profile">Profile</a>
+            <a href="/student-fees">Rent & Fees</a>
+            <a href="/student-complaints">Complaints</a>
+            <a href="/student-reviews">Reviews & Feedback</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <main class="room-container">
+
+        <div class="room-card-main">
+
+            <div class="room-header">
+                <div>
+                    <h2 id="roomTitle" style="font-size: 28px; font-weight: 800; margin: 0 0 6px 0; color: #0f172a;">
+                        Room Details
+                    </h2>
+                    <span id="acBadge" style="background: #ecfdf5; color: #059669; font-weight: 700; font-size: 12px; padding: 4px 12px; border-radius: 20px; border: 1px solid #a7f3d0;">
+                        ❄️ AC Room
+                    </span>
+                </div>
+                <div style="text-align: right;">
+                    <span style="font-size: 12px; color: #64748b; font-weight: 600; display: block;">MONTHLY RENT</span>
+                    <strong id="roomRent" style="font-size: 22px; color: #2563eb; font-weight: 800;">₹-- / mo</strong>
+                </div>
+            </div>
+
+            <div class="room-grid">
+                <div class="room-field">
+                    <span>Room Number</span>
+                    <strong id="room_no">Loading...</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Sharing Configuration</span>
+                    <strong id="room_type">Loading...</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Total Bed Capacity</span>
+                    <strong id="total_beds">--</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Current Occupants / Roommates</span>
+                    <strong id="occupied_beds">--</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Vacant Beds Available</span>
+                    <strong id="available_beds" style="color: #059669;">--</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Food Plan</span>
+                    <strong id="foodPlan">With Food (3 Meals)</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Check-in Date</span>
+                    <strong id="checkInDate">Active</strong>
+                </div>
+
+                <div class="room-field">
+                    <span>Stay Agreement</span>
+                    <strong id="stayType">Monthly Flexible</strong>
+                </div>
+            </div>
+
+            <div class="amenity-chips">
+                <div class="chip">📶 Fiber Wi-Fi (100 Mbps)</div>
+                <div class="chip">⚡ 24/7 Power Backup</div>
+                <div class="chip">🧹 Daily Housekeeping</div>
+                <div class="chip">🧺 Laundry Facility</div>
+                <div class="chip">💧 Hot Water Geyser</div>
+                <div class="chip">🛡️ Biometric Security</div>
+            </div>
+
+            <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center;">
+                <a href="/student-complaints" style="color: #2563eb; font-size: 14px; font-weight: 700; text-decoration: none;">
+                    🔧 Raise Room Maintenance Issue →
+                </a>
+                <a href="/student-dashboard" style="display: inline-block; background: #f1f5f9; color: #1e293b; padding: 10px 20px; border-radius: 10px; text-decoration: none; font-weight: 700;">
+                    ← Back to Dashboard
+                </a>
+            </div>
+
+        </div>
+
+    </main>
+
+    <script>
+        fetch("/api/student-room")
+            .then(res => res.json())
+            .then(data => {
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+
+                document.getElementById("roomTitle").textContent = `Room ${data.room_no}`;
+                document.getElementById("room_no").textContent = `Room ${data.room_no}`;
+                document.getElementById("room_type").textContent = data.room_type || "Executive Sharing";
+                document.getElementById("total_beds").textContent = `${data.total_beds} Beds`;
+                document.getElementById("occupied_beds").textContent = `${data.occupied_beds} Resident(s)`;
+                document.getElementById("available_beds").textContent = `${data.available_beds} Bed(s) Free`;
+
+                const acType = data.ac_type || "Non-AC";
+                document.getElementById("acBadge").textContent = acType === "AC" ? "❄️ AC Executive Room" : "🍃 Non-AC Room";
+
+                const rent = Number(data.room_rent) || 6500;
+                document.getElementById("roomRent").textContent = `₹${rent.toLocaleString("en-IN")} / mo`;
+
+                document.getElementById("foodPlan").textContent = data.food_plan || "With Food (3 Meals)";
+                document.getElementById("checkInDate").textContent = data.check_in_date || "Active";
+                document.getElementById("stayType").textContent = data.stay_type || "Monthly Stay";
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Unable to load room details");
+            });
+    </script>
+</body>
+</html>

@@ -1,0 +1,3282 @@
+
+/* =========================================
+   MODERN HOSTEL MANAGEMENT SYSTEM
+   ========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    margin: 0;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f5f7fb, #eef2f7);
+    color: #1f2937;
+}
+
+
+/* =========================================
+   NAVIGATION BAR
+   ========================================= */
+
+nav {
+    background: linear-gradient(135deg, #173b6c, #2563a6);
+    padding: 16px 30px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
+    position: relative;
+    z-index: 10;
+}
+
+nav h2 {
+    color: white;
+    margin: 0 35px 0 0;
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+nav a {
+    color: rgba(255, 255, 255, 0.95);
+    text-decoration: none;
+    margin-right: 8px;
+    padding: 9px 13px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 8px;
+    transition: all 0.25s ease;
+}
+
+nav a:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: white;
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   HEADINGS
+   ========================================= */
+
+h1 {
+    text-align: center;
+    margin: 40px auto 25px;
+    color: #173b6c;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+h2 {
+    color: #173b6c;
+}
+
+h3 {
+    color: #2563a6;
+}
+
+
+/* =========================================
+   PARAGRAPHS
+   ========================================= */
+
+p {
+    font-size: 17px;
+    line-height: 1.6;
+}
+
+
+/* =========================================
+   TABLES
+   ========================================= */
+
+table {
+    width: 90%;
+    margin: 30px auto;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: white;
+    box-shadow: 0 8px 25px rgba(31, 41, 55, 0.08);
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+th {
+    background: linear-gradient(135deg, #173b6c, #2563a6);
+    color: white;
+    font-weight: 600;
+    padding: 15px 12px;
+}
+
+th,
+td {
+    text-align: center;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+td {
+    padding: 13px 12px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:nth-child(even) {
+    background-color: #f8fafc;
+}
+
+tr:hover {
+    background-color: #eef5ff;
+    transition: 0.2s ease;
+}
+
+
+/* =========================================
+   LINKS
+   ========================================= */
+
+a {
+    color: #2563a6;
+    transition: 0.2s ease;
+}
+
+a:hover {
+    color: #173b6c;
+}
+
+body > a {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   SELECT BOX
+   ========================================= */
+
+select {
+    padding: 11px 13px;
+    margin: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background-color: white;
+    color: #374151;
+    transition: all 0.2s ease;
+}
+
+select:hover {
+    border-color: #2563a6;
+}
+
+select:focus {
+    outline: none;
+    border-color: #2563a6;
+    box-shadow: 0 0 0 3px rgba(37, 99, 166, 0.12);
+}
+
+
+/* =========================================
+   INPUTS AND TEXTAREA
+   ========================================= */
+
+input,
+textarea {
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    border: 1px solid #d1d5db;
+    border-radius: 9px;
+    background-color: white;
+    color: #1f2937;
+    transition: all 0.2s ease;
+}
+
+input:hover,
+textarea:hover {
+    border-color: #9ca3af;
+}
+
+input:focus,
+textarea:focus {
+    outline: none;
+    border-color: #2563a6;
+    box-shadow: 0 0 0 3px rgba(37, 99, 166, 0.12);
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+
+/* =========================================
+   BUTTONS
+   ========================================= */
+
+button {
+    padding: 11px 20px;
+    background: linear-gradient(135deg, #2563a6, #173b6c);
+    color: white;
+    border: none;
+    border-radius: 9px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    font-family: inherit;
+    box-shadow: 0 4px 10px rgba(37, 99, 166, 0.20);
+    transition: all 0.25s ease;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 7px 16px rgba(37, 99, 166, 0.28);
+}
+
+button:active {
+    transform: translateY(0);
+}
+
+
+/* =========================================
+   DASHBOARD / REPORT CARDS
+   ========================================= */
+
+.dashboard-container {
+    width: 88%;
+    max-width: 1200px;
+    margin: 40px auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25px;
+}
+
+.dashboard-card {
+    background: rgba(255, 255, 255, 0.95);
+    padding: 30px;
+    text-align: center;
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+    transition: all 0.3s ease;
+}
+
+.dashboard-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 35px rgba(31, 41, 55, 0.14);
+}
+
+.dashboard-card h3 {
+    color: #2563a6;
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+.dashboard-card p {
+    font-size: 34px;
+    font-weight: 700;
+    margin: 0;
+    color: #173b6c;
+}
+
+
+/* =========================================
+   FORMS
+   ========================================= */
+
+form {
+    max-width: 520px;
+    margin: 30px auto;
+    padding: 30px;
+    background: rgba(255, 255, 255, 0.97);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.09);
+    border: 1px solid #e5e7eb;
+}
+
+form input,
+form textarea,
+form select {
+    width: 100%;
+    margin: 8px 0 16px;
+}
+
+form button {
+    width: 100%;
+    margin-top: 8px;
+}
+
+
+/* =========================================
+   CARDS
+   ========================================= */
+
+.card {
+    background: white;
+    border-radius: 16px;
+    padding: 25px;
+    margin: 25px auto;
+    max-width: 700px;
+    box-shadow: 0 10px 30px rgba(31, 41, 55, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.card h3 {
+    margin-top: 0;
+}
+
+
+/* =========================================
+   STATUS STYLING
+   ========================================= */
+
+.status {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+
+/* =========================================
+   PAGE CONTAINER
+   ========================================= */
+
+main {
+    padding-bottom: 50px;
+}
+
+
+/* =========================================
+   RESPONSIVE DESIGN
+   ========================================= */
+
+@media (max-width: 768px) {
+
+    nav {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 16px 20px;
+    }
+
+    nav h2 {
+        margin-bottom: 10px;
+    }
+
+    nav a {
+        margin-right: 0;
+    }
+
+    h1 {
+        font-size: 27px;
+        margin-top: 30px;
+    }
+
+    .dashboard-container {
+        width: 92%;
+        grid-template-columns: 1fr;
+        gap: 18px;
+    }
+
+    .dashboard-card {
+        padding: 24px;
+    }
+
+    .dashboard-card p {
+        font-size: 30px;
+    }
+
+    table {
+        width: 95%;
+        font-size: 14px;
+        display: block;
+        overflow-x: auto;
+    }
+
+    th,
+    td {
+        padding: 10px;
+        white-space: nowrap;
+    }
+
+    form {
+        width: 92%;
+        padding: 24px;
+    }
+}
+
+
+/* =========================================
+   SMALL MOBILE SCREENS
+   ========================================= */
+
+@media (max-width: 480px) {
+
+    nav {
+        padding: 14px;
+    }
+
+    nav h2 {
+        font-size: 18px;
+    }
+
+    nav a {
+        font-size: 13px;
+        padding: 8px 10px;
+    }
+
+    h1 {
+        font-size: 23px;
+    }
+
+    .dashboard-card h3 {
+        font-size: 18px;
+    }
+
+    .dashboard-card p {
+        font-size: 27px;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th,
+    td {
+        padding: 8px;
+    }
+
+    button {
+        width: 100%;
+    }
+
+    .card {
+        width: 92%;
+        padding: 20px;
+    }
+}
+
+
+/* =========================================
+   MODERN ANIMATIONS
+   ========================================= */
+
+/* Page entrance animation */
+main {
+    animation: pageFadeIn 0.7s ease-out;
+}
+
+@keyframes pageFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   NAVIGATION ANIMATION
+   ========================================= */
+
+nav {
+    animation: navSlideDown 0.6s ease-out;
+}
+
+@keyframes navSlideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+nav a {
+    position: relative;
+}
+
+nav a::after {
+    content: "";
+    position: absolute;
+    left: 10px;
+    right: 10px;
+    bottom: 3px;
+    height: 2px;
+    background: white;
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.25s ease;
+}
+
+nav a:hover::after {
+    transform: scaleX(1);
+}
+
+
+/* =========================================
+   DASHBOARD CARD ANIMATION
+   ========================================= */
+
+.dashboard-card {
+    animation: cardAppear 0.6s ease-out both;
+}
+
+.dashboard-card:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.dashboard-card:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dashboard-card:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.dashboard-card:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+@keyframes cardAppear {
+    from {
+        opacity: 0;
+        transform: translateY(25px) scale(0.97);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+
+/* =========================================
+   CARD HOVER ANIMATION
+   ========================================= */
+
+.dashboard-card,
+.card {
+    transition:
+        transform 0.3s ease,
+        box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 35px rgba(31, 41, 55, 0.13);
+}
+
+
+/* =========================================
+   BUTTON ANIMATION
+   ========================================= */
+
+button {
+    position: relative;
+    overflow: hidden;
+}
+
+button::after {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.20);
+    transform: translate(-50%, -50%);
+    transition:
+        width 0.4s ease,
+        height 0.4s ease;
+}
+
+button:hover::after {
+    width: 300px;
+    height: 300px;
+}
+
+
+/* =========================================
+   FORM ANIMATION
+   ========================================= */
+
+form {
+    animation: formAppear 0.7s ease-out;
+}
+
+@keyframes formAppear {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   TABLE ANIMATION
+   ========================================= */
+
+table {
+    animation: tableAppear 0.7s ease-out;
+}
+
+@keyframes tableAppear {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   INPUT FOCUS ANIMATION
+   ========================================= */
+
+input,
+textarea,
+select {
+    transition:
+        border-color 0.25s ease,
+        box-shadow 0.25s ease,
+        transform 0.2s ease;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    transform: translateY(-1px);
+}
+
+
+/* =========================================
+   HEADING ANIMATION
+   ========================================= */
+
+h1 {
+    animation: headingAppear 0.7s ease-out;
+}
+
+@keyframes headingAppear {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+/* =========================================
+   REDUCED MOTION ACCESSIBILITY
+   ========================================= */
+
+@media (prefers-reduced-motion: reduce) {
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+
+
+/* =========================================
+   ADVANCED ADMIN DASHBOARD
+   ========================================= */
+
+.modern-nav {
+    justify-content: space-between;
+    padding: 15px 35px;
+}
+
+.nav-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.nav-brand h2 {
+    margin: 0;
+    font-size: 19px;
+}
+
+.nav-brand span {
+    color: rgba(255,255,255,0.65);
+    font-size: 11px;
+}
+
+.brand-icon {
+    width: 42px;
+    height: 42px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255,255,255,0.14);
+    border-radius: 12px;
+    font-size: 22px;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.nav-links a {
+    margin: 0;
+}
+
+.nav-links .active {
+    background: rgba(255,255,255,0.18);
+}
+
+.nav-links .logout-link {
+    background: rgba(255,255,255,0.10);
+}
+
+
+/* =========================================
+   DASHBOARD HERO
+   ========================================= */
+
+.dashboard-hero {
+    width: 88%;
+    max-width: 1200px;
+    margin: 45px auto 25px;
+    padding: 35px;
+    border-radius: 22px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b6c,
+            #2563a6
+        );
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow:
+        0 15px 35px
+        rgba(23,59,108,0.22);
+
+    animation: heroAppear 0.7s ease-out;
+}
+
+.dashboard-hero h1 {
+    color: white;
+    text-align: left;
+    margin: 8px 0;
+    font-size: 34px;
+}
+
+.dashboard-hero p {
+    margin: 0;
+    text-align: left;
+    color: rgba(255,255,255,0.78);
+    font-size: 15px;
+}
+
+.dashboard-label {
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    opacity: 0.7;
+}
+
+@keyframes heroAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(-15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+/* =========================================
+   SYSTEM STATUS
+   ========================================= */
+
+.system-status,
+.live-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.system-status {
+    background: rgba(255,255,255,0.12);
+    padding: 10px 15px;
+    border-radius: 20px;
+}
+
+
+/* =========================================
+   STATUS DOT
+   ========================================= */
+
+.status-dot {
+    width: 9px;
+    height: 9px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #4ade80;
+    box-shadow:
+        0 0 0 0
+        rgba(74,222,128,0.7);
+
+    animation: statusPulse 2s infinite;
+}
+
+@keyframes statusPulse {
+
+    70% {
+        box-shadow:
+            0 0 0 8px
+            rgba(74,222,128,0);
+    }
+
+    100% {
+        box-shadow:
+            0 0 0 0
+            rgba(74,222,128,0);
+    }
+
+}
+
+
+/* =========================================
+   DASHBOARD GRID
+   ========================================= */
+
+.modern-dashboard-grid {
+    margin-top: 25px;
+}
+
+
+/* =========================================
+   MODERN CARDS
+   ========================================= */
+
+.modern-card {
+    text-align: left;
+    padding: 25px;
+    position: relative;
+    overflow: hidden;
+}
+
+.modern-card::after {
+    content: "";
+    position: absolute;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    right: -35px;
+    bottom: -40px;
+    background: rgba(37,99,166,0.05);
+    transition: 0.3s ease;
+}
+
+.modern-card:hover::after {
+    transform: scale(1.4);
+}
+
+.card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.dashboard-icon {
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 14px;
+
+    font-size: 26px;
+
+    background: #eef5ff;
+}
+
+.card-tag {
+    font-size: 10px;
+    font-weight: 700;
+    color: #6b7280;
+    letter-spacing: 1px;
+}
+
+.modern-card h3 {
+    margin: 20px 0 5px;
+    font-size: 16px;
+    color: #374151;
+}
+
+.modern-card p {
+    text-align: left;
+    font-size: 38px;
+    margin: 0;
+    color: #173b6c;
+}
+
+.card-description {
+    margin-top: 4px;
+}
+
+
+/* =========================================
+   ANALYTICS
+   ========================================= */
+
+.analytics-section {
+    width: 88%;
+    max-width: 1200px;
+    margin: 30px auto 60px;
+}
+
+.analytics-card {
+    padding: 30px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.96);
+    border: 1px solid #e5e7eb;
+    box-shadow:
+        0 12px 35px
+        rgba(31,41,55,0.08);
+}
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.analytics-header h2 {
+    margin: 7px 0 0;
+}
+
+.analytics-header p {
+    text-align: left;
+    color: #6b7280;
+    margin: 5px 0 0;
+    font-size: 14px;
+}
+
+.live-indicator {
+    color: #16a34a;
+}
+
+.chart-container {
+    position: relative;
+    height: 360px;
+    margin-top: 25px;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .modern-nav {
+        align-items: flex-start;
+    }
+
+    .nav-links {
+        flex-wrap: wrap;
+    }
+
+    .dashboard-hero {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .modern-nav {
+        padding: 15px 20px;
+    }
+
+    .nav-links {
+        width: 100%;
+    }
+
+    .dashboard-hero {
+        width: 92%;
+        padding: 25px;
+        margin-top: 25px;
+    }
+
+    .dashboard-hero h1 {
+        font-size: 27px;
+    }
+
+    .analytics-section {
+        width: 92%;
+    }
+
+    .analytics-card {
+        padding: 20px;
+    }
+
+    .analytics-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 15px;
+    }
+
+    .chart-container {
+        height: 300px;
+    }
+
+}
+
+
+
+/* =========================================
+   STUDENTS PAGE
+   ========================================= */
+
+.page-hero {
+    width: 88%;
+    max-width: 1200px;
+    margin: 40px auto 25px;
+    padding: 32px;
+    border-radius: 22px;
+
+    background: linear-gradient(
+        135deg,
+        #173b6c,
+        #2563a6
+    );
+
+    color: white;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    box-shadow:
+        0 15px 35px
+        rgba(23,59,108,0.18);
+
+    animation: heroAppear 0.6s ease-out;
+}
+
+.page-hero h1 {
+    color: white;
+    text-align: left;
+    margin: 8px 0;
+    font-size: 32px;
+}
+
+.page-hero p {
+    color: rgba(255,255,255,0.78);
+    text-align: left;
+    margin: 0;
+    font-size: 15px;
+}
+
+.page-hero-icon {
+    width: 75px;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(255,255,255,0.14);
+
+    border-radius: 20px;
+
+    font-size: 38px;
+}
+
+
+/* =========================================
+   MODERN SECTIONS
+   ========================================= */
+
+.modern-section {
+    width: 88%;
+    max-width: 1200px;
+    margin: 25px auto;
+
+    background: rgba(255,255,255,0.96);
+
+    padding: 30px;
+
+    border-radius: 20px;
+
+    border: 1px solid #e5e7eb;
+
+    box-shadow:
+        0 10px 30px
+        rgba(31,41,55,0.07);
+
+    animation: sectionAppear 0.7s ease-out;
+}
+
+@keyframes sectionAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+
+.section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.section-header h2 {
+    margin: 6px 0;
+}
+
+.section-header p {
+    text-align: left;
+    color: #6b7280;
+    margin: 0;
+    font-size: 14px;
+}
+
+.section-label {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    font-weight: 700;
+    color: #2563a6;
+}
+
+.section-icon {
+    width: 50px;
+    height: 50px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #eef5ff;
+
+    border-radius: 14px;
+
+    font-size: 22px;
+}
+
+
+/* =========================================
+   FORM
+   ========================================= */
+
+.modern-form {
+    max-width: none;
+    margin: 0;
+    padding: 0;
+
+    background: transparent;
+
+    border: none;
+    box-shadow: none;
+}
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #374151;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    margin: 0;
+}
+
+.primary-button {
+    margin-top: 22px;
+    min-width: 180px;
+}
+
+.secondary-button {
+    background: #e5e7eb;
+    color: #374151;
+    box-shadow: none;
+}
+
+.secondary-button:hover {
+    background: #d1d5db;
+    color: #111827;
+}
+
+
+/* =========================================
+   STUDENT CONTROLS
+   ========================================= */
+
+.student-controls {
+    display: flex;
+    gap: 15px;
+    align-items: flex-end;
+
+    margin-bottom: 25px;
+
+    padding: 18px;
+
+    background: #f8fafc;
+
+    border-radius: 14px;
+
+    border: 1px solid #e5e7eb;
+}
+
+.search-box {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+
+    gap: 10px;
+
+    background: white;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 9px;
+
+    padding: 0 13px;
+}
+
+.search-box span {
+    font-size: 17px;
+}
+
+.search-box input {
+    border: none;
+    outline: none;
+    box-shadow: none;
+
+    width: 100%;
+
+    margin: 0;
+
+    padding-left: 0;
+}
+
+.search-box input:focus {
+    box-shadow: none;
+    transform: none;
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.control-group label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    margin-bottom: 5px;
+}
+
+.control-group select {
+    margin: 0;
+    min-width: 150px;
+}
+
+
+/* =========================================
+   EDIT FORM
+   ========================================= */
+
+.modern-edit-form {
+    display: none;
+
+    margin-bottom: 25px;
+
+    padding: 25px;
+
+    background: #f8fafc;
+
+    border: 1px solid #dbeafe;
+
+    border-radius: 16px;
+
+    animation: editAppear 0.4s ease-out;
+}
+
+@keyframes editAppear {
+
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+}
+
+.edit-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.edit-header h2 {
+    margin: 5px 0;
+}
+
+.close-button {
+    width: 40px;
+    height: 40px;
+
+    padding: 0;
+
+    background: #fee2e2;
+
+    color: #dc2626;
+
+    box-shadow: none;
+
+    border-radius: 10px;
+}
+
+.close-button:hover {
+    background: #fecaca;
+}
+
+.edit-actions {
+    display: flex;
+    gap: 10px;
+}
+
+
+/* =========================================
+   TABLE
+   ========================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+
+    border-radius: 14px;
+
+    box-shadow:
+        0 6px 20px
+        rgba(31,41,55,0.06);
+}
+
+.modern-table {
+    width: 100%;
+    margin: 0;
+
+    border-radius: 14px;
+
+    box-shadow: none;
+}
+
+.modern-table tbody tr {
+    animation: rowAppear 0.4s ease-out;
+}
+
+@keyframes rowAppear {
+
+    from {
+        opacity: 0;
+        transform: translateX(-8px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+}
+
+.student-name-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    text-align: left;
+}
+
+.student-avatar {
+    width: 34px;
+    height: 34px;
+
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #dbeafe;
+
+    color: #173b6c;
+
+    border-radius: 50%;
+
+    font-weight: 700;
+}
+
+.room-badge,
+.department-badge {
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 12px;
+
+    font-weight: 600;
+}
+
+.room-badge {
+    background: #ecfdf5;
+    color: #047857;
+}
+
+.department-badge {
+    background: #eef2ff;
+    color: #4338ca;
+}
+
+
+/* =========================================
+   ACTION BUTTONS
+   ========================================= */
+
+.edit-button,
+.delete-button {
+    width: auto;
+
+    padding: 8px 12px;
+
+    margin: 2px;
+
+    font-size: 12px;
+
+    box-shadow: none;
+}
+
+.edit-button {
+    background: #2563a6;
+}
+
+.delete-button {
+    background: #dc2626;
+}
+
+.delete-button:hover {
+    background: #b91c1c;
+}
+
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 800px) {
+
+    .page-hero,
+    .modern-section {
+        width: 92%;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .student-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .control-group select {
+        width: 100%;
+    }
+
+    .page-hero {
+        padding: 25px;
+    }
+
+    .page-hero-icon {
+        display: none;
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .modern-section {
+        padding: 20px;
+    }
+
+    .section-header {
+        align-items: flex-start;
+    }
+
+    .section-icon {
+        display: none;
+    }
+
+    .edit-actions {
+        flex-direction: column;
+    }
+
+    .primary-button,
+    .secondary-button {
+        width: 100%;
+    }
+
+}
+/* =========================================
+   ROOM MANAGEMENT PAGE
+   ========================================= */
+
+.room-hero {
+    background:
+        linear-gradient(
+            135deg,
+            #173b6c,
+            #2563a6
+        );
+}
+
+
+/* =========================================
+   ROOM SUMMARY
+   ========================================= */
+
+.room-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 15px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.room-summary-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 18px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 14px;
+
+    transition: 0.3s ease;
+
+}
+
+
+.room-summary-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 20px
+        rgba(31,41,55,0.08);
+
+}
+
+
+.summary-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #eef5ff;
+
+    border-radius: 12px;
+
+    font-size: 20px;
+
+}
+
+
+.room-summary-card small {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 11px;
+
+    margin-bottom: 3px;
+
+}
+
+
+.room-summary-card strong {
+
+    display: block;
+
+    color: #173b6c;
+
+    font-size: 22px;
+
+}
+
+
+
+/* =========================================
+   ROOM TABLE
+   ========================================= */
+
+.room-table td {
+
+    vertical-align: middle;
+
+}
+
+
+.room-number-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.room-icon-small {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    background: #eef5ff;
+
+    border-radius: 10px;
+
+    font-size: 17px;
+
+}
+
+
+.room-type-badge {
+
+    display: inline-block;
+
+    padding: 6px 11px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+
+    color: #4338ca;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.occupied-count {
+
+    display: inline-block;
+
+    min-width: 30px;
+
+    padding: 5px 8px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+.available-count {
+
+    display: inline-block;
+
+    min-width: 30px;
+
+    padding: 5px 8px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+
+/* =========================================
+   ROOM STATUS
+   ========================================= */
+
+.room-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.room-available {
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+}
+
+
+.room-full {
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+}
+
+
+.status-dot-small {
+
+    width: 7px;
+
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: currentColor;
+
+}
+
+
+
+/* =========================================
+   ROOM ACTION BUTTONS
+   ========================================= */
+
+.room-table .edit-button,
+.room-table .delete-button {
+
+    white-space: nowrap;
+
+}
+
+
+
+/* =========================================
+   ROOM RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .room-summary {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .room-summary {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .room-summary-card {
+
+        padding: 15px;
+
+    }
+
+}
+
+/* =========================================
+   COMPLAINT MANAGEMENT PAGE
+   ========================================= */
+
+.complaint-hero {
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b6c,
+            #2563a6
+        );
+
+}
+
+
+/* =========================================
+   COMPLAINT SUMMARY
+   ========================================= */
+
+.complaint-summary {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+    margin-bottom: 25px;
+
+}
+
+
+.complaint-summary-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 15px;
+
+    transition: 0.3s ease;
+
+}
+
+
+.complaint-summary-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 8px 22px
+        rgba(31,41,55,0.08);
+
+}
+
+
+.complaint-summary-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 13px;
+
+    font-size: 21px;
+
+}
+
+
+.pending-summary-icon {
+
+    background: #fff7ed;
+
+    color: #ea580c;
+
+}
+
+
+.resolved-summary-icon {
+
+    background: #ecfdf5;
+
+    color: #059669;
+
+}
+
+
+.total-summary-icon {
+
+    background: #eef5ff;
+
+    color: #2563a6;
+
+}
+
+
+.complaint-summary-card span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.complaint-summary-card strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    font-size: 24px;
+
+    color: #173b6c;
+
+}
+
+
+
+/* =========================================
+   COMPLAINT ID
+   ========================================= */
+
+.complaint-id {
+
+    display: inline-block;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =========================================
+   STUDENT
+   ========================================= */
+
+.complaint-student {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.complaint-student .student-avatar {
+
+    width: 34px;
+
+    height: 34px;
+
+}
+
+
+
+/* =========================================
+   COMPLAINT TEXT
+   ========================================= */
+
+.complaint-text {
+
+    max-width: 380px;
+
+    line-height: 1.5;
+
+    color: #374151;
+
+}
+
+
+
+/* =========================================
+   COMPLAINT STATUS
+   ========================================= */
+
+.complaint-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 11px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.complaint-pending {
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+}
+
+
+.complaint-resolved {
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+}
+
+
+
+/* =========================================
+   RESOLVE BUTTON
+   ========================================= */
+
+.resolve-button {
+
+    background: #059669;
+
+    color: white;
+
+    padding: 8px 13px;
+
+    margin: 0;
+
+    width: auto;
+
+    font-size: 12px;
+
+    box-shadow: none;
+
+}
+
+
+.resolve-button:hover {
+
+    background: #047857;
+
+    transform: translateY(-2px);
+
+}
+
+
+.resolved-label {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 8px 11px;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-size: 12px;
+
+    font-weight: 700;
+
+}
+
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 800px) {
+
+    .complaint-summary {
+
+        grid-template-columns: 1fr;
+
+    }
+
+    .complaint-text {
+
+        max-width: 250px;
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .complaint-summary-card {
+
+        padding: 16px;
+
+    }
+
+}
+
+/* =========================================
+   REPORTS PAGE
+   ========================================= */
+
+.reports-hero {
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b6c,
+            #2563a6
+        );
+
+}
+
+
+/* =========================================
+   REPORT ACTIONS
+   ========================================= */
+
+.report-actions {
+
+    width: 88%;
+
+    max-width: 1200px;
+
+    margin: 25px auto 10px;
+
+    display: flex;
+
+    justify-content: flex-end;
+
+}
+
+
+.print-button {
+
+    width: auto;
+
+    margin: 0;
+
+    padding: 11px 18px;
+
+    background: #173b6c;
+
+    color: white;
+
+    border: none;
+
+    border-radius: 10px;
+
+    font-size: 13px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: 0.3s ease;
+
+}
+
+
+.print-button:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 8px 18px
+        rgba(23,59,108,0.2);
+
+}
+
+
+
+/* =========================================
+   REPORT SUMMARY
+   ========================================= */
+
+.report-summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(3, 1fr);
+
+    gap: 18px;
+
+}
+
+
+.report-stat-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 15px;
+
+    transition: 0.3s ease;
+
+}
+
+
+.report-stat-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(31,41,55,0.08);
+
+}
+
+
+.report-stat-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #eef5ff;
+
+    font-size: 21px;
+
+}
+
+
+.report-stat-card span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.report-stat-card strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #173b6c;
+
+    font-size: 26px;
+
+}
+
+
+
+/* =========================================
+   REPORT TABLE
+   ========================================= */
+
+.report-table td {
+
+    vertical-align: middle;
+
+}
+
+
+.department-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.department-icon {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #eef5ff;
+
+    font-size: 17px;
+
+}
+
+
+.student-count-badge {
+
+    display: inline-block;
+
+    min-width: 35px;
+
+    padding: 6px 10px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #eef5ff;
+
+    color: #2563a6;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+
+/* =========================================
+   ROOM REPORT
+   ========================================= */
+
+.report-room-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.report-room-icon {
+
+    width: 35px;
+
+    height: 35px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #eef5ff;
+
+}
+
+
+.report-room-type {
+
+    display: inline-block;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    background: #eef2ff;
+
+    color: #4338ca;
+
+    font-size: 12px;
+
+    font-weight: 600;
+
+}
+
+
+.report-occupied {
+
+    display: inline-block;
+
+    min-width: 30px;
+
+    padding: 5px 8px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+.report-available {
+
+    display: inline-block;
+
+    min-width: 30px;
+
+    padding: 5px 8px;
+
+    text-align: center;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+.report-room-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 6px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.report-room-available {
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+}
+
+
+.report-room-full {
+
+    background: #fef2f2;
+
+    color: #dc2626;
+
+}
+
+
+
+/* =========================================
+   COMPLAINT REPORT
+   ========================================= */
+
+.complaint-report-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+}
+
+
+.complaint-report-card {
+
+    padding: 22px;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 15px;
+
+    background: #f8fafc;
+
+    transition: 0.3s ease;
+
+}
+
+
+.complaint-report-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(31,41,55,0.08);
+
+}
+
+
+.complaint-report-icon {
+
+    width: 42px;
+
+    height: 42px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 11px;
+
+    background: #eef5ff;
+
+    font-size: 19px;
+
+    margin-bottom: 15px;
+
+}
+
+
+.complaint-report-card span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.complaint-report-card strong {
+
+    display: block;
+
+    margin-top: 5px;
+
+    color: #173b6c;
+
+    font-size: 28px;
+
+}
+
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 900px) {
+
+    .report-summary-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+
+    .complaint-report-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .report-summary-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .complaint-report-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+
+    .report-actions {
+
+        width: 92%;
+
+    }
+
+
+    .print-button {
+
+        width: 100%;
+
+    }
+
+}
+
+
+
+/* =========================================
+   PRINT REPORT
+   ========================================= */
+
+@media print {
+
+    .modern-nav,
+    .report-actions {
+
+        display: none !important;
+
+    }
+
+
+    .page-hero {
+
+        box-shadow: none;
+
+        margin-top: 0;
+
+    }
+
+
+    .modern-section {
+
+        box-shadow: none;
+
+        break-inside: avoid;
+
+    }
+
+
+    body {
+
+        background: white;
+
+    }
+
+}
+
+/* =========================================
+   FEE MANAGEMENT PAGE
+   ========================================= */
+
+.fees-hero {
+
+    background:
+        linear-gradient(
+            135deg,
+            #173b6c,
+            #2563a6
+        );
+
+}
+
+
+/* =========================================
+   FEE SUMMARY
+   ========================================= */
+
+.fee-summary-grid {
+
+    display: grid;
+
+    grid-template-columns:
+        repeat(4, 1fr);
+
+    gap: 18px;
+
+}
+
+
+.fee-summary-card {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 14px;
+
+    padding: 20px;
+
+    background: #f8fafc;
+
+    border: 1px solid #e5e7eb;
+
+    border-radius: 15px;
+
+    transition: 0.3s ease;
+
+}
+
+
+.fee-summary-card:hover {
+
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 10px 24px
+        rgba(31,41,55,0.08);
+
+}
+
+
+.fee-summary-icon {
+
+    width: 46px;
+
+    height: 46px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 13px;
+
+    background: #eef5ff;
+
+    font-size: 21px;
+
+}
+
+
+.fee-summary-card span {
+
+    display: block;
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.fee-summary-card strong {
+
+    display: block;
+
+    margin-top: 3px;
+
+    color: #173b6c;
+
+    font-size: 23px;
+
+}
+
+
+
+/* =========================================
+   FEE TABLE
+   ========================================= */
+
+.fee-table td {
+
+    vertical-align: middle;
+
+}
+
+
+.fee-student-cell {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+
+}
+
+
+.fee-avatar {
+
+    width: 36px;
+
+    height: 36px;
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: center;
+
+    border-radius: 50%;
+
+    background: #eef5ff;
+
+    color: #2563a6;
+
+    font-weight: 700;
+
+}
+
+
+.fee-email {
+
+    color: #6b7280;
+
+    font-size: 12px;
+
+}
+
+
+.fee-total {
+
+    color: #173b6c;
+
+}
+
+
+.paid-amount {
+
+    display: inline-block;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+.pending-amount {
+
+    display: inline-block;
+
+    padding: 6px 9px;
+
+    border-radius: 8px;
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+    font-weight: 700;
+
+    font-size: 12px;
+
+}
+
+
+
+/* =========================================
+   FEE STATUS
+   ========================================= */
+
+.fee-status {
+
+    display: inline-flex;
+
+    align-items: center;
+
+    gap: 6px;
+
+    padding: 7px 10px;
+
+    border-radius: 20px;
+
+    font-size: 11px;
+
+    font-weight: 700;
+
+}
+
+
+.fee-paid {
+
+    background: #ecfdf5;
+
+    color: #047857;
+
+}
+
+
+.fee-partial {
+
+    background: #eff6ff;
+
+    color: #2563eb;
+
+}
+
+
+.fee-pending {
+
+    background: #fff7ed;
+
+    color: #c2410c;
+
+}
+
+
+
+/* =========================================
+   PAYMENT INPUT
+   ========================================= */
+
+.payment-input {
+
+    width: 110px;
+
+    padding: 9px 10px;
+
+    margin: 0;
+
+    border: 1px solid #d1d5db;
+
+    border-radius: 8px;
+
+    font-size: 12px;
+
+    outline: none;
+
+    transition: 0.2s ease;
+
+}
+
+
+.payment-input:focus {
+
+    border-color: #2563a6;
+
+    box-shadow:
+        0 0 0 3px
+        rgba(37,99,166,0.1);
+
+}
+
+
+
+/* =========================================
+   PAYMENT BUTTONS
+   ========================================= */
+
+.fee-action-buttons {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 6px;
+
+}
+
+
+.fee-action-buttons button {
+
+    width: auto;
+
+    margin: 0;
+
+    padding: 7px 11px;
+
+    border-radius: 8px;
+
+    font-size: 11px;
+
+}
+
+
+.payment-button {
+
+    background: #2563a6;
+
+    color: white;
+
+}
+
+
+.payment-button:hover {
+
+    background: #173b6c;
+
+    transform: translateY(-1px);
+
+}
+
+
+.correct-payment-button {
+
+    background: #f1f5f9;
+
+    color: #475569;
+
+    border: 1px solid #d1d5db;
+
+}
+
+
+.correct-payment-button:hover {
+
+    background: #e2e8f0;
+
+    transform: translateY(-1px);
+
+}
+
+
+
+/* =========================================
+   LOADING
+   ========================================= */
+
+.loading-cell {
+
+    text-align: center;
+
+    padding: 30px !important;
+
+    color: #6b7280;
+
+}
+
+
+
+/* =========================================
+   RESPONSIVE
+   ========================================= */
+
+@media (max-width: 1000px) {
+
+    .fee-summary-grid {
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+    }
+
+}
+
+
+@media (max-width: 600px) {
+
+    .fee-summary-grid {
+
+        grid-template-columns: 1fr;
+
+    }
+
+}
+
+/* =========================================
+   PRIVATE HOSTEL & PG RESIDENT UTILITIES
+   ========================================= */
+
+.badge-res-type {
+    font-size: 11.5px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 20px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.badge-jobholder {
+    background: #eff6ff;
+    color: #1e40af;
+    border: 1px solid #bfdbfe;
+}
+
+.badge-transfer {
+    background: #fdf2f8;
+    color: #9d174d;
+    border: 1px solid #fbcfe8;
+}
+
+.badge-student {
+    background: #f0fdf4;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+}
+
+.room-badge {
+    background: #f1f5f9;
+    color: #1e293b;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    display: inline-block;
+}
+
+.food-badge {
+    font-size: 11px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #fef9c3;
+    color: #854d0e;
+    font-weight: 600;
+    display: inline-block;
+}

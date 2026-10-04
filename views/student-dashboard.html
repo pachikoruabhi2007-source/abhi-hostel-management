@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Portal | Modern Animated Dashboard</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* =========================================
+           DESIGN SYSTEM & CSS VARIABLES
+           ========================================= */
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+
+            --accent-orange: #f59e0b;
+            --accent-orange-bg: #fffbeb;
+            --accent-orange-glow: rgba(245, 158, 11, 0.25);
+
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+            --accent-red-glow: rgba(239, 68, 68, 0.25);
+
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark {
+            --bg-page: #030712;
+            --bg-surface: #111827;
+            --bg-subtle: #1f2937;
+            --bg-hover: #1e293b;
+            --border-color: #1f2937;
+            --border-subtle: #1a2234;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-border: rgba(59, 130, 246, 0.35);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+
+            --accent-green: #34d399;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-green-glow: rgba(16, 185, 129, 0.4);
+
+            --accent-purple: #a78bfa;
+            --accent-purple-bg: rgba(139, 92, 246, 0.15);
+            --accent-purple-glow: rgba(139, 92, 246, 0.4);
+
+            --accent-orange: #fbbf24;
+            --accent-orange-bg: rgba(245, 158, 11, 0.15);
+            --accent-orange-glow: rgba(245, 158, 11, 0.4);
+
+            --accent-red: #f87171;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+            --accent-red-glow: rgba(239, 68, 68, 0.4);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 14px 28px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+        }
+
+        /* Ambient Glow Background Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 14s ease-in-out infinite alternate;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            bottom: -20%;
+            left: 20%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.06) 0%, rgba(139, 92, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+            animation: floatGlow 18s ease-in-out infinite alternate-reverse;
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(-30px, 40px) scale(1.1); }
+            100% { transform: translate(30px, -20px) scale(0.95); }
+        }
+
+        /* =========================================
+           APP CONTAINER & ANIMATED COLLAPSIBLE SIDEBAR
+           ========================================= */
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 14px 12px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1), padding 0.35s ease, background-color 0.4s ease, border-color 0.4s ease;
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        /* Sidebar Header & Brand */
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            transition: border-color 0.4s ease;
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 8px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-smooth);
+        }
+
+        .brand-wrapper:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            color: #fff;
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease;
+        }
+
+        .brand-wrapper:hover .brand-logo {
+            transform: scale(1.08) rotate(2deg);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-top: 2px;
+        }
+
+        .sidebar.collapsed .brand-info {
+            opacity: 0;
+            transform: translateX(-8px);
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Navigation Links */
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item {
+            position: relative;
+            display: flex;
+            align-items: center;
+            height: 44px;
+            width: 100%;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease, border-color 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .sidebar.collapsed .nav-item:hover {
+            transform: none;
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+            box-shadow: inset 0 0 12px rgba(59, 130, 246, 0.08);
+        }
+
+        .nav-icon {
+            width: 48px;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.15);
+            color: var(--primary);
+        }
+
+        .nav-label {
+            transition: opacity 0.25s ease, transform 0.25s ease;
+        }
+
+        .sidebar.collapsed .nav-label {
+            opacity: 0;
+            transform: translateX(-10px);
+            display: none;
+        }
+
+        .nav-badge {
+            margin-left: auto;
+            margin-right: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 20px;
+            height: 20px;
+            padding: 0 6px;
+            border-radius: 9999px;
+            background-color: var(--accent-orange);
+            color: #ffffff;
+            font-size: 0.72rem;
+            font-weight: 800;
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+        }
+
+        .sidebar.collapsed .nav-badge {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Sidebar Section Divider */
+        .sidebar-section {
+            border-top: 1px solid var(--border-color);
+            padding-top: 14px;
+            margin-top: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            transition: border-color 0.4s ease;
+        }
+
+        .section-label {
+            padding: 6px 12px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--text-muted);
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .section-label {
+            opacity: 0;
+            display: none;
+        }
+
+        /* Collapse Toggle Button */
+        .toggle-btn {
+            position: relative;
+            margin-top: auto;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            background: transparent;
+            border-left: 0;
+            border-right: 0;
+            border-bottom: 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+            transition: var(--transition-smooth);
+        }
+
+        .toggle-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .toggle-icon {
+            width: 48px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .toggle-icon svg,
+        .toggle-icon i {
+            width: 18px;
+            height: 18px;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .sidebar:not(.collapsed) .toggle-icon svg,
+        .sidebar:not(.collapsed) .toggle-icon i {
+            transform: rotate(180deg);
+        }
+
+        .toggle-text {
+            font-size: 0.88rem;
+            font-weight: 600;
+            white-space: nowrap;
+            transition: opacity 0.2s ease;
+        }
+
+        .sidebar.collapsed .toggle-text {
+            opacity: 0;
+            display: none;
+        }
+
+        /* =========================================
+           MAIN DASHBOARD WRAPPER & HEADER
+           ========================================= */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        /* Header */
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+            transition: background-color 0.4s ease, border-color 0.4s ease;
+        }
+
+        .header-title-group h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title-group p {
+            font-size: 0.86rem;
+            color: var(--text-secondary);
+            margin-top: 3px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .status-pill {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 7px 14px;
+            border-radius: 9999px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            transition: var(--transition-smooth);
+        }
+
+        .status-pulse {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+            animation: radar-pulse 2s infinite cubic-bezier(0.4, 0, 0.6, 1);
+        }
+
+        @keyframes radar-pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        .icon-btn {
+            position: relative;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-decoration: none;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            border-color: var(--primary-border);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .icon-btn.spinning svg {
+            animation: spinOnce 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @keyframes spinOnce {
+            from { transform: rotate(0deg) scale(0.8); }
+            to { transform: rotate(360deg) scale(1); }
+        }
+
+        .header-action-btn {
+            background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 0.84rem;
+            font-weight: 700;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(190, 24, 93, 0.3);
+            transition: var(--transition-smooth);
+        }
+
+        .header-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(190, 24, 93, 0.45);
+        }
+
+        .profile-pill {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px 12px 5px 6px;
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: 9999px;
+            cursor: pointer;
+            text-decoration: none;
+            color: inherit;
+            transition: var(--transition-smooth);
+        }
+
+        .profile-pill:hover {
+            border-color: var(--primary-border);
+            background-color: var(--bg-hover);
+        }
+
+        .profile-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+            color: white;
+            font-weight: 800;
+            font-size: 0.75rem;
+            display: grid;
+            place-content: center;
+        }
+
+        .profile-name {
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .mobile-toggle {
+            display: none;
+        }
+
+        /* Backdrop for Mobile */
+        .sidebar-backdrop {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 45;
+        }
+
+        /* Content Container */
+        .content-container {
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 26px;
+            max-width: 1400px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Animations */
+        .animate-enter {
+            animation: fadeSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        .delay-1 { animation-delay: 0.05s; }
+        .delay-2 { animation-delay: 0.12s; }
+        .delay-3 { animation-delay: 0.19s; }
+        .delay-4 { animation-delay: 0.26s; }
+        .delay-5 { animation-delay: 0.33s; }
+
+        @keyframes fadeSlideUp {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* =========================================
+           HERO WELCOME BANNER
+           ========================================= */
+        .hero-banner {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 50%, #3b82f6 100%);
+            color: white;
+            padding: 30px 32px;
+            border-radius: var(--radius-xl);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+            box-shadow: 0 12px 30px -6px rgba(37, 99, 235, 0.35);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: "";
+            position: absolute;
+            top: -40px;
+            right: -40px;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            pointer-events: none;
+        }
+
+        .hero-text h2 {
+            font-size: 1.65rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: 6px;
+        }
+
+        .hero-text p {
+            font-size: 0.94rem;
+            opacity: 0.92;
+            max-width: 640px;
+            line-height: 1.5;
+        }
+
+        .hero-badges-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .hero-pill {
+            background: rgba(255, 255, 255, 0.18);
+            backdrop-filter: blur(10px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 0.82rem;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* =========================================
+           4-COLUMN ANIMATED STATS CARDS
+           ========================================= */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+
+        .stat-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease, border-color 0.35s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .stat-card::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: transparent;
+            transition: background 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-card.card-blue:hover {
+            border-color: var(--primary);
+            box-shadow: 0 12px 28px -4px var(--primary-glow);
+        }
+        .stat-card.card-blue:hover::before {
+            background: linear-gradient(90deg, #3b82f6, #60a5fa);
+        }
+
+        .stat-card.card-green:hover {
+            border-color: var(--accent-green);
+            box-shadow: 0 12px 28px -4px var(--accent-green-glow);
+        }
+        .stat-card.card-green:hover::before {
+            background: linear-gradient(90deg, #10b981, #34d399);
+        }
+
+        .stat-card.card-purple:hover {
+            border-color: var(--accent-purple);
+            box-shadow: 0 12px 28px -4px var(--accent-purple-glow);
+        }
+        .stat-card.card-purple:hover::before {
+            background: linear-gradient(90deg, #8b5cf6, #c084fc);
+        }
+
+        .stat-card.card-orange:hover {
+            border-color: var(--accent-orange);
+            box-shadow: 0 12px 28px -4px var(--accent-orange-glow);
+        }
+        .stat-card.card-orange:hover::before {
+            background: linear-gradient(90deg, #f59e0b, #fbbf24);
+        }
+
+        .stat-card-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .stat-icon-box {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: grid;
+            place-content: center;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .stat-card:hover .stat-icon-box {
+            transform: scale(1.15) rotate(6deg);
+        }
+
+        .stat-icon-box.blue {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-icon-box.green {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .stat-icon-box.purple {
+            background-color: var(--accent-purple-bg);
+            color: var(--accent-purple);
+        }
+
+        .stat-icon-box.orange {
+            background-color: var(--accent-orange-bg);
+            color: var(--accent-orange);
+        }
+
+        .stat-chip {
+            padding: 4px 10px;
+            border-radius: 9999px;
+            font-size: 0.72rem;
+            font-weight: 700;
+        }
+
+        .stat-chip.chip-green {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+        }
+
+        .stat-chip.chip-orange {
+            background-color: var(--accent-orange-bg);
+            color: var(--accent-orange);
+        }
+
+        .stat-chip.chip-blue {
+            background-color: var(--primary-light);
+            color: var(--primary);
+        }
+
+        .stat-chip.chip-purple {
+            background-color: var(--accent-purple-bg);
+            color: var(--accent-purple);
+        }
+
+        .stat-value {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.02em;
+            margin-bottom: 3px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .stat-link {
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+            font-size: 0.78rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: gap 0.2s ease;
+        }
+
+        .stat-card:hover .stat-link {
+            gap: 8px;
+        }
+
+        /* =========================================
+           TODAY'S MESS & FOOD MENU WIDGET
+           ========================================= */
+        .glass-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 24px 28px;
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+            transition: border-color 0.4s ease, background-color 0.4s ease;
+        }
+
+        .food-dashboard-widget {
+            border: 1.5px solid var(--primary-border);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.06);
+        }
+
+        .food-dashboard-widget::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #f59e0b, #3b82f6, #10b981);
+        }
+
+        .widget-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .widget-title-area h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .widget-title-area p {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .badge-live-pulse {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 6px 14px;
+            border-radius: 9999px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .badge-live-pulse .dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+        }
+
+        .food-meals-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .food-meal-box {
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            transition: all 0.25s ease;
+        }
+
+        .food-meal-box:hover {
+            border-color: var(--primary-border);
+            background-color: var(--bg-surface);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .food-meal-box.active-meal {
+            border: 2px solid var(--primary);
+            background-color: var(--bg-surface);
+            box-shadow: 0 8px 24px var(--primary-glow);
+        }
+
+        .meal-tag-pill {
+            position: absolute;
+            top: -10px;
+            right: 14px;
+            background: var(--primary);
+            color: white;
+            padding: 3px 10px;
+            border-radius: 9999px;
+            font-size: 0.68rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 2px 8px var(--primary-glow);
+        }
+
+        .meal-box-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .meal-badge-name {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            font-weight: 800;
+            font-size: 0.98rem;
+            color: var(--text-primary);
+        }
+
+        .meal-time-span {
+            font-size: 0.74rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .meal-items-text {
+            font-size: 0.88rem;
+            color: var(--text-secondary);
+            line-height: 1.55;
+            margin-bottom: 14px;
+            min-height: 48px;
+        }
+
+        .meal-special-chip {
+            background-color: var(--accent-orange-bg);
+            border: 1px solid rgba(245, 158, 11, 0.3);
+            color: #b45309;
+            border-radius: 8px;
+            padding: 6px 10px;
+            font-size: 0.76rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        html.dark .meal-special-chip {
+            color: #fbbf24;
+        }
+
+        .food-announcement-banner {
+            background-color: var(--primary-light);
+            border: 1px solid var(--primary-border);
+            border-radius: var(--radius-md);
+            padding: 10px 16px;
+            font-size: 0.84rem;
+            color: var(--primary-dark);
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* =========================================
+           RESIDENT SERVICES & QUICK ACTIONS GRID
+           ========================================= */
+        .services-section-title {
+            font-size: 1.15rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .services-grid-6 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .service-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 22px;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .service-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary-border);
+            box-shadow: var(--shadow-md);
+        }
+
+        .service-card-top {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            margin-bottom: 14px;
+        }
+
+        .service-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        .service-card:hover .service-icon {
+            transform: scale(1.12) rotate(4deg);
+        }
+
+        .service-card h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+        }
+
+        .service-card p {
+            font-size: 0.83rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .service-action-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 14px;
+            padding-top: 10px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .service-btn {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0;
+            transition: gap 0.2s ease;
+        }
+
+        .service-card:hover .service-btn {
+            gap: 8px;
+        }
+
+        /* =========================================
+           SPLIT 2-COLUMN SECTION: PAYMENTS & NOTICES
+           ========================================= */
+        .split-grid-2 {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 20px;
+        }
+
+        .card-header-flex {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-header-flex h4 {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .table-custom {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table-custom th {
+            text-align: left;
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table-custom td {
+            padding: 12px;
+            font-size: 0.84rem;
+            color: var(--text-primary);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .table-custom tr:last-child td {
+            border-bottom: none;
+        }
+
+        .table-custom tr:hover td {
+            background-color: var(--bg-subtle);
+        }
+
+        .guideline-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            background-color: var(--bg-subtle);
+            margin-bottom: 10px;
+            border: 1px solid var(--border-subtle);
+        }
+
+        .guideline-icon {
+            color: var(--primary);
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .guideline-content h5 {
+            font-size: 0.86rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .guideline-content p {
+            font-size: 0.78rem;
+            color: var(--text-secondary);
+            line-height: 1.45;
+        }
+
+        /* =========================================
+           MODAL DIALOG (VACATING NOTICE)
+           ========================================= */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.65);
+            backdrop-filter: blur(6px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-box {
+            background-color: var(--bg-surface);
+            border-radius: var(--radius-xl);
+            max-width: 540px;
+            width: 100%;
+            padding: 30px;
+            box-shadow: 0 24px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 1px solid var(--border-color);
+            transform: scale(0.96);
+            animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes modalPop {
+            to { transform: scale(1); }
+        }
+
+        .modal-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 14px;
+        }
+
+        .modal-header-row h3 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: grid;
+            place-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .close-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 6px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn-secondary {
+            padding: 10px 20px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-subtle);
+            color: var(--text-primary);
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .btn-primary {
+            padding: 10px 24px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: linear-gradient(135deg, #be185d 0%, #db2777 100%);
+            color: white;
+            font-weight: 700;
+            font-size: 0.88rem;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(190, 24, 93, 0.3);
+            transition: var(--transition-smooth);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(190, 24, 93, 0.45);
+        }
+
+        /* =========================================
+           RESPONSIVENESS
+           ========================================= */
+        @media (max-width: 1100px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .services-grid-6 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .food-meals-grid {
+                grid-template-columns: 1fr;
+            }
+            .split-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -280px;
+                top: 0;
+                bottom: 0;
+                transition: left 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            }
+            .sidebar.mobile-open {
+                left: 0;
+            }
+            .sidebar-backdrop.active {
+                display: block;
+            }
+            .mobile-toggle {
+                display: grid;
+            }
+            .content-container {
+                padding: 18px 16px;
+            }
+            .dashboard-header {
+                padding: 14px 16px;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .services-grid-6 {
+                grid-template-columns: 1fr;
+            }
+            .header-title-group h1 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <div class="app-layout">
+
+        <!-- ==================== ANIMATED COLLAPSIBLE SIDEBAR ==================== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/student-dashboard" class="brand-wrapper">
+                    <div class="brand-logo">
+                        <i data-lucide="building-2"></i>
+                    </div>
+                    <div class="brand-info">
+                        <span class="brand-title">Resident Hub</span>
+                        <span class="brand-badge"><i data-lucide="sparkles" style="width: 12px; height: 12px;"></i> Student & PG</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/student-dashboard" class="nav-item active">
+                    <div class="nav-icon"><i data-lucide="layout-dashboard"></i></div>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <a href="/student-food-menu" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="utensils"></i></div>
+                    <span class="nav-label">Food & Mess Menu</span>
+                </a>
+
+                <a href="/student-room" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="bed-double"></i></div>
+                    <span class="nav-label">My Room & Stay</span>
+                </a>
+
+                <a href="/student-fees" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wallet"></i></div>
+                    <span class="nav-label">Rent & Dues</span>
+                    <span class="nav-badge" id="sideFeeBadge" style="display: none;">Due</span>
+                </a>
+
+                <a href="/student-complaints" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wrench"></i></div>
+                    <span class="nav-label">Maintenance</span>
+                    <span class="nav-badge" id="sideComplaintBadge" style="display: none;">0</span>
+                </a>
+
+                <a href="/student-profile" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="user"></i></div>
+                    <span class="nav-label">My Profile</span>
+                </a>
+
+                <a href="/student-settings" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="settings"></i></div>
+                    <span class="nav-label">Settings</span>
+                </a>
+
+                <a href="/student-reviews" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="star"></i></div>
+                    <span class="nav-label">Reviews & Feedback</span>
+                </a>
+
+                <div class="sidebar-section">
+                    <span class="section-label">Stay Management</span>
+
+                    <a href="javascript:void(0);" onclick="openVacateModal()" class="nav-item">
+                        <div class="nav-icon"><i data-lucide="send"></i></div>
+                        <span class="nav-label">Vacating Notice</span>
+                    </a>
+
+                    <a href="/reset-password" class="nav-item">
+                        <div class="nav-icon"><i data-lucide="key-round"></i></div>
+                        <span class="nav-label">Change Password</span>
+                    </a>
+
+                    <a href="/logout" class="nav-item" style="color: var(--accent-red);">
+                        <div class="nav-icon"><i data-lucide="log-out"></i></div>
+                        <span class="nav-label">Sign Out</span>
+                    </a>
+                </div>
+            </nav>
+
+            <button class="toggle-btn" id="sidebarToggle" title="Collapse Sidebar">
+                <div class="toggle-icon">
+                    <i data-lucide="chevrons-left"></i>
+                </div>
+                <span class="toggle-text">Collapse Menu</span>
+            </button>
+        </aside>
+
+
+        <!-- ==================== MAIN CONTENT AREA ==================== -->
+        <main class="main-wrapper">
+
+            <!-- Top Header -->
+            <header class="dashboard-header">
+                <div style="display: flex; align-items: center; gap: 14px;">
+                    <button class="icon-btn mobile-toggle" id="mobileToggleBtn" title="Open Menu">
+                        <i data-lucide="menu"></i>
+                    </button>
+                    <div class="header-title-group">
+                        <h1>
+                            <span>Hello,</span>
+                            <span id="heroResidentName">Resident</span>
+                            <span style="font-size: 1.3rem;">👋</span>
+                        </h1>
+                        <p id="headerSubtitle">Track your room stay, monthly rent dues, daily mess specials & requests.</p>
+                    </div>
+                </div>
+
+                <div class="header-controls">
+                    <div class="status-pill">
+                        <div class="status-pulse"></div>
+                        <span id="headerResidentPill">Resident Active</span>
+                    </div>
+
+                    <button type="button" class="header-action-btn" onclick="openVacateModal()">
+                        <i data-lucide="send" style="width: 15px; height: 15px;"></i>
+                        <span>Submit Notice</span>
+                    </button>
+
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Dark/Light Mode">
+                        <i data-lucide="moon" id="themeIcon"></i>
+                    </button>
+
+                    <a href="/student-profile" class="profile-pill">
+                        <div class="profile-avatar" id="avatarInitials">ST</div>
+                        <span class="profile-name" id="topProfileName">My Profile</span>
+                    </a>
+                </div>
+            </header>
+
+            <!-- Dashboard Content Container -->
+            <div class="content-container">
+
+                <!-- ID Proof Verification Notification Banner -->
+                <div id="idStatusNoticeBanner" style="display: none; margin-bottom: 20px; border-radius: 12px; padding: 14px 18px; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;">
+                    <div style="display: flex; align-items: center; gap: 12px;">
+                        <div id="idStatusIconWrap" style="width: 36px; height: 36px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;"></div>
+                        <div>
+                            <div id="idStatusTitle" style="font-weight: 700; font-size: 13.5px;"></div>
+                            <div id="idStatusDesc" style="font-size: 12px; margin-top: 2px;"></div>
+                        </div>
+                    </div>
+                    <div id="idStatusActionWrap"></div>
+                </div>
+
+                <!-- Monthly Payment Due Notice Banner -->
+                <div id="monthlyFeeDueBanner" style="display: none; margin-bottom: 20px; border-radius: 14px; padding: 16px 20px; background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%); border: 1.5px solid #f59e0b; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; box-shadow: 0 4px 14px rgba(245, 158, 11, 0.12);">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div style="width: 42px; height: 42px; border-radius: 10px; background: #fde68a; display: flex; align-items: center; justify-content: center; font-size: 22px; flex-shrink: 0;">
+                            🔔
+                        </div>
+                        <div>
+                            <div id="monthlyFeeTitle" style="font-weight: 800; font-size: 14.5px; color: #92400e;">
+                                Monthly Payment Notice
+                            </div>
+                            <div id="monthlyFeeMessage" style="font-size: 13px; color: #b45309; margin-top: 2px; font-weight: 600;">
+                                Your monthly payment should be paid. Please pay to keep your room reservation active.
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <a href="/student-fees" style="padding: 9px 18px; background: #d97706; color: white; border-radius: 10px; font-weight: 800; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.3);">
+                            Pay Monthly Fee Now →
+                        </a>
+                    </div>
+                </div>
+
+                <!-- 1. Hero Overview Banner -->
+                <div class="hero-banner animate-enter delay-1">
+                    <div class="hero-text">
+                        <h2 id="bannerGreeting">Welcome to Your Resident Portal</h2>
+                        <p>Enjoy comfortable living with 3-times hygienic homely food, high-speed Wi-Fi, 24/7 security, and instant housekeeping support.</p>
+                    </div>
+                    <div class="hero-badges-group">
+                        <div class="hero-pill" id="heroCategoryPill">
+                            <i data-lucide="briefcase" style="width: 14px; height: 14px;"></i>
+                            <span id="heroResidentType">Resident Profile</span>
+                        </div>
+                        <div class="hero-pill" id="heroRoomPill">
+                            <i data-lucide="door-closed" style="width: 14px; height: 14px;"></i>
+                            <span id="heroRoomNo">Assigned Room</span>
+                        </div>
+                        <div class="hero-pill">
+                            <i data-lucide="utensils" style="width: 14px; height: 14px;"></i>
+                            <span id="heroFoodPlan">3-Time Mess Included</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. 4-Column KPI Stats Grid -->
+                <div class="stats-grid animate-enter delay-2">
+
+                    <!-- Stat 1: Monthly Rent & Fees -->
+                    <a href="/student-fees" class="stat-card card-orange">
+                        <div>
+                            <div class="stat-card-top">
+                                <div class="stat-icon-box orange">
+                                    <i data-lucide="wallet"></i>
+                                </div>
+                                <span class="stat-chip chip-orange" id="kpiFeeStatus">Checking...</span>
+                            </div>
+                            <div class="stat-value" id="kpiRentAmount">₹0</div>
+                            <div class="stat-label">Monthly Rent & Dues</div>
+                        </div>
+                        <div class="stat-link">
+                            <span>Pay via UPI / Cards</span>
+                            <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                        </div>
+                    </a>
+
+                    <!-- Stat 2: My Room & Stay Details -->
+                    <a href="/student-room" class="stat-card card-blue">
+                        <div>
+                            <div class="stat-card-top">
+                                <div class="stat-icon-box blue">
+                                    <i data-lucide="bed-double"></i>
+                                </div>
+                                <span class="stat-chip chip-blue" id="kpiAcType">Non-AC</span>
+                            </div>
+                            <div class="stat-value" id="kpiRoomNo">Room --</div>
+                            <div class="stat-label" id="kpiRoomSharing">Assigned Room & Bed</div>
+                        </div>
+                        <div class="stat-link">
+                            <span>View Room Amenities</span>
+                            <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                        </div>
+                    </a>
+
+                    <!-- Stat 3: Today's Mess Live Meal -->
+                    <a href="/student-food-menu" class="stat-card card-green">
+                        <div>
+                            <div class="stat-card-top">
+                                <div class="stat-icon-box green">
+                                    <i data-lucide="utensils"></i>
+                                </div>
+                                <span class="stat-chip chip-green" id="kpiMealStatus">Checking...</span>
+                            </div>
+                            <div class="stat-value" id="kpiMealName" style="font-size: 1.3rem;">Daily Mess</div>
+                            <div class="stat-label" id="kpiMealTiming">Breakfast • Lunch • Dinner</div>
+                        </div>
+                        <div class="stat-link">
+                            <span>View Full 7-Day Menu</span>
+                            <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                        </div>
+                    </a>
+
+                    <!-- Stat 4: Complaints & Maintenance -->
+                    <a href="/student-complaints" class="stat-card card-purple">
+                        <div>
+                            <div class="stat-card-top">
+                                <div class="stat-icon-box purple">
+                                    <i data-lucide="wrench"></i>
+                                </div>
+                                <span class="stat-chip chip-purple" id="kpiComplaintStatus">Active</span>
+                            </div>
+                            <div class="stat-value" id="kpiComplaintCount">0</div>
+                            <div class="stat-label">Active Support Tickets</div>
+                        </div>
+                        <div class="stat-link">
+                            <span>Submit New Complaint</span>
+                            <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i>
+                        </div>
+                    </a>
+
+                </div>
+
+                <!-- 3. Today's Mess & Food Menu Interactive Widget -->
+                <div class="glass-card food-dashboard-widget animate-enter delay-3">
+                    <div class="widget-header-row">
+                        <div class="widget-title-area">
+                            <h3>
+                                <i data-lucide="chef-hat" style="color: var(--primary);"></i>
+                                <span>Today's Mess & Kitchen Specials</span>
+                                <span id="widgetDayBadge" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); background: var(--primary-light); padding: 3px 12px; border-radius: 20px; margin-left: 6px;">
+                                    Loading...
+                                </span>
+                            </h3>
+                            <p>Prepared fresh in the hostel hygienic kitchen. Homely breakfast, lunch, and dinner.</p>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                            <span class="badge-live-pulse" id="widgetLivePill">
+                                <span class="dot"></span>
+                                <span id="widgetLiveStatus">Checking meal timing...</span>
+                            </span>
+                            <a href="/student-food-menu" class="btn-secondary" style="text-decoration: none; padding: 7px 14px; font-size: 0.8rem;">
+                                Full 7-Day Menu →
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Kitchen Announcement (if any) -->
+                    <div id="widgetAnnounceBox" class="food-announcement-banner" style="display: none;">
+                        <i data-lucide="megaphone" style="width: 18px; height: 18px; flex-shrink: 0;"></i>
+                        <span id="widgetAnnounceText"></span>
+                    </div>
+
+                    <!-- 3 Meals Grid -->
+                    <div class="food-meals-grid">
+
+                        <!-- Morning Tiffin -->
+                        <div class="food-meal-box" id="widgetCardB">
+                            <div id="widgetTagB" class="meal-tag-pill" style="display: none;">Serving Now</div>
+                            <div>
+                                <div class="meal-box-header">
+                                    <div class="meal-badge-name">
+                                        <span>🌅</span>
+                                        <span>Morning Tiffin</span>
+                                    </div>
+                                    <span class="meal-time-span" id="widgetTimeB">7:30 AM - 10:00 AM</span>
+                                </div>
+                                <div class="meal-items-text" id="widgetItemsB">
+                                    Loading morning breakfast menu...
+                                </div>
+                            </div>
+                            <div class="meal-special-chip" id="widgetSpecBoxB">
+                                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                                <div>Special: <strong id="widgetSpecB">--</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Homely Lunch -->
+                        <div class="food-meal-box" id="widgetCardL">
+                            <div id="widgetTagL" class="meal-tag-pill" style="display: none;">Serving Now</div>
+                            <div>
+                                <div class="meal-box-header">
+                                    <div class="meal-badge-name">
+                                        <span>☀️</span>
+                                        <span>Homely Lunch</span>
+                                    </div>
+                                    <span class="meal-time-span" id="widgetTimeL">12:30 PM - 3:00 PM</span>
+                                </div>
+                                <div class="meal-items-text" id="widgetItemsL">
+                                    Loading wholesome lunch menu...
+                                </div>
+                            </div>
+                            <div class="meal-special-chip" id="widgetSpecBoxL">
+                                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                                <div>Special: <strong id="widgetSpecL">--</strong></div>
+                            </div>
+                        </div>
+
+                        <!-- Night Dinner -->
+                        <div class="food-meal-box" id="widgetCardD">
+                            <div id="widgetTagD" class="meal-tag-pill" style="display: none;">Serving Now</div>
+                            <div>
+                                <div class="meal-box-header">
+                                    <div class="meal-badge-name">
+                                        <span>🌙</span>
+                                        <span>Night Dinner</span>
+                                    </div>
+                                    <span class="meal-time-span" id="widgetTimeD">7:30 PM - 10:00 PM</span>
+                                </div>
+                                <div class="meal-items-text" id="widgetItemsD">
+                                    Loading dinner feast menu...
+                                </div>
+                            </div>
+                            <div class="meal-special-chip" id="widgetSpecBoxD">
+                                <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i>
+                                <div>Special: <strong id="widgetSpecD">--</strong></div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!-- 4. Quick Services & Resident Actions -->
+                <div class="animate-enter delay-4">
+                    <h3 class="services-section-title">
+                        <i data-lucide="layout-grid" style="color: var(--primary);"></i>
+                        <span>Resident Services & Shortcuts</span>
+                    </h3>
+
+                    <div class="services-grid-6">
+
+                        <!-- Service 1: Rent Payment -->
+                        <a href="/student-fees" class="service-card">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: var(--accent-orange-bg); color: var(--accent-orange);">
+                                        <i data-lucide="credit-card"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Pay Rent & Deposits</h4>
+                                        <p>Pay online via UPI, PhonePe, Razorpay, or Google Pay with zero transaction delays.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn">Make Payment <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                        <!-- Service 2: Weekly Food Schedule -->
+                        <a href="/student-food-menu" class="service-card">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: var(--primary-light); color: var(--primary);">
+                                        <i data-lucide="calendar"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Weekly Food Schedule</h4>
+                                        <p>Check the rotating 7-day breakfast, lunch, and dinner timetable and special weekend meals.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn">View Timetable <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                        <!-- Service 3: Room & Amenities -->
+                        <a href="/student-room" class="service-card">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: var(--accent-green-bg); color: var(--accent-green);">
+                                        <i data-lucide="home"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Room & Amenities</h4>
+                                        <p>Review your assigned bed, AC condition, room sharing type, wardrobe, and stay dates.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn">Explore Room <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                        <!-- Service 4: Maintenance Complaints -->
+                        <a href="/student-complaints" class="service-card">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: var(--accent-purple-bg); color: var(--accent-purple);">
+                                        <i data-lucide="life-buoy"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Maintenance & Tickets</h4>
+                                        <p>Submit tickets for Wi-Fi speed, electrical fixtures, AC cooling, plumbing, or room housekeeping.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn">Raise Ticket <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                        <!-- Service 5: Departure / Vacating Notice -->
+                        <div class="service-card" onclick="openVacateModal()" style="cursor: pointer;">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: rgba(190, 24, 93, 0.12); color: #be185d;">
+                                        <i data-lucide="truck"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Transfer & Vacating Notice</h4>
+                                        <p>Relocating or completing your stay? Submit a 15/30-day notice to initiate security deposit refund.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn" style="color: #be185d;">Submit Notice Form <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </div>
+
+                        <!-- Service 6: Resident Profile -->
+                        <a href="/student-profile" class="service-card">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: var(--bg-subtle); color: var(--text-primary);">
+                                        <i data-lucide="user-check"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Resident Profile</h4>
+                                        <p>View and verify your registered personal details, office or college affiliation, and ID proof.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn">Manage Profile <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                        <!-- Service 7: Reviews & Feedback -->
+                        <a href="/student-reviews" class="service-card" style="border-left: 3px solid #f59e0b;">
+                            <div>
+                                <div class="service-card-top">
+                                    <div class="service-icon" style="background-color: rgba(245, 158, 11, 0.12); color: #d97706;">
+                                        <i data-lucide="star"></i>
+                                    </div>
+                                    <div>
+                                        <h4>Hostel Reviews & Feedback</h4>
+                                        <p>Rate food, Wi-Fi, cleanliness, and facilities. Share your stay experience and view resident ratings.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="service-action-row">
+                                <span class="service-btn" style="color: #d97706;">Give Review <i data-lucide="arrow-right" style="width: 14px; height: 14px;"></i></span>
+                            </div>
+                        </a>
+
+                    </div>
+                </div>
+
+                <!-- 5. Split Section: Recent Payment Receipts & Hostel Guidelines -->
+                <div class="split-grid-2 animate-enter delay-5">
+
+                    <!-- Left: Recent Payments -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h4>
+                                <i data-lucide="receipt" style="color: var(--primary);"></i>
+                                <span>Recent Payments & Receipts</span>
+                            </h4>
+                            <a href="/student-fees" style="font-size: 0.8rem; font-weight: 700; color: var(--primary); text-decoration: none;">View All Receipts →</a>
+                        </div>
+
+                        <div style="overflow-x: auto;">
+                            <table class="table-custom">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Amount</th>
+                                        <th>Mode</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentPaymentsTbody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading payment history...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Right: Hostel Notices & Guidelines -->
+                    <div class="glass-card">
+                        <div class="card-header-flex">
+                            <h4>
+                                <i data-lucide="shield-alert" style="color: var(--accent-orange);"></i>
+                                <span>Hostel Guidelines & Rules</span>
+                            </h4>
+                            <span style="font-size: 0.76rem; font-weight: 700; color: var(--accent-green);">Verified Stay</span>
+                        </div>
+
+                        <div class="guideline-item">
+                            <i data-lucide="clock" class="guideline-icon"></i>
+                            <div class="guideline-content">
+                                <h5>Main Gate Timings</h5>
+                                <p id="dashGateTimings">Hostel entry gate closes by 10:30 PM. Late entries require prior warden intimation.</p>
+                            </div>
+                        </div>
+
+                        <div class="guideline-item">
+                            <i data-lucide="wifi" class="guideline-icon"></i>
+                            <div class="guideline-content">
+                                <h5>High-Speed Fiber Wi-Fi</h5>
+                                <p id="dashWifiInfo">Unlimited 150 Mbps Wi-Fi available on each floor. Report connection drop via complaints.</p>
+                            </div>
+                        </div>
+
+                        <div class="guideline-item">
+                            <i data-lucide="utensils-crossed" class="guideline-icon"></i>
+                            <div class="guideline-content">
+                                <h5>Dining Hall Hygiene</h5>
+                                <p id="dashMessTimings">Please clear plates after meals. Mess timings: Tiffin 7:30-10 AM, Lunch 12:30-3 PM, Dinner 7:30-10 PM.</p>
+                            </div>
+                        </div>
+
+                        <div class="guideline-item">
+                            <i data-lucide="phone-call" class="guideline-icon"></i>
+                            <div class="guideline-content">
+                                <h5>Emergency Warden Desk</h5>
+                                <p id="dashWardenDesk">24/7 security guard and hostel supervisor available at ground floor reception.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+
+    </div>
+
+
+    <!-- ==================== VACATING / TRANSFER NOTICE MODAL ==================== -->
+    <div id="vacateModal" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header-row">
+                <h3>
+                    <i data-lucide="send" style="color: #be185d;"></i>
+                    <span>Submit Departure / Vacating Notice</span>
+                </h3>
+                <button type="button" class="close-btn" onclick="closeVacateModal()">✕</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 18px; line-height: 1.5;">
+                Kindly submit this notice at least 15 to 30 days before departure to arrange physical room inspection and security caution deposit refund.
+            </p>
+
+            <form id="residentNoticeForm" onsubmit="handleResidentNotice(event)">
+                <div class="form-group">
+                    <label>Reason for Departure *</label>
+                    <select id="userReason" class="form-select" required>
+                        <option value="Job Transfer to another city">Job Transfer to another city / state</option>
+                        <option value="Project Deputation Completed">Work / Client Project Completed</option>
+                        <option value="Course Completed">Academic Course / Training Ended</option>
+                        <option value="Shifting to Flat">Shifting to Own Apartment / Flat</option>
+                        <option value="Personal Reasons">Personal / Family Reasons</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Planned Departure / Vacate Date *</label>
+                    <input type="date" id="userVacateDate" class="form-input" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Forwarding UPI ID / Phone (for Deposit Refund)</label>
+                    <input type="text" id="userRefundNotes" class="form-input" placeholder="e.g. name@okhdfcbank or 9876543210 GPay">
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary" onclick="closeVacateModal()">Cancel</button>
+                    <button type="submit" class="btn-primary">Submit Notice</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <!-- ==================== JAVASCRIPT LOGIC ==================== -->
+    <script>
+        // Lucide Icons initialization
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        // Sidebar collapse logic
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        const mobileToggleBtn = document.getElementById("mobileToggleBtn");
+        const sidebarBackdrop = document.getElementById("sidebarBackdrop");
+
+        // Restore saved sidebar collapsed state
+        const savedSidebarState = localStorage.getItem("hostel_sidebar_collapsed");
+        if (savedSidebarState === "true") {
+            sidebar.classList.add("collapsed");
+        }
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                localStorage.setItem("hostel_sidebar_collapsed", sidebar.classList.contains("collapsed"));
+                refreshIcons();
+            });
+        }
+
+        // Mobile drawer
+        if (mobileToggleBtn) {
+            mobileToggleBtn.addEventListener("click", () => {
+                sidebar.classList.toggle("mobile-open");
+                sidebarBackdrop.classList.toggle("active");
+            });
+        }
+
+        if (sidebarBackdrop) {
+            sidebarBackdrop.addEventListener("click", () => {
+                sidebar.classList.remove("mobile-open");
+                sidebarBackdrop.classList.remove("active");
+            });
+        }
+
+        // Dark/Light Theme Switch
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function applyTheme(isDark, animate = false) {
+            if (animate && themeToggleBtn) {
+                themeToggleBtn.classList.add("spinning");
+                setTimeout(() => themeToggleBtn.classList.remove("spinning"), 500);
+            }
+
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("hostel_theme", "dark");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "sun");
+            } else {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("hostel_theme", "light");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "moon");
+            }
+            refreshIcons();
+        }
+
+        const savedTheme = localStorage.getItem("hostel_theme");
+        const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        applyTheme(savedTheme ? savedTheme === "dark" : prefersDark, false);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", () => {
+                const isCurrentlyDark = document.documentElement.classList.contains("dark");
+                applyTheme(!isCurrentlyDark, true);
+            });
+        }
+
+        // Modal Handlers
+        function openVacateModal() {
+            document.getElementById('vacateModal').style.display = 'flex';
+            // Set min date to tomorrow
+            const tomorrow = new Date();
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dateInput = document.getElementById('userVacateDate');
+            if (dateInput) {
+                dateInput.min = tomorrow.toISOString().split('T')[0];
+            }
+        }
+
+        function closeVacateModal() {
+            document.getElementById('vacateModal').style.display = 'none';
+        }
+
+        // Submit Vacating Notice
+        async function handleResidentNotice(e) {
+            e.preventDefault();
+            const reason = document.getElementById('userReason').value;
+            const vacateDate = document.getElementById('userVacateDate').value;
+            const notes = document.getElementById('userRefundNotes').value.trim();
+
+            try {
+                const res = await fetch('/api/vacating-notices', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        reason: reason,
+                        expected_vacate_date: vacateDate,
+                        notes: notes,
+                        notice_date: new Date().toISOString().split('T')[0]
+                    })
+                });
+
+                const data = await res.json();
+                if (data.success) {
+                    alert('Notice submitted successfully! Hostel administration will review room handover and process security deposit refund.');
+                    closeVacateModal();
+                } else {
+                    alert(data.error || 'Failed to submit notice');
+                }
+            } catch (err) {
+                alert('Server error submitting notice. Please try again.');
+            }
+        }
+
+        // Fetch Resident Profile Data
+        async function loadResidentProfile() {
+            try {
+                const res = await fetch('/api/student-profile');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.name) {
+                    const heroName = document.getElementById('heroResidentName');
+                    const topName = document.getElementById('topProfileName');
+                    const bannerGreeting = document.getElementById('bannerGreeting');
+                    const avatar = document.getElementById('avatarInitials');
+
+                    if (heroName) heroName.textContent = data.name;
+                    if (topName) topName.textContent = data.name.split(' ')[0];
+                    if (bannerGreeting) bannerGreeting.textContent = `Welcome back, ${data.name}!`;
+
+                    if (avatar) {
+                        if (data.profile_photo) {
+                            avatar.innerHTML = `<img src="${data.profile_photo}" style="width:100%;height:100%;border-radius:50%;object-fit:cover;">`;
+                        } else {
+                            const parts = data.name.trim().split(' ');
+                            const initials = parts.length > 1 ? (parts[0][0] + parts[1][0]).toUpperCase() : parts[0].slice(0, 2).toUpperCase();
+                            avatar.textContent = initials;
+                        }
+                    }
+
+                    const rType = data.resident_type || 'Jobholder';
+                    const catEl = document.getElementById('heroResidentType');
+                    if (catEl) catEl.textContent = `${rType} Resident`;
+
+                    const roomEl = document.getElementById('heroRoomNo');
+                    if (roomEl) roomEl.textContent = data.room_no ? `Room ${data.room_no}` : 'Room Pending';
+
+                    const kpiRoom = document.getElementById('kpiRoomNo');
+                    if (kpiRoom) kpiRoom.textContent = data.room_no ? `Room ${data.room_no}` : 'Unassigned';
+
+                    const foodEl = document.getElementById('heroFoodPlan');
+                    if (foodEl && data.food_plan) foodEl.textContent = data.food_plan;
+
+                    // ID Proof Verification Banner Check
+                    const noticeBanner = document.getElementById('idStatusNoticeBanner');
+                    if (noticeBanner) {
+                        const status = data.id_proof_status || 'Pending Verification';
+                        if (status === 'Rejected') {
+                            noticeBanner.style.display = 'flex';
+                            noticeBanner.style.background = '#fef2f2';
+                            noticeBanner.style.border = '1.5px solid #fecaca';
+                            document.getElementById('idStatusIconWrap').style.background = '#fee2e2';
+                            document.getElementById('idStatusIconWrap').style.color = '#b91c1c';
+                            document.getElementById('idStatusIconWrap').innerHTML = '⚠️';
+                            document.getElementById('idStatusTitle').textContent = 'Action Required: Government ID Rejected by Admin';
+                            document.getElementById('idStatusTitle').style.color = '#991b1b';
+                            document.getElementById('idStatusDesc').textContent = `Remarks: "${data.id_proof_rejection_reason || 'Document copy is invalid or mismatching.'}". You must re-upload a valid ID proof to activate full permissions.`;
+                            document.getElementById('idStatusDesc').style.color = '#7f1d1d';
+                            document.getElementById('idStatusActionWrap').innerHTML = `
+                                <a href="/student-profile" style="padding: 7px 14px; background: #dc2626; color: white; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                                    Re-upload Valid ID Proof →
+                                </a>
+                            `;
+                        } else if (status === 'Pending Verification') {
+                            noticeBanner.style.display = 'flex';
+                            noticeBanner.style.background = '#fffbeb';
+                            noticeBanner.style.border = '1px solid #fde68a';
+                            document.getElementById('idStatusIconWrap').style.background = '#fef3c7';
+                            document.getElementById('idStatusIconWrap').style.color = '#b45309';
+                            document.getElementById('idStatusIconWrap').innerHTML = '⏳';
+                            document.getElementById('idStatusTitle').textContent = 'Identity Verification In Progress';
+                            document.getElementById('idStatusTitle').style.color = '#92400e';
+                            document.getElementById('idStatusDesc').textContent = 'Your uploaded government ID proof is under admin review. Permissions will be fully unlocked once verified.';
+                            document.getElementById('idStatusDesc').style.color = '#78350f';
+                            document.getElementById('idStatusActionWrap').innerHTML = `
+                                <a href="/student-profile" style="padding: 6px 12px; background: #fef3c7; color: #b45309; border: 1px solid #fcd34d; border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none;">
+                                    View Status
+                                </a>
+                            `;
+                        } else {
+                            noticeBanner.style.display = 'none';
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load resident profile:", err);
+            }
+        }
+
+        // Fetch Room Details
+        async function loadRoomDetails() {
+            try {
+                const res = await fetch('/api/student-room');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data && data.room_no) {
+                    const kpiRoom = document.getElementById('kpiRoomNo');
+                    if (kpiRoom) kpiRoom.textContent = `Room ${data.room_no}`;
+
+                    const kpiAc = document.getElementById('kpiAcType');
+                    if (kpiAc) kpiAc.textContent = data.ac_type || "Non-AC";
+
+                    const kpiSharing = document.getElementById('kpiRoomSharing');
+                    if (kpiSharing) kpiSharing.textContent = `${data.room_type || "Sharing"} • ${data.ac_type || "Non-AC"}`;
+                }
+            } catch (err) {
+                console.warn("Could not load room details:", err);
+            }
+        }
+
+        // Fetch Rent & Fee Status
+        async function loadRentStatus() {
+            try {
+                const res = await fetch('/api/student-fees');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data) {
+                    const kpiRent = document.getElementById('kpiRentAmount');
+                    const kpiFeeStatus = document.getElementById('kpiFeeStatus');
+                    const sideFeeBadge = document.getElementById('sideFeeBadge');
+
+                    const pending = Number(data.pending_amount) || 0;
+                    const total = Number(data.total_fee) || 0;
+
+                    const banner = document.getElementById('monthlyFeeDueBanner');
+                    if (pending > 0) {
+                        if (banner) {
+                            banner.style.display = 'flex';
+                            const titleEl = document.getElementById('monthlyFeeTitle');
+                            const msgEl = document.getElementById('monthlyFeeMessage');
+                            const isAdvance = (data.fee_type || '').includes('Advance');
+                            if (titleEl) {
+                                titleEl.textContent = isAdvance 
+                                    ? 'Joining Advance Payment Due' 
+                                    : `Monthly Stay Fee Due (${data.month_name || 'Current Month'})`;
+                            }
+                            if (msgEl) {
+                                msgEl.textContent = data.monthly_notice_message 
+                                    || `Your monthly payment of ₹${pending.toLocaleString('en-IN')} should be paid. Please pay to keep your room reservation active.`;
+                            }
+                        }
+                        if (kpiRent) kpiRent.textContent = `₹${pending.toLocaleString('en-IN')}`;
+                        if (kpiFeeStatus) {
+                            kpiFeeStatus.textContent = `Due ₹${pending.toLocaleString('en-IN')}`;
+                            kpiFeeStatus.className = 'stat-chip chip-orange';
+                        }
+                        if (sideFeeBadge) {
+                            sideFeeBadge.textContent = 'Due';
+                            sideFeeBadge.style.display = 'inline-flex';
+                        }
+                    } else {
+                        if (banner) banner.style.display = 'none';
+                        if (kpiRent) kpiRent.textContent = `₹${total.toLocaleString('en-IN')}`;
+                        if (kpiFeeStatus) {
+                            kpiFeeStatus.textContent = 'Fully Paid ✓';
+                            kpiFeeStatus.className = 'stat-chip chip-green';
+                        }
+                        if (sideFeeBadge) sideFeeBadge.style.display = 'none';
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load fee details:", err);
+            }
+        }
+
+        // Fetch Recent Payment History
+        async function loadPaymentHistory() {
+            try {
+                const res = await fetch('/api/student-fees/history');
+                if (!res.ok) return;
+                const data = await res.json();
+                const tbody = document.getElementById('recentPaymentsTbody');
+                if (!tbody) return;
+
+                if (!Array.isArray(data) || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted); padding: 18px;">No transaction receipts yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = '';
+                // Show latest 3
+                data.slice(0, 3).forEach(item => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${item.payment_date || 'Recent'}</strong></td>
+                        <td style="font-weight: 700; color: var(--accent-green);">₹${Number(item.amount).toLocaleString('en-IN')}</td>
+                        <td><span style="font-size: 0.8rem; background: var(--bg-subtle); padding: 2px 8px; border-radius: 6px;">${item.payment_mode || 'UPI'}</span></td>
+                        <td><span class="stat-chip chip-green">${item.status || 'Success'}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            } catch (err) {
+                console.warn("Could not load payment history:", err);
+            }
+        }
+
+        // Fetch Active Complaints
+        async function loadComplaintsStatus() {
+            try {
+                const res = await fetch('/api/student-complaints');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (Array.isArray(data)) {
+                    const pendingCount = data.filter(c => c.status === 'Pending').length;
+                    const countEl = document.getElementById('kpiComplaintCount');
+                    const badgeEl = document.getElementById('sideComplaintBadge');
+                    const statusEl = document.getElementById('kpiComplaintStatus');
+
+                    if (countEl) countEl.textContent = pendingCount;
+                    if (pendingCount > 0) {
+                        if (badgeEl) {
+                            badgeEl.textContent = pendingCount;
+                            badgeEl.style.display = 'inline-flex';
+                        }
+                        if (statusEl) {
+                            statusEl.textContent = `${pendingCount} Open`;
+                            statusEl.className = 'stat-chip chip-orange';
+                        }
+                    } else {
+                        if (badgeEl) badgeEl.style.display = 'none';
+                        if (statusEl) {
+                            statusEl.textContent = 'All Resolved ✓';
+                            statusEl.className = 'stat-chip chip-green';
+                        }
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load complaints count:", err);
+            }
+        }
+
+        // Fetch Today's Mess & Food Menu (Strictly Read-Only)
+        async function loadTodayFoodMenu() {
+            try {
+                const res = await fetch('/api/food-menu/today');
+                const data = await res.json();
+                if (data && data.success && data.menu) {
+                    const m = data.menu;
+                    const badge = document.getElementById('widgetDayBadge');
+                    if (badge) badge.textContent = `${m.day_name}, ${m.menu_date}`;
+
+                    // Breakfast
+                    const tB = document.getElementById('widgetTimeB');
+                    const iB = document.getElementById('widgetItemsB');
+                    const sB = document.getElementById('widgetSpecB');
+                    if (tB) tB.textContent = m.breakfast_time || "7:30 AM - 10:00 AM";
+                    if (iB) iB.textContent = m.breakfast_items || "Masala Dosa, Sambar, Chutney, Tea/Coffee";
+                    if (sB) sB.textContent = m.breakfast_special || "Filter Coffee & Hot Tea";
+
+                    // Lunch
+                    const tL = document.getElementById('widgetTimeL');
+                    const iL = document.getElementById('widgetItemsL');
+                    const sL = document.getElementById('widgetSpecL');
+                    if (tL) tL.textContent = m.lunch_time || "12:30 PM - 3:00 PM";
+                    if (iL) iL.textContent = m.lunch_items || "Steamed Rice, Dal Tadka, Veg Curry, Curd, Papad";
+                    if (sL) sL.textContent = m.lunch_special || "Fresh Curd & Crispy Appalam";
+
+                    // Dinner
+                    const tD = document.getElementById('widgetTimeD');
+                    const iD = document.getElementById('widgetItemsD');
+                    const sD = document.getElementById('widgetSpecD');
+                    if (tD) tD.textContent = m.dinner_time || "7:30 PM - 10:00 PM";
+                    if (iD) iD.textContent = m.dinner_items || "Soft Chapatis, Paneer Curry, Jeera Rice, Dal Fry";
+                    if (sD) sD.textContent = m.dinner_special || "Sweet Kheer / Gulab Jamun";
+
+                    // Announcement
+                    const annBox = document.getElementById('widgetAnnounceBox');
+                    const annText = document.getElementById('widgetAnnounceText');
+                    if (annBox && annText) {
+                        if (m.special_announcement) {
+                            annText.textContent = m.special_announcement;
+                            annBox.style.display = "flex";
+                        } else {
+                            annBox.style.display = "none";
+                        }
+                    }
+
+                    highlightCurrentMeal();
+                }
+            } catch (e) {
+                console.warn("Could not load dashboard food menu:", e);
+            }
+        }
+
+        // Live meal highlighter
+        function highlightCurrentMeal() {
+            const now = new Date();
+            const timeNum = now.getHours() + (now.getMinutes() / 60);
+
+            const cardB = document.getElementById('widgetCardB');
+            const cardL = document.getElementById('widgetCardL');
+            const cardD = document.getElementById('widgetCardD');
+
+            const tagB = document.getElementById('widgetTagB');
+            const tagL = document.getElementById('widgetTagL');
+            const tagD = document.getElementById('widgetTagD');
+
+            const liveStatus = document.getElementById('widgetLiveStatus');
+            const kpiMealStatus = document.getElementById('kpiMealStatus');
+            const kpiMealName = document.getElementById('kpiMealName');
+            const kpiMealTiming = document.getElementById('kpiMealTiming');
+
+            if (cardB) cardB.classList.remove('active-meal');
+            if (cardL) cardL.classList.remove('active-meal');
+            if (cardD) cardD.classList.remove('active-meal');
+
+            if (tagB) tagB.style.display = 'none';
+            if (tagL) tagL.style.display = 'none';
+            if (tagD) tagD.style.display = 'none';
+
+            if (timeNum >= 7.0 && timeNum <= 10.5) {
+                if (cardB) cardB.classList.add('active-meal');
+                if (tagB) tagB.style.display = 'block';
+                if (liveStatus) liveStatus.textContent = "Serving: Morning Tiffin";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Serving Now";
+                if (kpiMealName) kpiMealName.textContent = "Morning Tiffin";
+                if (kpiMealTiming) kpiMealTiming.textContent = "7:30 AM - 10:00 AM";
+            } else if (timeNum > 10.5 && timeNum < 12.5) {
+                if (liveStatus) liveStatus.textContent = "Next: Lunch at 12:30 PM";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Next: Lunch";
+                if (kpiMealName) kpiMealName.textContent = "Homely Lunch";
+                if (kpiMealTiming) kpiMealTiming.textContent = "Opens 12:30 PM";
+            } else if (timeNum >= 12.5 && timeNum <= 15.5) {
+                if (cardL) cardL.classList.add('active-meal');
+                if (tagL) tagL.style.display = 'block';
+                if (liveStatus) liveStatus.textContent = "Serving: Homely Lunch";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Serving Now";
+                if (kpiMealName) kpiMealName.textContent = "Homely Lunch";
+                if (kpiMealTiming) kpiMealTiming.textContent = "12:30 PM - 3:00 PM";
+            } else if (timeNum > 15.5 && timeNum < 19.5) {
+                if (liveStatus) liveStatus.textContent = "Next: Dinner at 7:30 PM";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Next: Dinner";
+                if (kpiMealName) kpiMealName.textContent = "Night Dinner";
+                if (kpiMealTiming) kpiMealTiming.textContent = "Opens 7:30 PM";
+            } else if (timeNum >= 19.5 && timeNum <= 22.5) {
+                if (cardD) cardD.classList.add('active-meal');
+                if (tagD) tagD.style.display = 'block';
+                if (liveStatus) liveStatus.textContent = "Serving: Night Dinner";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Serving Now";
+                if (kpiMealName) kpiMealName.textContent = "Night Dinner";
+                if (kpiMealTiming) kpiMealTiming.textContent = "7:30 PM - 10:00 PM";
+            } else {
+                if (liveStatus) liveStatus.textContent = "Kitchen Closed (Opens 7:30 AM)";
+                if (kpiMealStatus) kpiMealStatus.textContent = "Closed";
+                if (kpiMealName) kpiMealName.textContent = "Mess Closed";
+                if (kpiMealTiming) kpiMealTiming.textContent = "Opens 7:30 AM Tomorrow";
+            }
+        }
+
+        async function loadHostelSettingsOnDash() {
+            try {
+                const res = await fetch('/api/settings');
+                if (!res.ok) return;
+                const data = await res.json();
+                if (data) {
+                    if (data.gate_closing_time) {
+                        const el = document.getElementById('dashGateTimings');
+                        if (el) el.textContent = `Hostel entry gate closes by ${data.gate_closing_time}. Late entries require prior warden intimation.`;
+                    }
+                    if (data.wifi_ssid) {
+                        const el = document.getElementById('dashWifiInfo');
+                        if (el) el.textContent = `Network: ${data.wifi_ssid} (Pass: ${data.wifi_password || 'HostelWifi'}). Unlimited fiber Wi-Fi.`;
+                    }
+                    if (data.warden_phone) {
+                        const el = document.getElementById('dashWardenDesk');
+                        if (el) el.textContent = `${data.warden_name || 'Chief Warden Desk'} available at reception or call ${data.warden_phone}.`;
+                    }
+                    if (data.mess_morning_time && data.mess_lunch_time && data.mess_dinner_time) {
+                        const el = document.getElementById('dashMessTimings');
+                        if (el) el.textContent = `Mess timings: Tiffin ${data.mess_morning_time}, Lunch ${data.mess_lunch_time}, Dinner ${data.mess_dinner_time}.`;
+                    }
+                }
+            } catch (err) {
+                console.warn("Could not load hostel settings:", err);
+            }
+        }
+
+        // Initialize Everything
+        window.addEventListener('load', () => {
+            loadResidentProfile();
+            loadRoomDetails();
+            loadRentStatus();
+            loadPaymentHistory();
+            loadComplaintsStatus();
+            loadTodayFoodMenu();
+            loadHostelSettingsOnDash();
+            refreshIcons();
+        });
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,1357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics & Executive Reports | Hostel Management</title>
+
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #f1f5f9;
+
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #94a3b8;
+
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(37, 99, 235, 0.18);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-border: #a7f3d0;
+
+            --accent-amber: #f59e0b;
+            --accent-amber-bg: #fffbeb;
+            --accent-amber-border: #fde68a;
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-border: #ddd6fe;
+
+            --accent-rose: #f43f5e;
+            --accent-rose-bg: #fff1f2;
+            --accent-rose-border: #fecdd3;
+
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 22px;
+
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 4px 14px -2px rgba(15, 23, 42, 0.08), 0 2px 6px -1px rgba(15, 23, 42, 0.04);
+            --shadow-lg: 0 12px 30px -4px rgba(15, 23, 42, 0.1);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            line-height: 1.5;
+            min-height: 100vh;
+        }
+
+        /* Top Navigation */
+        .modern-nav {
+            background: #ffffff;
+            border-bottom: 1px solid var(--border-color);
+            padding: 0 24px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.25);
+        }
+
+        .nav-brand h2 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.2;
+        }
+
+        .nav-brand span {
+            font-size: 11px;
+            font-weight: 700;
+            color: #2563eb;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            overflow-x: auto;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #475569;
+            font-size: 13.5px;
+            font-weight: 600;
+            padding: 8px 14px;
+            border-radius: 10px;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+
+        .nav-links a:hover {
+            color: #2563eb;
+            background: #eff6ff;
+        }
+
+        .nav-links a.active {
+            color: #2563eb;
+            background: #eff6ff;
+            font-weight: 700;
+        }
+
+        .logout-link {
+            color: #ef4444 !important;
+        }
+
+        .logout-link:hover {
+            background: #fef2f2 !important;
+        }
+
+        /* Container */
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 28px 24px 60px;
+        }
+
+        /* Hero Banner */
+        .reports-hero {
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #3b82f6 100%);
+            border-radius: var(--radius-xl);
+            padding: 36px 36px 32px;
+            color: #ffffff;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 16px 36px -8px rgba(37, 99, 235, 0.35);
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 24px;
+        }
+
+        .reports-hero::after {
+            content: '';
+            position: absolute;
+            right: -60px;
+            bottom: -80px;
+            width: 280px;
+            height: 280px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(255, 255, 255, 0.16);
+            backdrop-filter: blur(8px);
+            padding: 5px 12px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .reports-hero h1 {
+            font-size: 30px;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .reports-hero p {
+            font-size: 15px;
+            color: rgba(255, 255, 255, 0.88);
+            max-width: 620px;
+            line-height: 1.5;
+        }
+
+        .hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            z-index: 1;
+        }
+
+        .btn-action-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ffffff;
+            color: #1e3a8a;
+            border: none;
+            padding: 11px 20px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn-action-hero:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+        }
+
+        .btn-outline-hero {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.14);
+            color: #ffffff;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            font-size: 13.5px;
+            cursor: pointer;
+            backdrop-filter: blur(8px);
+            transition: var(--transition);
+        }
+
+        .btn-outline-hero:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-2px);
+        }
+
+        /* Live Data Bar */
+        .live-data-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 18px;
+            margin-bottom: 24px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            box-shadow: var(--shadow-sm);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .live-pulse {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        .pulse-dot {
+            width: 9px;
+            height: 9px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 0 rgba(16, 185, 129, 0.4);
+            animation: pulse 1.8s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6); }
+            70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+        }
+
+        /* Summary Stats Cards Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: var(--transition);
+            box-shadow: var(--shadow-sm);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: #cbd5e1;
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .stat-icon {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+        }
+
+        .stat-badge {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 999px;
+        }
+
+        .stat-card span.stat-title {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card strong.stat-val {
+            font-size: 30px;
+            font-weight: 800;
+            color: #0f172a;
+            line-height: 1.1;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .stat-footer-text {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        /* Color Variations */
+        .stat-blue .stat-icon { background: var(--primary-light); color: var(--primary); }
+        .stat-blue .stat-badge { background: var(--primary-light); color: var(--primary); }
+
+        .stat-indigo .stat-icon { background: #e0e7ff; color: #4338ca; }
+        .stat-indigo .stat-badge { background: #e0e7ff; color: #4338ca; }
+
+        .stat-green .stat-icon { background: var(--accent-green-bg); color: var(--accent-green); }
+        .stat-green .stat-badge { background: var(--accent-green-bg); color: var(--accent-green); }
+
+        .stat-amber .stat-icon { background: var(--accent-amber-bg); color: var(--accent-amber); }
+        .stat-amber .stat-badge { background: var(--accent-amber-bg); color: #b45309; }
+
+        .stat-rose .stat-icon { background: var(--accent-rose-bg); color: var(--accent-rose); }
+        .stat-rose .stat-badge { background: var(--accent-rose-bg); color: var(--accent-rose); }
+
+        .stat-purple .stat-icon { background: var(--accent-purple-bg); color: var(--accent-purple); }
+        .stat-purple .stat-badge { background: var(--accent-purple-bg); color: var(--accent-purple); }
+
+        /* Occupancy Progress Banner */
+        .capacity-bar-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 22px 24px;
+            margin-bottom: 28px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .capacity-bar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .capacity-title-wrap h3 {
+            font-size: 16px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .capacity-legend {
+            display: flex;
+            gap: 16px;
+            font-size: 12.5px;
+            font-weight: 600;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .occupancy-track {
+            height: 14px;
+            background: #e2e8f0;
+            border-radius: 999px;
+            overflow: hidden;
+            display: flex;
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.08);
+        }
+
+        .occupancy-fill-occupied {
+            background: linear-gradient(90deg, #2563eb, #3b82f6);
+            height: 100%;
+            transition: width 1s ease-in-out;
+        }
+
+        .occupancy-fill-available {
+            background: #10b981;
+            height: 100%;
+            transition: width 1s ease-in-out;
+        }
+
+        /* Two-Column Grid for Analytics */
+        .analytics-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 28px;
+        }
+
+        @media (max-width: 900px) {
+            .analytics-grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Card Section Panels */
+        .panel-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .panel-header-title h2 {
+            font-size: 17px;
+            font-weight: 800;
+            color: #0f172a;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-header-title p {
+            font-size: 12.5px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .panel-badge {
+            background: var(--bg-subtle);
+            color: var(--text-secondary);
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 11.5px;
+            font-weight: 700;
+        }
+
+        /* Department List Progress Bars */
+        .dept-item {
+            margin-bottom: 14px;
+        }
+
+        .dept-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .dept-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 13.5px;
+            margin-bottom: 6px;
+        }
+
+        .dept-name {
+            font-weight: 700;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .dept-count-badge {
+            background: #eff6ff;
+            color: #1d4ed8;
+            font-weight: 800;
+            padding: 2px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            border: 1px solid #bfdbfe;
+        }
+
+        .dept-bar-track {
+            height: 8px;
+            background: #f1f5f9;
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .dept-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #8b5cf6, #3b82f6);
+            border-radius: 999px;
+            transition: width 0.8s ease;
+        }
+
+        /* Complaint Metrics Grid */
+        .complaint-stats-boxes {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .cmp-box {
+            background: var(--bg-subtle);
+            border-radius: var(--radius-md);
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        .cmp-box span {
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .cmp-box strong {
+            font-size: 24px;
+            font-weight: 800;
+            color: #0f172a;
+        }
+
+        /* Modern Tables */
+        .table-responsive {
+            overflow-x: auto;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        table.modern-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 13.5px;
+            text-align: left;
+        }
+
+        table.modern-table th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 700;
+            padding: 13px 16px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1.5px solid var(--border-color);
+        }
+
+        table.modern-table td {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: #1e293b;
+            vertical-align: middle;
+        }
+
+        table.modern-table tbody tr {
+            transition: background 0.15s ease;
+        }
+
+        table.modern-table tbody tr:hover {
+            background: #f8fafc;
+        }
+
+        table.modern-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Table Filters & Toolbar */
+        .table-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .filter-chip {
+            background: var(--bg-subtle);
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 6px 14px;
+            border-radius: 999px;
+            font-size: 12.5px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filter-chip:hover {
+            border-color: #94a3b8;
+        }
+
+        .filter-chip.active {
+            background: #2563eb;
+            color: #ffffff;
+            border-color: #2563eb;
+        }
+
+        .search-input-wrap {
+            position: relative;
+            min-width: 220px;
+        }
+
+        .search-input-wrap i {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            width: 15px;
+            height: 15px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 8px 12px 8px 34px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-family: inherit;
+            background: #ffffff;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        /* Status Pills */
+        .status-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 999px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .status-available {
+            background: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid var(--accent-green-border);
+        }
+
+        .status-full {
+            background: var(--accent-rose-bg);
+            color: var(--accent-rose);
+            border: 1px solid var(--accent-rose-border);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: currentColor;
+        }
+
+        /* Print Media Styles */
+        @media print {
+            .modern-nav,
+            .hero-actions,
+            .table-toolbar,
+            .live-data-bar,
+            .filter-chips {
+                display: none !important;
+            }
+
+            body {
+                background: #ffffff !important;
+                color: #000000 !important;
+            }
+
+            .container {
+                max-width: 100% !important;
+                padding: 0 !important;
+            }
+
+            .reports-hero {
+                background: none !important;
+                color: #000000 !important;
+                box-shadow: none !important;
+                border: 2px solid #000000 !important;
+                padding: 16px !important;
+                margin-bottom: 20px !important;
+            }
+
+            .reports-hero p {
+                color: #333333 !important;
+            }
+
+            .panel-card,
+            .stat-card,
+            .capacity-bar-card {
+                box-shadow: none !important;
+                border: 1px solid #cccccc !important;
+                page-break-inside: avoid;
+            }
+
+            table.modern-table th {
+                background: #eeeeee !important;
+                color: #000000 !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ==================== NAVIGATION BAR ==================== -->
+    <nav class="modern-nav">
+        <a href="/dashboard" class="nav-brand">
+            <div class="brand-icon">
+                <i data-lucide="building-2" style="width: 22px; height: 22px;"></i>
+            </div>
+            <div>
+                <h2>Hostel Management</h2>
+                <span>Admin Portal</span>
+            </div>
+        </a>
+
+        <div class="nav-links">
+            <a href="/">Home</a>
+            <a href="/dashboard">Dashboard</a>
+            <a href="/students">Residents</a>
+            <a href="/rooms">Rooms</a>
+            <a href="/food-menu">Food Menu</a>
+            <a href="/vacating-notices">Transfer / Vacating</a>
+            <a href="/fees">Fees & Rent</a>
+            <a href="/complaints">Complaints</a>
+            <a href="/reports" class="active">Reports</a>
+            <a href="/admin-reviews">Reviews</a>
+            <a href="/profile">Profile</a>
+            <a href="/logout" class="logout-link">Logout</a>
+        </div>
+    </nav>
+
+    <!-- ==================== MAIN CONTENT ==================== -->
+    <main class="container">
+
+        <!-- Hero Banner -->
+        <section class="reports-hero">
+            <div>
+                <span class="hero-badge">
+                    <i data-lucide="bar-chart-3" style="width: 13px; height: 13px;"></i> Executive Intelligence
+                </span>
+                <h1>Hostel Analytics & Summary Reports</h1>
+                <p>Comprehensive telemetry on resident distribution, bed occupancy, department demographics, and maintenance performance.</p>
+            </div>
+
+            <div class="hero-actions">
+                <button type="button" class="btn-action-hero" onclick="window.print()">
+                    <i data-lucide="printer" style="width: 16px; height: 16px;"></i> Print Report
+                </button>
+                <button type="button" class="btn-outline-hero" onclick="refreshReportData()">
+                    <i data-lucide="refresh-cw" id="refreshIcon" style="width: 15px; height: 15px;"></i> Live Refresh
+                </button>
+            </div>
+        </section>
+
+        <!-- Live Status Bar -->
+        <div class="live-data-bar">
+            <div class="live-pulse">
+                <span class="pulse-dot"></span>
+                <span>Live Telemetry Active</span>
+                <span style="font-weight: 500; color: var(--text-muted);">|</span>
+                <span style="font-weight: 500;" id="reportTimestamp">Updating...</span>
+            </div>
+            <div>
+                <span style="font-size: 12px; font-weight: 700; color: #1e3a8a; background: #eff6ff; padding: 4px 10px; border-radius: 999px; border: 1px solid #bfdbfe;">
+                    ⚡ Auto-Sync Enabled
+                </span>
+            </div>
+        </div>
+
+        <!-- ==================== SUMMARY KPIS ==================== -->
+        <div class="stats-grid">
+
+            <!-- Card 1: Total Residents -->
+            <div class="stat-card stat-blue">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="users"></i></div>
+                    <span class="stat-badge">Active</span>
+                </div>
+                <span class="stat-title">Total Residents</span>
+                <strong class="stat-val" id="totalStudents">0</strong>
+                <span class="stat-footer-text">Registered in hostel</span>
+            </div>
+
+            <!-- Card 2: Total Rooms -->
+            <div class="stat-card stat-indigo">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="home"></i></div>
+                    <span class="stat-badge">Rooms</span>
+                </div>
+                <span class="stat-title">Total Rooms</span>
+                <strong class="stat-val" id="totalRooms">0</strong>
+                <span class="stat-footer-text">AC & Non-AC suites</span>
+            </div>
+
+            <!-- Card 3: Occupied Beds -->
+            <div class="stat-card stat-green">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="bed-double"></i></div>
+                    <span class="stat-badge" id="occupancyRateBadge">0% Full</span>
+                </div>
+                <span class="stat-title">Occupied Beds</span>
+                <strong class="stat-val" id="occupiedBeds">0</strong>
+                <span class="stat-footer-text" id="occupiedSubText">Current occupancy</span>
+            </div>
+
+            <!-- Card 4: Available Beds -->
+            <div class="stat-card stat-amber">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="check-circle-2"></i></div>
+                    <span class="stat-badge">Vacant</span>
+                </div>
+                <span class="stat-title">Available Beds</span>
+                <strong class="stat-val" id="availableBeds">0</strong>
+                <span class="stat-footer-text">Ready for new booking</span>
+            </div>
+
+            <!-- Card 5: Pending Complaints -->
+            <div class="stat-card stat-rose">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="clock"></i></div>
+                    <span class="stat-badge">Action Needed</span>
+                </div>
+                <span class="stat-title">Pending Tickets</span>
+                <strong class="stat-val" id="pendingComplaints">0</strong>
+                <span class="stat-footer-text">Awaiting maintenance</span>
+            </div>
+
+            <!-- Card 6: Resolved Complaints -->
+            <div class="stat-card stat-purple">
+                <div class="stat-top">
+                    <div class="stat-icon"><i data-lucide="check-check"></i></div>
+                    <span class="stat-badge" id="resRateBadge">0% Rate</span>
+                </div>
+                <span class="stat-title">Resolved Tickets</span>
+                <strong class="stat-val" id="resolvedComplaints">0</strong>
+                <span class="stat-footer-text">Tickets closed cleanly</span>
+            </div>
+
+        </div>
+
+        <!-- ==================== OCCUPANCY GAUGE BAR ==================== -->
+        <div class="capacity-bar-card">
+            <div class="capacity-bar-header">
+                <div class="capacity-title-wrap">
+                    <h3><i data-lucide="pie-chart" style="width: 18px; height: 18px; color: var(--primary);"></i> Overall Bed Capacity Distribution</h3>
+                </div>
+                <div class="capacity-legend">
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #2563eb;"></span>
+                        <span id="legendOccupiedText">Occupied: 0</span>
+                    </div>
+                    <div class="legend-item">
+                        <span class="legend-dot" style="background: #10b981;"></span>
+                        <span id="legendAvailableText">Available: 0</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="occupancy-track">
+                <div id="occupancyFillOccupied" class="occupancy-fill-occupied" style="width: 0%;"></div>
+                <div id="occupancyFillAvailable" class="occupancy-fill-available" style="width: 100%;"></div>
+            </div>
+
+            <div style="display: flex; justify-content: space-between; font-size: 11.5px; color: var(--text-muted); margin-top: 8px;">
+                <span>0 Beds</span>
+                <span id="totalBedsCapacityText">Total Capacity: 0 Beds</span>
+            </div>
+        </div>
+
+        <!-- ==================== 2-COLUMN ANALYTICS ==================== -->
+        <div class="analytics-grid-2">
+
+            <!-- Left: Department / Demographic Breakdown -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        <h2><i data-lucide="graduation-cap" style="width: 18px; height: 18px; color: var(--accent-purple);"></i> Resident Demographics</h2>
+                        <p>Distribution of residents across departments & organizations</p>
+                    </div>
+                    <span class="panel-badge" id="deptTotalCountBadge">0 Depts</span>
+                </div>
+
+                <div id="departmentListContainer">
+                    <div style="text-align: center; padding: 32px; color: var(--text-muted);">
+                        Loading department data...
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Maintenance & Resolution Performance -->
+            <div class="panel-card">
+                <div class="panel-header">
+                    <div class="panel-header-title">
+                        <h2><i data-lucide="wrench" style="width: 18px; height: 18px; color: var(--primary);"></i> Maintenance Performance</h2>
+                        <p>Ticket volume and service level resolution efficiency</p>
+                    </div>
+                    <span class="panel-badge" id="reportResolutionBadge" style="background: #ecfdf5; color: #059669;">0% Solved</span>
+                </div>
+
+                <div class="complaint-stats-boxes">
+                    <div class="cmp-box">
+                        <span>Total Registered Tickets</span>
+                        <strong id="reportTotalComplaints">0</strong>
+                    </div>
+                    <div class="cmp-box">
+                        <span>Awaiting Resolution</span>
+                        <strong id="reportPendingComplaints" style="color: #e11d48;">0</strong>
+                    </div>
+                    <div class="cmp-box">
+                        <span>Successfully Resolved</span>
+                        <strong id="reportResolvedComplaints" style="color: #059669;">0</strong>
+                    </div>
+                    <div class="cmp-box">
+                        <span>Service Resolution Rate</span>
+                        <strong id="resolutionPercentage" style="color: #2563eb;">0%</strong>
+                    </div>
+                </div>
+
+                <div>
+                    <div style="display: flex; justify-content: space-between; font-size: 12.5px; font-weight: 700; margin-bottom: 6px;">
+                        <span>Resolution Efficiency</span>
+                        <span id="resProgressLabel">0% Complete</span>
+                    </div>
+                    <div class="occupancy-track" style="height: 10px;">
+                        <div id="complaintProgressBar" style="width: 0%; background: linear-gradient(90deg, #10b981, #059669); height: 100%; transition: width 0.8s ease;"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- ==================== ROOM OCCUPANCY TABLE ==================== -->
+        <section class="panel-card">
+            <div class="panel-header">
+                <div class="panel-header-title">
+                    <h2><i data-lucide="door-open" style="width: 18px; height: 18px; color: var(--primary);"></i> Detailed Room-wise Telemetry</h2>
+                    <p>Bed configuration, real-time occupancy, and room status</p>
+                </div>
+            </div>
+
+            <!-- Table Filters & Search -->
+            <div class="table-toolbar">
+                <div class="filter-chips">
+                    <button type="button" class="filter-chip active" onclick="filterRoomTable('all', this)">All Rooms</button>
+                    <button type="button" class="filter-chip" onclick="filterRoomTable('available', this)">Vacant Beds</button>
+                    <button type="button" class="filter-chip" onclick="filterRoomTable('full', this)">Fully Booked</button>
+                </div>
+
+                <div class="search-input-wrap">
+                    <i data-lucide="search"></i>
+                    <input type="text" id="roomSearchInput" class="search-input" placeholder="Search room no..." oninput="handleRoomSearch()">
+                </div>
+            </div>
+
+            <div class="table-responsive">
+                <table class="modern-table">
+                    <thead>
+                        <tr>
+                            <th>Room No</th>
+                            <th>Room Sharing Type</th>
+                            <th>Total Capacity</th>
+                            <th>Occupied Beds</th>
+                            <th>Available Beds</th>
+                            <th style="text-align: right;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="roomTableBody">
+                        <tr>
+                            <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                                Loading room telemetry...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ==================== SCRIPT ==================== -->
+    <script>
+        let cachedRooms = [];
+        let activeRoomFilter = 'all';
+
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        function updateTimestamp() {
+            const now = new Date();
+            const dateStr = now.toLocaleDateString("en-IN", {
+                day: "2-digit",
+                month: "short",
+                year: "numeric",
+                hour: "2-digit",
+                minute: "2-digit",
+                second: "2-digit"
+            });
+            const el = document.getElementById("reportTimestamp");
+            if (el) el.textContent = `Generated: ${dateStr}`;
+        }
+
+        // Smooth Counter Animation
+        function animateNumber(elementId, targetValue) {
+            const element = document.getElementById(elementId);
+            if (!element) return;
+
+            const target = Number(targetValue) || 0;
+            const duration = 800;
+            const startTime = performance.now();
+
+            function update(currentTime) {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const eased = 1 - Math.pow(1 - progress, 3);
+                element.textContent = Math.floor(target * eased);
+
+                if (progress < 1) {
+                    requestAnimationFrame(update);
+                } else {
+                    element.textContent = target;
+                }
+            }
+            requestAnimationFrame(update);
+        }
+
+        // Fetch Dashboard KPIs
+        async function loadSummaryKPIs() {
+            try {
+                const res = await fetch("/api/dashboard");
+                const data = await res.json();
+
+                animateNumber("totalStudents", data.total_students);
+                animateNumber("totalRooms", data.total_rooms);
+                animateNumber("occupiedBeds", data.occupied_beds);
+                animateNumber("availableBeds", data.available_beds);
+                animateNumber("pendingComplaints", data.pending_complaints);
+                animateNumber("resolvedComplaints", data.resolved_complaints);
+
+                const occupied = Number(data.occupied_beds) || 0;
+                const available = Number(data.available_beds) || 0;
+                const totalBeds = occupied + available;
+
+                const occPct = totalBeds > 0 ? Math.round((occupied / totalBeds) * 100) : 0;
+                document.getElementById("occupancyRateBadge").textContent = `${occPct}% Full`;
+
+                const totalComplaints = (Number(data.pending_complaints) || 0) + (Number(data.resolved_complaints) || 0);
+                const resRate = totalComplaints > 0 ? Math.round(((Number(data.resolved_complaints) || 0) / totalComplaints) * 100) : 100;
+                document.getElementById("resRateBadge").textContent = `${resRate}% Rate`;
+
+                // Update capacity gauge bar
+                document.getElementById("occupancyFillOccupied").style.width = `${occPct}%`;
+                document.getElementById("occupancyFillAvailable").style.width = `${100 - occPct}%`;
+                document.getElementById("legendOccupiedText").textContent = `Occupied: ${occupied} (${occPct}%)`;
+                document.getElementById("legendAvailableText").textContent = `Available: ${available} (${100 - occPct}%)`;
+                document.getElementById("totalBedsCapacityText").textContent = `Total Capacity: ${totalBeds} Beds`;
+
+            } catch (err) {
+                console.error("Error loading dashboard KPIs:", err);
+            }
+        }
+
+        // Fetch Department Report
+        async function loadDepartmentReport() {
+            try {
+                const res = await fetch("/api/reports/departments");
+                const data = await res.json();
+
+                const container = document.getElementById("departmentListContainer");
+                if (!data || data.length === 0) {
+                    container.innerHTML = `
+                        <div style="text-align: center; color: var(--text-muted); padding: 24px;">
+                            No student department records registered.
+                        </div>
+                    `;
+                    document.getElementById("deptTotalCountBadge").textContent = "0 Depts";
+                    return;
+                }
+
+                document.getElementById("deptTotalCountBadge").textContent = `${data.length} Categories`;
+
+                // Calculate maximum count for relative bar scaling
+                const maxCount = Math.max(...data.map(d => Number(d.student_count) || 1), 1);
+
+                container.innerHTML = data.map(item => {
+                    const count = Number(item.student_count) || 0;
+                    const pct = Math.round((count / maxCount) * 100);
+
+                    return `
+                        <div class="dept-item">
+                            <div class="dept-info">
+                                <span class="dept-name">
+                                    <i data-lucide="building" style="width: 14px; height: 14px; color: var(--accent-purple);"></i>
+                                    ${item.department || "General / Unassigned"}
+                                </span>
+                                <span class="dept-count-badge">${count} Resident${count !== 1 ? 's' : ''}</span>
+                            </div>
+                            <div class="dept-bar-track">
+                                <div class="dept-bar-fill" style="width: ${pct}%;"></div>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
+
+                refreshIcons();
+            } catch (err) {
+                console.error("Error loading department report:", err);
+            }
+        }
+
+        // Fetch Complaint Analytics
+        async function loadComplaintReport() {
+            try {
+                const res = await fetch("/api/reports/complaints");
+                const data = await res.json();
+
+                animateNumber("reportTotalComplaints", data.total_complaints);
+                animateNumber("reportPendingComplaints", data.pending_complaints);
+                animateNumber("reportResolvedComplaints", data.resolved_complaints);
+
+                const pct = Number(data.resolution_percentage) || 0;
+                document.getElementById("resolutionPercentage").textContent = `${pct}%`;
+                document.getElementById("reportResolutionBadge").textContent = `${pct}% Solved`;
+                document.getElementById("resProgressLabel").textContent = `${pct}% Complete`;
+                document.getElementById("complaintProgressBar").style.width = `${pct}%`;
+
+            } catch (err) {
+                console.error("Error loading complaints report:", err);
+            }
+        }
+
+        // Fetch Room Telemetry
+        async function loadRoomReport() {
+            try {
+                const res = await fetch("/api/reports/rooms");
+                const data = await res.json();
+                cachedRooms = data || [];
+                renderRoomTable();
+            } catch (err) {
+                console.error("Error loading room report:", err);
+            }
+        }
+
+        function filterRoomTable(filter, btn) {
+            activeRoomFilter = filter;
+            document.querySelectorAll(".filter-chip").forEach(c => c.classList.remove("active"));
+            if (btn) btn.classList.add("active");
+            renderRoomTable();
+        }
+
+        function handleRoomSearch() {
+            renderRoomTable();
+        }
+
+        function renderRoomTable() {
+            const tbody = document.getElementById("roomTableBody");
+            const query = (document.getElementById("roomSearchInput")?.value || "").toLowerCase().trim();
+
+            let filtered = cachedRooms.filter(r => {
+                const avail = Number(r.available_beds) || 0;
+                if (activeRoomFilter === "available" && avail <= 0) return false;
+                if (activeRoomFilter === "full" && avail > 0) return false;
+
+                if (query) {
+                    const roomNo = String(r.room_no || "").toLowerCase();
+                    const roomType = String(r.room_type || "").toLowerCase();
+                    return roomNo.includes(query) || roomType.includes(query);
+                }
+                return true;
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 32px;">
+                            No matching rooms found.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(room => {
+                const avail = Number(room.available_beds) || 0;
+                const occ = Number(room.occupied_beds) || 0;
+                const isAvail = avail > 0;
+
+                return `
+                    <tr>
+                        <td>
+                            <strong style="font-size: 14px; color: #0f172a; display: flex; align-items: center; gap: 8px;">
+                                <i data-lucide="door-closed" style="width: 15px; height: 15px; color: var(--primary);"></i>
+                                Room ${room.room_no}
+                            </strong>
+                        </td>
+                        <td>
+                            <span style="font-weight: 600; color: var(--text-secondary); background: var(--bg-subtle); padding: 3px 10px; border-radius: 6px; font-size: 12px;">
+                                ${room.room_type || 'Standard'}
+                            </span>
+                        </td>
+                        <td style="font-weight: 700; color: #0f172a;">${room.total_beds} Beds</td>
+                        <td>
+                            <span style="color: #2563eb; font-weight: 700;">${occ}</span>
+                        </td>
+                        <td>
+                            <span style="color: ${isAvail ? '#10b981' : '#94a3b8'}; font-weight: 700;">${avail}</span>
+                        </td>
+                        <td style="text-align: right;">
+                            <span class="status-pill ${isAvail ? 'status-available' : 'status-full'}">
+                                <span class="status-dot"></span>
+                                ${isAvail ? 'Available' : 'Full'}
+                            </span>
+                        </td>
+                    </tr>
+                `;
+            }).join("");
+
+            refreshIcons();
+        }
+
+        // Live Refresh
+        async function refreshReportData() {
+            const icon = document.getElementById("refreshIcon");
+            if (icon) icon.classList.add("spinning");
+
+            updateTimestamp();
+            await Promise.all([
+                loadSummaryKPIs(),
+                loadDepartmentReport(),
+                loadComplaintReport(),
+                loadRoomReport()
+            ]);
+
+            setTimeout(() => {
+                if (icon) icon.classList.remove("spinning");
+            }, 600);
+        }
+
+        // Initial Load
+        updateTimestamp();
+        refreshReportData();
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Complaint Management</title>
+
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+
+
+<body>
+
+
+<!-- ==================== NAVIGATION ==================== -->
+
+<nav class="modern-nav">
+
+    <div class="nav-brand">
+
+        <div class="brand-icon">
+            🏨
+        </div>
+
+        <div>
+
+            <h2>Hostel Management</h2>
+
+            <span>Admin Portal</span>
+
+        </div>
+
+    </div>
+
+
+    <div class="nav-links">
+
+        <a href="/">Home</a>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/students">
+            Students
+        </a>
+
+        <a href="/rooms">
+            Rooms
+        </a>
+
+        <a href="/food-menu">
+            Food Menu
+        </a>
+
+        <a href="/complaints"
+           class="active">
+            Complaints
+        </a>
+
+        <a href="/reports">
+            Reports
+        </a>
+
+        <a href="/admin-reviews">
+            Reviews
+        </a>
+
+        <a href="/fees">
+            Fees
+        </a>
+
+        <a href="/profile">
+            Profile
+        </a>
+
+        <a href="/logout"
+           class="logout-link">
+            Logout
+        </a>
+
+    </div>
+
+</nav>
+
+
+
+<!-- ==================== PAGE HERO ==================== -->
+
+<section class="page-hero complaint-hero">
+
+    <div>
+
+        <span class="dashboard-label">
+            SUPPORT CENTER
+        </span>
+
+        <h1>
+            Complaint Management
+        </h1>
+
+        <p>
+            Track student complaints and resolve hostel issues.
+        </p>
+
+    </div>
+
+
+    <div class="page-hero-icon">
+        📝
+    </div>
+
+</section>
+
+
+
+<!-- ==================== ADD COMPLAINT ==================== -->
+
+<section class="modern-section">
+
+
+    <div class="section-header">
+
+        <div>
+
+            <span class="section-label">
+                NEW COMPLAINT
+            </span>
+
+            <h2>
+                Add New Complaint
+            </h2>
+
+            <p>
+                Register a complaint submitted by a student.
+            </p>
+
+        </div>
+
+
+        <div class="section-icon">
+            📢
+        </div>
+
+    </div>
+
+
+
+    <form
+        action="/api/complaints"
+        method="POST"
+        class="modern-form"
+    >
+
+
+        <div class="form-grid">
+
+
+            <div class="form-group">
+
+                <label>
+                    Student Name
+                </label>
+
+                <input
+                    type="text"
+                    name="student_name"
+                    placeholder="Enter student name"
+                    required
+                >
+
+            </div>
+
+
+            <div class="form-group">
+
+                <label>
+                    Complaint
+                </label>
+
+                <input
+                    type="text"
+                    name="complaint_text"
+                    placeholder="Describe the complaint"
+                    required
+                >
+
+            </div>
+
+
+        </div>
+
+
+        <button
+            type="submit"
+            class="primary-button"
+        >
+
+            📩 Submit Complaint
+
+        </button>
+
+
+    </form>
+
+</section>
+
+
+
+<!-- ==================== COMPLAINT LIST ==================== -->
+
+<section class="modern-section">
+
+
+    <div class="section-header">
+
+        <div>
+
+            <span class="section-label">
+                ISSUE TRACKER
+            </span>
+
+            <h2>
+                Complaint List
+            </h2>
+
+            <p>
+                Monitor pending and resolved complaints.
+            </p>
+
+        </div>
+
+
+        <div class="section-icon">
+            📋
+        </div>
+
+    </div>
+
+
+
+    <!-- ==================== SUMMARY ==================== -->
+
+    <div class="complaint-summary">
+
+
+        <div class="complaint-summary-card">
+
+            <div class="complaint-summary-icon pending-summary-icon">
+                ⏳
+            </div>
+
+            <div>
+
+                <span>
+                    Pending
+                </span>
+
+                <strong id="pendingCount">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="complaint-summary-card">
+
+            <div class="complaint-summary-icon resolved-summary-icon">
+                ✓
+            </div>
+
+            <div>
+
+                <span>
+                    Resolved
+                </span>
+
+                <strong id="resolvedCount">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+
+        <div class="complaint-summary-card">
+
+            <div class="complaint-summary-icon total-summary-icon">
+                📋
+            </div>
+
+            <div>
+
+                <span>
+                    Total Complaints
+                </span>
+
+                <strong id="totalComplaintCount">
+                    0
+                </strong>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+
+    <!-- ==================== COMPLAINT TABLE ==================== -->
+
+    <div class="table-wrapper">
+
+        <table class="modern-table complaint-table">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        ID
+                    </th>
+
+                    <th>
+                        Student
+                    </th>
+
+                    <th>
+                        Complaint
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                    <th>
+                        Action
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="complaintTable">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+</section>
+
+
+
+<script>
+
+
+// ==================== LOAD COMPLAINTS ====================
+
+fetch("/api/complaints")
+
+    .then(response =>
+        response.json()
+    )
+
+    .then(complaints => {
+
+
+        const table =
+            document.getElementById(
+                "complaintTable"
+            );
+
+
+        let pendingCount = 0;
+
+        let resolvedCount = 0;
+
+
+
+        complaints.forEach(
+            complaint => {
+
+
+                const row =
+                    document.createElement(
+                        "tr"
+                    );
+
+
+                // ==================== STATUS ====================
+
+
+                const isPending =
+                    complaint.status ===
+                    "Pending";
+
+
+                if (isPending) {
+
+                    pendingCount++;
+
+                }
+
+                else {
+
+                    resolvedCount++;
+
+                }
+
+
+
+                const statusClass =
+                    isPending
+                        ? "complaint-pending"
+                        : "complaint-resolved";
+
+
+                const statusText =
+                    isPending
+                        ? "Pending"
+                        : "Resolved";
+
+
+
+                // ==================== ACTION ====================
+
+
+                const actionHTML =
+                    isPending
+
+                    ?
+
+                    `
+                    <button
+                        class="resolve-button"
+                        onclick="resolveComplaint(
+                            ${complaint.complaint_id}
+                        )"
+                    >
+                        ✓ Resolve
+                    </button>
+                    `
+
+                    :
+
+                    `
+                    <span class="resolved-label">
+                        ✓ Resolved
+                    </span>
+                    `;
+
+
+
+                // ==================== ROW ====================
+
+
+                row.innerHTML = `
+
+                    <td>
+
+                        <span class="complaint-id">
+                            #${complaint.complaint_id}
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="complaint-student">
+
+                            <div class="student-avatar">
+                                ${complaint.student_name
+                                    .charAt(0)
+                                    .toUpperCase()}
+                            </div>
+
+                            <strong>
+                                ${complaint.student_name}
+                            </strong>
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <div class="complaint-text">
+
+                            ${complaint.complaint_text}
+
+                        </div>
+
+                    </td>
+
+
+                    <td>
+
+                        <span
+                            class="complaint-status
+                                   ${statusClass}"
+                        >
+
+                            <span class="status-dot-small"></span>
+
+                            ${statusText}
+
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        ${actionHTML}
+
+                    </td>
+
+                `;
+
+
+                table.appendChild(row);
+
+
+            }
+        );
+
+
+
+        // ==================== UPDATE SUMMARY ====================
+
+
+        document.getElementById(
+            "pendingCount"
+        ).textContent =
+            pendingCount;
+
+
+        document.getElementById(
+            "resolvedCount"
+        ).textContent =
+            resolvedCount;
+
+
+        document.getElementById(
+            "totalComplaintCount"
+        ).textContent =
+            complaints.length;
+
+
+    })
+
+
+    .catch(error => {
+
+        console.log(
+            "Error:",
+            error
+        );
+
+    });
+
+
+
+// ==================== RESOLVE COMPLAINT ====================
+
+function resolveComplaint(
+    complaintId
+) {
+
+
+    if (
+        !confirm(
+            "Mark this complaint as resolved?"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+
+    fetch(
+        `/api/complaints/${complaintId}`,
+        {
+
+            method: "PUT"
+
+        }
+    )
+
+    .then(response =>
+        response.json()
+    )
+
+    .then(data => {
+
+
+        alert(
+            data.message
+        );
+
+
+        location.reload();
+
+
+    })
+
+    .catch(error => {
+
+        console.log(
+            "Error:",
+            error
+        );
+
+    });
+
+}
+
+</script>
+
+
+</body>
+
+</html>

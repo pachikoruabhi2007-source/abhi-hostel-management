@@ -1,0 +1,1243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resident Settings & Preferences | Student Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+
+            --accent-orange: #f59e0b;
+            --accent-orange-bg: #fffbeb;
+            --accent-orange-glow: rgba(245, 158, 11, 0.25);
+
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark {
+            --bg-page: #030712;
+            --bg-surface: #111827;
+            --bg-subtle: #1f2937;
+            --bg-hover: #1e293b;
+            --border-color: #1f2937;
+            --border-subtle: #1a2234;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-border: rgba(59, 130, 246, 0.35);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+
+            --accent-green: #34d399;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-purple: #a78bfa;
+            --accent-purple-bg: rgba(139, 92, 246, 0.15);
+            --accent-orange: #fbbf24;
+            --accent-orange-bg: rgba(245, 158, 11, 0.15);
+            --accent-red: #f87171;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 14px 28px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+        }
+
+        /* Ambient Glow Background Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 14px 12px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            margin-bottom: 20px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 8px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
+            color: #fff;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .sidebar.collapsed .brand-info {
+            display: none;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            height: 44px;
+            width: 100%;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            width: 48px;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .nav-label {
+            display: none;
+        }
+
+        .toggle-btn {
+            margin-top: auto;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            background: transparent;
+            border-left: 0; border-right: 0; border-bottom: 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-icon {
+            width: 48px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar:not(.collapsed) .toggle-icon i {
+            transform: rotate(180deg);
+        }
+
+        .sidebar.collapsed .toggle-text {
+            display: none;
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title-group h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title-group p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .content-container {
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1200px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Settings Tabs Navigation */
+        .settings-nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-hover);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border-color: var(--primary-border);
+        }
+
+        /* Settings Cards */
+        .settings-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-header-row h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header-row p {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-input[readonly] {
+            background-color: var(--bg-subtle);
+            color: var(--text-secondary);
+            cursor: not-allowed;
+        }
+
+        .save-actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 11px 26px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+        }
+
+        /* Toast Feedback */
+        .toast-banner {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-success {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-error {
+            background-color: var(--accent-red-bg);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        /* Facility Info Badge Card */
+        .facility-info-box {
+            background: var(--bg-subtle);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .facility-info-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: grid;
+            place-content: center;
+            background: var(--primary-light);
+            color: var(--primary);
+            flex-shrink: 0;
+        }
+
+        @media (max-width: 900px) {
+            .form-grid-2, .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .content-container {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/student-dashboard" class="brand-wrapper">
+                    <div class="brand-logo">
+                        <i data-lucide="building-2"></i>
+                    </div>
+                    <div class="brand-info">
+                        <span class="brand-title">Resident Hub</span>
+                        <span class="brand-badge">Student & PG</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/student-dashboard" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="layout-dashboard"></i></div>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <a href="/student-food-menu" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="utensils"></i></div>
+                    <span class="nav-label">Food & Mess Menu</span>
+                </a>
+
+                <a href="/student-room" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="bed-double"></i></div>
+                    <span class="nav-label">My Room & Stay</span>
+                </a>
+
+                <a href="/student-fees" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wallet"></i></div>
+                    <span class="nav-label">Rent & Dues</span>
+                </a>
+
+                <a href="/student-complaints" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wrench"></i></div>
+                    <span class="nav-label">Maintenance</span>
+                </a>
+
+                <a href="/student-profile" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="user"></i></div>
+                    <span class="nav-label">My Profile</span>
+                </a>
+
+                <a href="/student-settings" class="nav-item active">
+                    <div class="nav-icon"><i data-lucide="settings"></i></div>
+                    <span class="nav-label">Settings</span>
+                </a>
+
+                <a href="/student-reviews" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="star"></i></div>
+                    <span class="nav-label">Reviews & Feedback</span>
+                </a>
+
+                <div style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                    <a href="/logout" class="nav-item" style="color: var(--accent-red);">
+                        <div class="nav-icon"><i data-lucide="log-out"></i></div>
+                        <span class="nav-label">Sign Out</span>
+                    </a>
+                </div>
+            </nav>
+
+            <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                <div class="toggle-icon"><i data-lucide="chevrons-left"></i></div>
+                <span class="toggle-text">Collapse Menu</span>
+            </button>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <main class="main-wrapper">
+            <header class="dashboard-header">
+                <div class="header-title-group">
+                    <h1>
+                        <i data-lucide="sliders" style="color: var(--primary);"></i>
+                        <span>Resident Settings & Account Preferences</span>
+                    </h1>
+                    <p>Customize your contact details, dietary meal preferences, security passwords, and view Wi-Fi info.</p>
+                </div>
+
+                <div class="header-controls">
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">
+                        <i data-lucide="moon" id="themeIcon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-container">
+
+                <!-- Alert Toast -->
+                <div id="toastBanner" class="toast-banner">
+                    <i data-lucide="check-circle" id="toastIcon"></i>
+                    <span id="toastMsg"></span>
+                </div>
+
+                <!-- Tabs Bar -->
+                <div class="settings-nav-tabs">
+                    <button type="button" class="tab-btn active" onclick="switchTab('profileTab', this)">
+                        <i data-lucide="user"></i>
+                        <span>Profile & Contact</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('dietTab', this)">
+                        <i data-lucide="utensils"></i>
+                        <span>Food & Preferences</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('securityTab', this)">
+                        <i data-lucide="shield-check"></i>
+                        <span>Security & Password</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('wifiTab', this)">
+                        <i data-lucide="wifi"></i>
+                        <span>Hostel Wi-Fi & Rules</span>
+                    </button>
+                </div>
+
+                <!-- ==================== TAB 1: PROFILE & CONTACT ==================== -->
+                <div id="profileTab" class="tab-content-panel">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="user-cog"></i> Personal & Emergency Contacts</h3>
+                                <p>Ensure your mobile number and emergency contacts are up to date for official hostel updates.</p>
+                            </div>
+                        </div>
+
+                        <form id="residentProfileForm" onsubmit="saveResidentProfile(event)">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Full Name (Verified)</label>
+                                    <input type="text" id="stuName" class="form-input" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Registered Email</label>
+                                    <input type="email" id="stuEmail" class="form-input" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Assigned Room No</label>
+                                    <input type="text" id="stuRoom" class="form-input" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Resident Stay Type</label>
+                                    <input type="text" id="stuResidentType" class="form-input" readonly>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>My Mobile Phone Number *</label>
+                                    <input type="text" id="stuPhone" class="form-input" required placeholder="e.g. 9876543210">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Hometown / Native City</label>
+                                    <input type="text" id="stuCity" class="form-input" placeholder="e.g. Visakhapatnam">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Emergency Contact Person</label>
+                                    <input type="text" id="stuEmergName" class="form-input" placeholder="e.g. Father / Mother / Guardian">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Emergency Contact Phone</label>
+                                    <input type="text" id="stuEmergPhone" class="form-input" placeholder="e.g. 9876543210">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Government ID Proof Type <span style="color:var(--accent-red,#ef4444);">*</span></label>
+                                    <select id="stuIdType" class="form-select" onchange="handleStuIdTypeChange()" required>
+                                        <option value="Aadhaar Card">Aadhaar Card (12 Digits)</option>
+                                        <option value="PAN Card">PAN Card (10 Chars)</option>
+                                        <option value="Passport">Passport</option>
+                                        <option value="Voter ID">Voter ID</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>ID Proof Number <span style="color:var(--accent-red,#ef4444);">*</span></label>
+                                    <input type="text" id="stuIdNum" class="form-input" required placeholder="e.g. 5489 1234 5678" oninput="validateStuIdInput()">
+                                    <small id="stuIdHelp" style="font-size:12px; margin-top:4px; display:block;"></small>
+                                </div>
+
+                                <div class="form-group" style="grid-column: span 2;">
+                                    <label>Confidential ID Proof Document</label>
+                                    <div id="stuDocStatusBox" style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--bg-subtle, #f8fafc); border: 1px solid var(--border-color, #e2e8f0); border-radius: var(--radius-md, 10px); flex-wrap: wrap; gap: 8px;">
+                                        <div style="font-size: 13px; color: var(--text-secondary, #64748b);" id="stuDocStatusText">
+                                            🔒 Document verified during admission
+                                        </div>
+                                        <div id="stuDocActionWrap"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Save Profile Details
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 2: FOOD & DIET PREFERENCES ==================== -->
+                <div id="dietTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="chef-hat"></i> Dining & Food Preferences</h3>
+                                <p>Select your meal preference to help the kitchen staff plan portion sizes accurately.</p>
+                            </div>
+                        </div>
+
+                        <form id="residentDietForm" onsubmit="saveResidentProfile(event)">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Dietary Category</label>
+                                    <select id="stuDiet" class="form-select">
+                                        <option value="Pure Veg">Pure Vegetarian (No Egg/Meat)</option>
+                                        <option value="Eggetarian">Eggetarian (Veg + Eggs)</option>
+                                        <option value="Non-Veg">Non-Vegetarian (Chicken/Mutton on Special Days)</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Active Meal Plan</label>
+                                    <input type="text" id="stuFoodPlan" class="form-input" readonly value="3-Times Daily Homely Mess">
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Update Dietary Preference
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 3: SECURITY & PASSWORD ==================== -->
+                <div id="securityTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="lock"></i> Account Password</h3>
+                                <p>Change your portal login password regularly for account security.</p>
+                            </div>
+                        </div>
+
+                        <form id="residentPasswordForm" onsubmit="saveResidentPassword(event)">
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label>Current Password *</label>
+                                    <input type="password" id="stuCurrentPass" class="form-input" required placeholder="Enter current password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>New Password *</label>
+                                    <input type="password" id="stuNewPass" class="form-input" required placeholder="Min. 6 characters">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Confirm New Password *</label>
+                                    <input type="password" id="stuConfirmPass" class="form-input" required placeholder="Repeat new password">
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="key"></i> Update Password
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 4: HOSTEL WI-FI & RULES ==================== -->
+                <div id="wifiTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="wifi"></i> Hostel Connectivity & Rules</h3>
+                                <p>Verified credentials for hostel Wi-Fi, dining timings, and emergency warden contacts.</p>
+                            </div>
+                        </div>
+
+                        <div class="form-grid-2">
+                            <div class="facility-info-box">
+                                <div class="facility-info-icon"><i data-lucide="wifi"></i></div>
+                                <div>
+                                    <strong style="display: block; font-size: 0.95rem;" id="wifiSsidDisplay">Hostel_Fiber_150Mbps</strong>
+                                    <span style="font-size: 0.82rem; color: var(--text-secondary);">Wi-Fi Password: <code id="wifiPassDisplay" style="background: var(--bg-surface); padding: 2px 8px; border-radius: 4px; font-weight: 700;">HostelWifi@2026</code></span>
+                                </div>
+                            </div>
+
+                            <div class="facility-info-box">
+                                <div class="facility-info-icon" style="background: var(--accent-orange-bg); color: var(--accent-orange);"><i data-lucide="clock"></i></div>
+                                <div>
+                                    <strong style="display: block; font-size: 0.95rem;">Gate Closing Time</strong>
+                                    <span style="font-size: 0.82rem; color: var(--text-secondary);" id="gateTimeDisplay">Entry gate closes at 10:30 PM</span>
+                                </div>
+                            </div>
+
+                            <div class="facility-info-box">
+                                <div class="facility-info-icon" style="background: var(--accent-green-bg); color: var(--accent-green);"><i data-lucide="phone"></i></div>
+                                <div>
+                                    <strong style="display: block; font-size: 0.95rem;" id="wardenNameDisplay">Senior Warden Desk</strong>
+                                    <span style="font-size: 0.82rem; color: var(--text-secondary);">Phone: <strong id="wardenPhoneDisplay">9704844011</strong></span>
+                                </div>
+                            </div>
+
+                            <div class="facility-info-box">
+                                <div class="facility-info-icon" style="background: var(--accent-purple-bg); color: var(--accent-purple);"><i data-lucide="utensils"></i></div>
+                                <div>
+                                    <strong style="display: block; font-size: 0.95rem;">Dining Hall Hours</strong>
+                                    <span style="font-size: 0.82rem; color: var(--text-secondary);" id="messTimesDisplay">Tiffin 7:30-10 AM • Lunch 12:30-3 PM • Dinner 7:30-10 PM</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function refreshIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        // Sidebar collapse
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                refreshIcons();
+            });
+        }
+
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("hostel_theme", "dark");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "sun");
+            } else {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("hostel_theme", "light");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "moon");
+            }
+            refreshIcons();
+        }
+
+        const savedTheme = localStorage.getItem("hostel_theme") === "dark";
+        applyTheme(savedTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", () => {
+                applyTheme(!document.documentElement.classList.contains("dark"));
+            });
+        }
+
+        // Tabs switcher
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content-panel").forEach(p => p.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = "block";
+            if (btn) btn.classList.add("active");
+            refreshIcons();
+        }
+
+        // Show Toast Notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById("toastBanner");
+            const toastMsg = document.getElementById("toastMsg");
+            const toastIcon = document.getElementById("toastIcon");
+
+            toast.style.display = "flex";
+            toastMsg.textContent = message;
+
+            if (isError) {
+                toast.className = "toast-banner toast-error";
+                if (toastIcon) toastIcon.setAttribute("data-lucide", "alert-triangle");
+            } else {
+                toast.className = "toast-banner toast-success";
+                if (toastIcon) toastIcon.setAttribute("data-lucide", "check-circle");
+            }
+            refreshIcons();
+
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 5000);
+        }
+
+        // Load Student Settings
+        // ==================== RESIDENT GOVERNMENT ID VALIDATION ====================
+        function handleStuIdTypeChange() {
+            const type = document.getElementById("stuIdType").value;
+            const input = document.getElementById("stuIdNum");
+            const help = document.getElementById("stuIdHelp");
+            if (!input) return;
+
+            if (type === "Aadhaar Card") {
+                input.placeholder = "e.g. 5489 1234 5678 (12 digits)";
+                input.maxLength = 14;
+            } else if (type === "PAN Card") {
+                input.placeholder = "e.g. ABCDE1234F (10 characters)";
+                input.maxLength = 10;
+            } else if (type === "Passport") {
+                input.placeholder = "e.g. A1234567 (1 letter + 7 digits)";
+                input.maxLength = 9;
+            } else if (type === "Voter ID") {
+                input.placeholder = "e.g. ABC1234567 (3 letters + 7 digits)";
+                input.maxLength = 12;
+            } else {
+                input.placeholder = "Enter ID proof number";
+                input.maxLength = 30;
+            }
+
+            if (input.value) {
+                validateStuIdInput();
+            } else if (help) {
+                help.textContent = "";
+            }
+        }
+
+        function validateStuIdInput() {
+            const type = document.getElementById("stuIdType").value;
+            const input = document.getElementById("stuIdNum");
+            const help = document.getElementById("stuIdHelp");
+            if (!input) return true;
+
+            let val = input.value;
+            if (val.includes("•")) {
+                if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "🔒 Stored & encrypted (Masked for privacy)"; }
+                return true;
+            }
+
+            if (type === "Aadhaar Card") {
+                const digits = val.replace(/\D/g, "").slice(0, 12);
+                const parts = [];
+                for (let i = 0; i < digits.length; i += 4) {
+                    parts.push(digits.slice(i, i + 4));
+                }
+                input.value = parts.join(" ");
+
+                if (digits.length === 0) {
+                    if (help) { help.style.color = "var(--accent-red, #ef4444)"; help.textContent = "❌ Aadhaar number is mandatory (12 digits)"; }
+                    return false;
+                }
+                if (digits[0] === "0" || digits[0] === "1") {
+                    if (help) { help.style.color = "var(--accent-red, #ef4444)"; help.textContent = "❌ Aadhaar cannot begin with 0 or 1"; }
+                    return false;
+                }
+                if (digits.length < 12) {
+                    if (help) { help.style.color = "var(--accent-orange, #f59e0b)"; help.textContent = `⚠️ Aadhaar requires 12 digits (${digits.length}/12 entered)`; }
+                    return false;
+                }
+                if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "✓ Valid 12-digit Aadhaar format"; }
+                return true;
+            } else if (type === "PAN Card") {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+                input.value = val;
+
+                if (val.length === 0) {
+                    if (help) { help.style.color = "var(--accent-red, #ef4444)"; help.textContent = "❌ PAN number is mandatory (10 characters)"; }
+                    return false;
+                }
+                const panRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+                if (!panRegex.test(val)) {
+                    if (help) { help.style.color = "var(--accent-orange, #f59e0b)"; help.textContent = "⚠️ Standard PAN format: 5 letters, 4 digits, 1 letter (e.g. ABCDE1234F)"; }
+                    return false;
+                }
+                if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "✓ Valid PAN format"; }
+                return true;
+            } else if (type === "Passport") {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 8);
+                input.value = val;
+                if (!/^[A-Z][0-9]{7}$/.test(val)) {
+                    if (help) { help.style.color = "var(--accent-orange, #f59e0b)"; help.textContent = "⚠️ Passport format: 1 letter followed by 7 digits"; }
+                    return false;
+                }
+                if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "✓ Valid Passport format"; }
+                return true;
+            } else if (type === "Voter ID") {
+                val = val.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+                input.value = val;
+                if (!/^[A-Z]{3}[0-9]{7}$/.test(val)) {
+                    if (help) { help.style.color = "var(--accent-orange, #f59e0b)"; help.textContent = "⚠️ Voter ID format: 3 letters followed by 7 digits"; }
+                    return false;
+                }
+                if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "✓ Valid Voter ID format"; }
+                return true;
+            }
+
+            if (!val.trim()) {
+                if (help) { help.style.color = "var(--accent-red, #ef4444)"; help.textContent = "❌ Government ID proof number is mandatory"; }
+                return false;
+            }
+            if (help) { help.style.color = "var(--accent-green, #10b981)"; help.textContent = "✓ Valid ID format"; }
+            return true;
+        }
+
+        async function loadStudentSettings() {
+            try {
+                const res = await fetch("/api/student-settings");
+                if (!res.ok) return;
+                const data = await res.json();
+                const p = data.profile || {};
+                const h = data.hostel || {};
+
+                // Tab 1: Profile
+                document.getElementById("stuName").value = p.name || "";
+                document.getElementById("stuEmail").value = p.email || "";
+                document.getElementById("stuRoom").value = p.room_no ? `Room ${p.room_no}` : "Unassigned";
+                document.getElementById("stuResidentType").value = `${p.resident_type || 'Jobholder'} Resident`;
+                document.getElementById("stuPhone").value = p.phone || "";
+                document.getElementById("stuCity").value = p.native_city || "";
+                document.getElementById("stuEmergName").value = p.emergency_name || "";
+                document.getElementById("stuEmergPhone").value = p.emergency_phone || "";
+
+                if (p.id_proof_type) {
+                    document.getElementById("stuIdType").value = p.id_proof_type;
+                }
+                if (p.id_proof_number) {
+                    document.getElementById("stuIdNum").value = p.id_proof_number;
+                }
+                handleStuIdTypeChange();
+
+                const idStatus = p.id_proof_status || "Pending Verification";
+                let statusBadgeHtml = "";
+                if (idStatus === "Verified") {
+                    statusBadgeHtml = `<span style="padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #dcfce7; color: #15803d;">✓ Verified</span>`;
+                } else if (idStatus === "Rejected") {
+                    statusBadgeHtml = `<span style="padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #fee2e2; color: #b91c1c;">✗ Rejected</span>`;
+                } else {
+                    statusBadgeHtml = `<span style="padding: 3px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; background: #fef3c7; color: #b45309;">⏳ Pending Review</span>`;
+                }
+
+                if (p.id_proof_file && p.student_id) {
+                    let rejectMsg = "";
+                    if (idStatus === "Rejected") {
+                        rejectMsg = `<div style="width: 100%; margin-top: 6px; padding: 6px 10px; background: #fee2e2; border-radius: 6px; color: #991b1b; font-size: 11.5px;">⚠️ <strong>Admin remark:</strong> "${p.id_proof_rejection_reason || 'Document is invalid. Please re-upload.'}"</div>`;
+                    }
+                    document.getElementById("stuDocStatusText").innerHTML = `
+                        <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                            <span>Uploaded Document: <strong>${p.id_proof_filename || 'Government ID Copy'}</strong></span>
+                            ${statusBadgeHtml}
+                        </div>
+                        ${rejectMsg}
+                    `;
+                    document.getElementById("stuDocActionWrap").innerHTML = `
+                        <a href="/api/id-proof/view/${p.student_id}" target="_blank" style="padding: 6px 12px; background: var(--primary-light, #eff6ff); color: var(--primary, #2563eb); border: 1px solid var(--primary-border, #bfdbfe); border-radius: 8px; font-weight: 700; font-size: 12px; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">
+                            📄 View My Uploaded Proof (Confidential)
+                        </a>
+                    `;
+                } else {
+                    document.getElementById("stuDocStatusText").innerHTML = `<div style="display: flex; align-items: center; gap: 8px;"><span>No document copy on file</span> ${statusBadgeHtml}</div>`;
+                }
+
+                // Tab 2: Food & Diet
+                if (p.dietary_preference) {
+                    document.getElementById("stuDiet").value = p.dietary_preference;
+                }
+                if (p.food_plan) {
+                    document.getElementById("stuFoodPlan").value = p.food_plan;
+                }
+
+                // Tab 4: Hostel Wi-Fi & Info
+                document.getElementById("wifiSsidDisplay").textContent = h.wifi_ssid || "Hostel_HighSpeed_Fiber";
+                document.getElementById("wifiPassDisplay").textContent = h.wifi_password || "HostelWifi@2026";
+                document.getElementById("gateTimeDisplay").textContent = `Main gate closes at ${h.gate_closing_time || "10:30 PM"}`;
+                document.getElementById("wardenNameDisplay").textContent = h.warden_name || "Chief Warden Desk";
+                document.getElementById("wardenPhoneDisplay").textContent = h.warden_phone || "9704844011";
+                document.getElementById("messTimesDisplay").textContent = `Tiffin ${h.mess_morning_time || "7:30-10 AM"} • Lunch ${h.mess_lunch_time || "12:30-3 PM"} • Dinner ${h.mess_dinner_time || "7:30-10 PM"}`;
+            } catch (err) {
+                console.error("Student settings fetch error:", err);
+            }
+        }
+
+        // Save Student Profile & Dietary Details
+        async function saveResidentProfile(e) {
+            e.preventDefault();
+
+            if (!validateStuIdInput()) {
+                const idType = document.getElementById("stuIdType").value;
+                showToast(`Please enter a valid mandatory ${idType}`, true);
+                document.getElementById("stuIdNum").focus();
+                return;
+            }
+
+            const rawIdInput = document.getElementById("stuIdNum").value.trim();
+            const payload = {
+                phone: document.getElementById("stuPhone").value.trim(),
+                native_city: document.getElementById("stuCity").value.trim(),
+                emergency_name: document.getElementById("stuEmergName").value.trim(),
+                emergency_phone: document.getElementById("stuEmergPhone").value.trim(),
+                dietary_preference: document.getElementById("stuDiet").value,
+                id_proof_type: document.getElementById("stuIdType").value,
+                id_proof_number: rawIdInput.includes("•") ? null : rawIdInput
+            };
+
+            try {
+                const res = await fetch("/api/student-settings/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Profile preferences updated successfully!");
+                } else {
+                    showToast(data.error || "Failed to update preferences", true);
+                }
+            } catch (err) {
+                showToast("Server error updating resident preferences", true);
+            }
+        }
+
+        // Save Student Password
+        async function saveResidentPassword(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById("stuCurrentPass").value;
+            const newPassword = document.getElementById("stuNewPass").value;
+            const confirmPassword = document.getElementById("stuConfirmPass").value;
+
+            if (newPassword !== confirmPassword) {
+                showToast("New passwords do not match. Please re-enter.", true);
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/student-settings/password", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ currentPassword, newPassword })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Password updated successfully!");
+                    document.getElementById("stuCurrentPass").value = "";
+                    document.getElementById("stuNewPass").value = "";
+                    document.getElementById("stuConfirmPass").value = "";
+                } else {
+                    showToast(data.error || "Failed to change password", true);
+                }
+            } catch (err) {
+                showToast("Server error changing password", true);
+            }
+        }
+
+        window.addEventListener("load", loadStudentSettings);
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>

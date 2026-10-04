@@ -1,0 +1,24 @@
+# Dependency directories
+node_modules/
+
+# Environment variables & secrets
+.env
+*.env
+*.env.local
+
+# Confidential user uploads & Aadhaar documents
+secure_uploads/
+public/uploads/id_proofs/
+
+# OS and temporary files
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+yarn-debug.log*
+
+# IDE and workspace
+.vscode/
+.idea/
+.agents/
+.gemini/

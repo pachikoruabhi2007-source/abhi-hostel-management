@@ -1,0 +1,1136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel & System Settings | Admin Portal</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --bg-hover: #f1f5f9;
+            --border-color: #e2e8f0;
+            --border-subtle: #edf2f7;
+
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+
+            --primary: #3b82f6;
+            --primary-dark: #2563eb;
+            --primary-light: #eff6ff;
+            --primary-border: #bfdbfe;
+            --primary-glow: rgba(59, 130, 246, 0.25);
+
+            --accent-green: #10b981;
+            --accent-green-bg: #ecfdf5;
+            --accent-green-glow: rgba(16, 185, 129, 0.25);
+
+            --accent-purple: #8b5cf6;
+            --accent-purple-bg: #f5f3ff;
+            --accent-purple-glow: rgba(139, 92, 246, 0.25);
+
+            --accent-orange: #f59e0b;
+            --accent-orange-bg: #fffbeb;
+            --accent-orange-glow: rgba(245, 158, 11, 0.25);
+
+            --accent-red: #ef4444;
+            --accent-red-bg: #fef2f2;
+
+            --sidebar-width: 260px;
+            --sidebar-collapsed-width: 72px;
+
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 12px -2px rgba(0, 0, 0, 0.07), 0 2px 6px -1px rgba(0, 0, 0, 0.04);
+            --shadow-lg: 0 12px 24px -4px rgba(0, 0, 0, 0.09), 0 4px 10px -2px rgba(0, 0, 0, 0.04);
+            --radius-md: 10px;
+            --radius-lg: 14px;
+            --radius-xl: 20px;
+            --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html.dark {
+            --bg-page: #030712;
+            --bg-surface: #111827;
+            --bg-subtle: #1f2937;
+            --bg-hover: #1e293b;
+            --border-color: #1f2937;
+            --border-subtle: #1a2234;
+
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+
+            --primary: #3b82f6;
+            --primary-dark: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-border: rgba(59, 130, 246, 0.35);
+            --primary-glow: rgba(59, 130, 246, 0.4);
+
+            --accent-green: #34d399;
+            --accent-green-bg: rgba(16, 185, 129, 0.15);
+            --accent-purple: #a78bfa;
+            --accent-purple-bg: rgba(139, 92, 246, 0.15);
+            --accent-orange: #fbbf24;
+            --accent-orange-bg: rgba(245, 158, 11, 0.15);
+            --accent-red: #f87171;
+            --accent-red-bg: rgba(239, 68, 68, 0.15);
+
+            --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 4px 14px -1px rgba(0, 0, 0, 0.45);
+            --shadow-lg: 0 14px 28px -4px rgba(0, 0, 0, 0.6);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background-color 0.4s ease, color 0.4s ease;
+            position: relative;
+        }
+
+        /* Ambient Glow */
+        body::before {
+            content: "";
+            position: fixed;
+            top: -20%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.08) 0%, rgba(59, 130, 246, 0) 70%);
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .app-layout {
+            display: flex;
+            width: 100%;
+            min-height: 100vh;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            width: var(--sidebar-width);
+            flex-shrink: 0;
+            background-color: var(--bg-surface);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 14px 12px;
+            transition: width 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 50;
+            box-shadow: var(--shadow-sm);
+            overflow-y: auto;
+        }
+
+        .sidebar.collapsed {
+            width: var(--sidebar-collapsed-width);
+        }
+
+        .sidebar-header {
+            margin-bottom: 18px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .brand-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 6px 8px;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .brand-logo {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            color: #fff;
+        }
+
+        .brand-info {
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .brand-title {
+            font-size: 0.95rem;
+            font-weight: 800;
+            color: var(--text-primary);
+        }
+
+        .brand-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .sidebar.collapsed .brand-info {
+            display: none;
+        }
+
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            flex: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            height: 44px;
+            width: 100%;
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 0.88rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+
+        .nav-item.active {
+            background-color: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            border-left: 3px solid var(--primary);
+        }
+
+        .nav-icon {
+            width: 48px;
+            height: 100%;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar.collapsed .nav-label {
+            display: none;
+        }
+
+        .toggle-btn {
+            margin-top: auto;
+            width: 100%;
+            border-top: 1px solid var(--border-color);
+            background: transparent;
+            border-left: 0; border-right: 0; border-bottom: 0;
+            color: var(--text-secondary);
+            cursor: pointer;
+            padding: 12px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .toggle-icon {
+            width: 48px;
+            display: grid;
+            place-content: center;
+            flex-shrink: 0;
+        }
+
+        .sidebar:not(.collapsed) .toggle-icon i {
+            transform: rotate(180deg);
+        }
+
+        .sidebar.collapsed .toggle-text {
+            display: none;
+        }
+
+        /* Main Wrapper */
+        .main-wrapper {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-y: auto;
+            height: 100vh;
+        }
+
+        .dashboard-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background-color: var(--bg-surface);
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .header-title-group h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title-group p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-secondary);
+            display: grid;
+            place-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .icon-btn:hover {
+            background-color: var(--bg-hover);
+            color: var(--text-primary);
+        }
+
+        .content-container {
+            padding: 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            max-width: 1300px;
+            width: 100%;
+            margin: 0 auto;
+        }
+
+        /* Settings Tabs Navigation */
+        .settings-nav-tabs {
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 10px 18px;
+            border-radius: var(--radius-md);
+            font-family: inherit;
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .tab-btn:hover {
+            color: var(--text-primary);
+            background-color: var(--bg-hover);
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            background-color: var(--primary-light);
+            border-color: var(--primary-border);
+        }
+
+        /* Settings Card & Forms */
+        .settings-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-xl);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .card-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        .card-header-row h3 {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-header-row p {
+            font-size: 0.84rem;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .form-grid-3 {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            margin-bottom: 8px;
+        }
+
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            background-color: var(--bg-surface);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+        }
+
+        .form-helper-text {
+            font-size: 0.76rem;
+            color: var(--text-muted);
+            margin-top: 6px;
+        }
+
+        .save-actions-bar {
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+            margin-top: 24px;
+            padding-top: 18px;
+            border-top: 1px solid var(--border-subtle);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            padding: 11px 26px;
+            border-radius: var(--radius-md);
+            border: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.35);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.45);
+        }
+
+        .btn-secondary {
+            background-color: var(--bg-subtle);
+            color: var(--text-primary);
+            padding: 11px 22px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: var(--bg-hover);
+        }
+
+        /* Toast Feedback */
+        .toast-banner {
+            display: none;
+            padding: 14px 18px;
+            border-radius: var(--radius-md);
+            font-size: 0.88rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .toast-success {
+            background-color: var(--accent-green-bg);
+            color: var(--accent-green);
+            border: 1px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .toast-error {
+            background-color: var(--accent-red-bg);
+            color: var(--accent-red);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+        }
+
+        @media (max-width: 900px) {
+            .form-grid-2, .form-grid-3 {
+                grid-template-columns: 1fr;
+            }
+            .content-container {
+                padding: 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="app-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <a href="/dashboard" class="brand-wrapper">
+                    <div class="brand-logo">
+                        <i data-lucide="building"></i>
+                    </div>
+                    <div class="brand-info">
+                        <span class="brand-title">Hostel Admin</span>
+                        <span class="brand-badge">Control Center</span>
+                    </div>
+                </a>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="/dashboard" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="layout-dashboard"></i></div>
+                    <span class="nav-label">Dashboard</span>
+                </a>
+
+                <a href="/students" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="users"></i></div>
+                    <span class="nav-label">Residents</span>
+                </a>
+
+                <a href="/rooms" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="bed"></i></div>
+                    <span class="nav-label">Rooms</span>
+                </a>
+
+                <a href="/fees" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wallet"></i></div>
+                    <span class="nav-label">Fees & Rent</span>
+                </a>
+
+                <a href="/food-menu" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="utensils"></i></div>
+                    <span class="nav-label">Food Menu</span>
+                </a>
+
+                <a href="/vacating-notices" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="clock"></i></div>
+                    <span class="nav-label">Vacating Notices</span>
+                </a>
+
+                <a href="/complaints" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="wrench"></i></div>
+                    <span class="nav-label">Complaints</span>
+                </a>
+
+                <a href="/reports" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="bar-chart-3"></i></div>
+                    <span class="nav-label">Reports</span>
+                </a>
+
+                <a href="/admin-reviews" class="nav-item">
+                    <div class="nav-icon"><i data-lucide="star"></i></div>
+                    <span class="nav-label">Reviews</span>
+                </a>
+
+                <a href="/settings" class="nav-item active">
+                    <div class="nav-icon"><i data-lucide="settings"></i></div>
+                    <span class="nav-label">Settings</span>
+                </a>
+
+                <div style="margin-top: auto; border-top: 1px solid var(--border-color); padding-top: 10px;">
+                    <a href="/logout" class="nav-item" style="color: var(--accent-red);">
+                        <div class="nav-icon"><i data-lucide="log-out"></i></div>
+                        <span class="nav-label">Logout</span>
+                    </a>
+                </div>
+            </nav>
+
+            <button class="toggle-btn" id="sidebarToggle" title="Toggle Sidebar">
+                <div class="toggle-icon"><i data-lucide="chevrons-left"></i></div>
+                <span class="toggle-text">Collapse Menu</span>
+            </button>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <main class="main-wrapper">
+            <header class="dashboard-header">
+                <div class="header-title-group">
+                    <h1>
+                        <i data-lucide="sliders" style="color: var(--primary);"></i>
+                        <span>System Settings & Configuration</span>
+                    </h1>
+                    <p>Manage hostel business profiles, UPI receiving IDs, house guidelines, and admin security.</p>
+                </div>
+
+                <div class="header-controls">
+                    <button class="icon-btn" id="themeToggleBtn" title="Toggle Theme">
+                        <i data-lucide="moon" id="themeIcon"></i>
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-container">
+
+                <!-- Alert Toast -->
+                <div id="toastBanner" class="toast-banner">
+                    <i data-lucide="check-circle" id="toastIcon"></i>
+                    <span id="toastMsg"></span>
+                </div>
+
+                <!-- Tabs Bar -->
+                <div class="settings-nav-tabs">
+                    <button type="button" class="tab-btn active" onclick="switchTab('hostelTab', this)">
+                        <i data-lucide="building-2"></i>
+                        <span>Hostel Profile</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('financeTab', this)">
+                        <i data-lucide="credit-card"></i>
+                        <span>Payment & UPI</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('houseRulesTab', this)">
+                        <i data-lucide="shield-check"></i>
+                        <span>House Rules & Wi-Fi</span>
+                    </button>
+                    <button type="button" class="tab-btn" onclick="switchTab('adminSecurityTab', this)">
+                        <i data-lucide="lock"></i>
+                        <span>Admin Account</span>
+                    </button>
+                </div>
+
+                <!-- ==================== TAB 1: HOSTEL PROFILE ==================== -->
+                <div id="hostelTab" class="tab-content-panel">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="building"></i> Hostel Profile & Branding</h3>
+                                <p>Set up official hostel title, reception contacts, and address displayed across student portals and payment receipts.</p>
+                            </div>
+                        </div>
+
+                        <form id="hostelProfileForm" onsubmit="saveHostelSettings(event)">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Hostel / PG Name *</label>
+                                    <input type="text" id="setHostelName" class="form-input" required placeholder="e.g. Executive PG & Private Hostel">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Tagline / Sub-heading</label>
+                                    <input type="text" id="setHostelTagline" class="form-input" placeholder="e.g. Modern Living & Homely Accommodation">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Front-Desk Phone Number *</label>
+                                    <input type="text" id="setContactPhone" class="form-input" required placeholder="e.g. 9876543210">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Official Email Address</label>
+                                    <input type="email" id="setContactEmail" class="form-input" placeholder="e.g. contact@hostelpg.com">
+                                </div>
+
+                                <div class="form-group full-width">
+                                    <label>Complete Physical Address</label>
+                                    <textarea id="setHostelAddress" rows="3" class="form-textarea" placeholder="Full street address, landmark, city, state, pincode"></textarea>
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Save Hostel Details
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 2: FINANCE, RENT & UPI ==================== -->
+                <div id="financeTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="wallet"></i> Payment, UPI & Fee Parameters</h3>
+                                <p>Configure your UPI ID, receiver name, and default fee balances applied to incoming residents.</p>
+                            </div>
+                        </div>
+
+                        <form id="financeForm" onsubmit="saveHostelSettings(event)">
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label>Hostel UPI ID / VPA *</label>
+                                    <input type="text" id="setUpiId" class="form-input" required placeholder="e.g. hostel.fees@okhdfcbank">
+                                    <span class="form-helper-text">QR codes & UPI links will transfer to this ID</span>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>UPI Payee Display Name *</label>
+                                    <input type="text" id="setUpiName" class="form-input" required placeholder="e.g. Hostel Management">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Hostel GPay / PhonePe Mobile</label>
+                                    <input type="text" id="setUpiMobile" class="form-input" placeholder="e.g. 9704844011">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Default Monthly Rent (₹)</label>
+                                    <input type="number" id="setDefaultRent" class="form-input" min="0" placeholder="e.g. 6500">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Default Caution Deposit (₹)</label>
+                                    <input type="number" id="setDefaultDeposit" class="form-input" min="0" placeholder="e.g. 5000">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Vacating Notice Period (Days)</label>
+                                    <input type="number" id="setNoticePeriod" class="form-input" min="1" max="90" placeholder="e.g. 15">
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Save Payment Config
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 3: HOUSE RULES, WI-FI & MESS ==================== -->
+                <div id="houseRulesTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="shield-alert"></i> Rules, Wi-Fi & Timings</h3>
+                                <p>Set up resident connectivity details, gate closing cutoff times, and standard dining hours.</p>
+                            </div>
+                        </div>
+
+                        <form id="rulesForm" onsubmit="saveHostelSettings(event)">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Chief Warden Name</label>
+                                    <input type="text" id="setWardenName" class="form-input" placeholder="e.g. Senior Warden Desk">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Emergency Warden Contact Phone *</label>
+                                    <input type="text" id="setWardenPhone" class="form-input" required placeholder="e.g. 9704844011">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Night Gate Closing Time *</label>
+                                    <input type="text" id="setGateTime" class="form-input" placeholder="e.g. 10:30 PM">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Wi-Fi Network Name (SSID)</label>
+                                    <input type="text" id="setWifiSsid" class="form-input" placeholder="e.g. Hostel_Fiber_150Mbps">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Wi-Fi Security Password</label>
+                                    <input type="text" id="setWifiPass" class="form-input" placeholder="e.g. HostelWifi@2026">
+                                </div>
+                            </div>
+
+                            <h4 style="font-size: 0.95rem; font-weight: 800; margin: 18px 0 12px 0;">Standard Mess Timings</h4>
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label>Breakfast / Tiffin Hours</label>
+                                    <input type="text" id="setMessMorning" class="form-input" placeholder="7:30 AM - 10:00 AM">
+                                </div>
+                                <div class="form-group">
+                                    <label>Lunch Hours</label>
+                                    <input type="text" id="setMessLunch" class="form-input" placeholder="12:30 PM - 3:00 PM">
+                                </div>
+                                <div class="form-group">
+                                    <label>Dinner Hours</label>
+                                    <input type="text" id="setMessDinner" class="form-input" placeholder="7:30 PM - 10:00 PM">
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="save"></i> Save Rules & Facilities
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ==================== TAB 4: ADMIN ACCOUNT & SECURITY ==================== -->
+                <div id="adminSecurityTab" class="tab-content-panel" style="display: none;">
+                    <div class="settings-card">
+                        <div class="card-header-row">
+                            <div>
+                                <h3><i data-lucide="key"></i> Admin Profile & Authentication</h3>
+                                <p>Update your administrative login credentials, notification phone, and account password.</p>
+                            </div>
+                        </div>
+
+                        <form id="adminSecurityForm" onsubmit="saveAdminSecurity(event)">
+                            <div class="form-grid-2">
+                                <div class="form-group">
+                                    <label>Admin Display Name *</label>
+                                    <input type="text" id="setAdminName" class="form-input" required placeholder="e.g. Administrator">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Admin Login Email *</label>
+                                    <input type="email" id="setAdminEmail" class="form-input" required placeholder="admin@hostel.com">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Admin Mobile Phone</label>
+                                    <input type="text" id="setAdminPhone" class="form-input" placeholder="e.g. 9876543210">
+                                </div>
+                            </div>
+
+                            <h4 style="font-size: 0.95rem; font-weight: 800; margin: 24px 0 12px 0;">Change Password (Optional)</h4>
+                            <div class="form-grid-3">
+                                <div class="form-group">
+                                    <label>Current Password</label>
+                                    <input type="password" id="setCurrentPassword" class="form-input" placeholder="Enter current password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>New Password</label>
+                                    <input type="password" id="setNewPassword" class="form-input" placeholder="Min. 6 characters">
+                                </div>
+
+                                <div class="form-group">
+                                    <label>Confirm New Password</label>
+                                    <input type="password" id="setConfirmPassword" class="form-input" placeholder="Repeat new password">
+                                </div>
+                            </div>
+
+                            <div class="save-actions-bar">
+                                <button type="submit" class="btn-primary">
+                                    <i data-lucide="shield-check"></i> Update Admin Credentials
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        function refreshIcons() {
+            if (window.lucide) lucide.createIcons();
+        }
+        document.addEventListener("DOMContentLoaded", refreshIcons);
+
+        // Sidebar collapse
+        const sidebar = document.getElementById("sidebar");
+        const sidebarToggle = document.getElementById("sidebarToggle");
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener("click", () => {
+                sidebar.classList.toggle("collapsed");
+                refreshIcons();
+            });
+        }
+
+        // Theme Toggle
+        const themeToggleBtn = document.getElementById("themeToggleBtn");
+        const themeIcon = document.getElementById("themeIcon");
+
+        function applyTheme(isDark) {
+            if (isDark) {
+                document.documentElement.classList.add("dark");
+                localStorage.setItem("hostel_theme", "dark");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "sun");
+            } else {
+                document.documentElement.classList.remove("dark");
+                localStorage.setItem("hostel_theme", "light");
+                if (themeIcon) themeIcon.setAttribute("data-lucide", "moon");
+            }
+            refreshIcons();
+        }
+
+        const savedTheme = localStorage.getItem("hostel_theme") === "dark";
+        applyTheme(savedTheme);
+
+        if (themeToggleBtn) {
+            themeToggleBtn.addEventListener("click", () => {
+                applyTheme(!document.documentElement.classList.contains("dark"));
+            });
+        }
+
+        // Tabs switcher
+        function switchTab(tabId, btn) {
+            document.querySelectorAll(".tab-content-panel").forEach(p => p.style.display = "none");
+            document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+            
+            const target = document.getElementById(tabId);
+            if (target) target.style.display = "block";
+            if (btn) btn.classList.add("active");
+            refreshIcons();
+        }
+
+        // Show Toast Notification
+        function showToast(message, isError = false) {
+            const toast = document.getElementById("toastBanner");
+            const toastMsg = document.getElementById("toastMsg");
+            const toastIcon = document.getElementById("toastIcon");
+
+            toast.style.display = "flex";
+            toastMsg.textContent = message;
+
+            if (isError) {
+                toast.className = "toast-banner toast-error";
+                if (toastIcon) toastIcon.setAttribute("data-lucide", "alert-triangle");
+            } else {
+                toast.className = "toast-banner toast-success";
+                if (toastIcon) toastIcon.setAttribute("data-lucide", "check-circle");
+            }
+            refreshIcons();
+
+            setTimeout(() => {
+                toast.style.display = "none";
+            }, 5000);
+        }
+
+        // Cache settings state
+        let currentSettings = {};
+
+        // Load Settings Data
+        async function loadSettings() {
+            try {
+                const res = await fetch("/api/settings");
+                if (res.ok) {
+                    const data = await res.json();
+                    currentSettings = data;
+
+                    // Tab 1
+                    document.getElementById("setHostelName").value = data.hostel_name || "";
+                    document.getElementById("setHostelTagline").value = data.hostel_tagline || "";
+                    document.getElementById("setContactPhone").value = data.contact_phone || "";
+                    document.getElementById("setContactEmail").value = data.contact_email || "";
+                    document.getElementById("setHostelAddress").value = data.hostel_address || "";
+
+                    // Tab 2
+                    document.getElementById("setUpiId").value = data.hostel_upi_id || "";
+                    document.getElementById("setUpiName").value = data.hostel_upi_name || "";
+                    document.getElementById("setUpiMobile").value = data.hostel_upi_mobile || "";
+                    document.getElementById("setDefaultRent").value = data.default_monthly_rent || 6500;
+                    document.getElementById("setDefaultDeposit").value = data.default_security_deposit || 5000;
+                    document.getElementById("setNoticePeriod").value = data.notice_period_days || 15;
+
+                    // Tab 3
+                    document.getElementById("setWardenName").value = data.warden_name || "";
+                    document.getElementById("setWardenPhone").value = data.warden_phone || "";
+                    document.getElementById("setGateTime").value = data.gate_closing_time || "10:30 PM";
+                    document.getElementById("setWifiSsid").value = data.wifi_ssid || "";
+                    document.getElementById("setWifiPass").value = data.wifi_password || "";
+                    document.getElementById("setMessMorning").value = data.mess_morning_time || "7:30 AM - 10:00 AM";
+                    document.getElementById("setMessLunch").value = data.mess_lunch_time || "12:30 PM - 3:00 PM";
+                    document.getElementById("setMessDinner").value = data.mess_dinner_time || "7:30 PM - 10:00 PM";
+                }
+
+                // Load Admin Profile
+                const profRes = await fetch("/api/profile");
+                if (profRes.ok) {
+                    const prof = await profRes.json();
+                    document.getElementById("setAdminName").value = prof.name || "";
+                    document.getElementById("setAdminEmail").value = prof.email || "";
+                }
+            } catch (err) {
+                console.error("Load settings error:", err);
+            }
+        }
+
+        // Save Hostel Settings (Tabs 1, 2, 3)
+        async function saveHostelSettings(e) {
+            e.preventDefault();
+
+            const payload = {
+                hostel_name: document.getElementById("setHostelName").value.trim(),
+                hostel_tagline: document.getElementById("setHostelTagline").value.trim(),
+                contact_phone: document.getElementById("setContactPhone").value.trim(),
+                contact_email: document.getElementById("setContactEmail").value.trim(),
+                hostel_address: document.getElementById("setHostelAddress").value.trim(),
+
+                hostel_upi_id: document.getElementById("setUpiId").value.trim(),
+                hostel_upi_name: document.getElementById("setUpiName").value.trim(),
+                hostel_upi_mobile: document.getElementById("setUpiMobile").value.trim(),
+                default_monthly_rent: document.getElementById("setDefaultRent").value,
+                default_security_deposit: document.getElementById("setDefaultDeposit").value,
+                notice_period_days: document.getElementById("setNoticePeriod").value,
+
+                warden_name: document.getElementById("setWardenName").value.trim(),
+                warden_phone: document.getElementById("setWardenPhone").value.trim(),
+                gate_closing_time: document.getElementById("setGateTime").value.trim(),
+                wifi_ssid: document.getElementById("setWifiSsid").value.trim(),
+                wifi_password: document.getElementById("setWifiPass").value.trim(),
+                mess_morning_time: document.getElementById("setMessMorning").value.trim(),
+                mess_lunch_time: document.getElementById("setMessLunch").value.trim(),
+                mess_dinner_time: document.getElementById("setMessDinner").value.trim()
+            };
+
+            try {
+                const res = await fetch("/api/settings", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Settings updated successfully!");
+                } else {
+                    showToast(data.error || "Failed to update settings", true);
+                }
+            } catch (err) {
+                showToast("Server error updating settings", true);
+            }
+        }
+
+        // Save Admin Profile & Security (Tab 4)
+        async function saveAdminSecurity(e) {
+            e.preventDefault();
+
+            const name = document.getElementById("setAdminName").value.trim();
+            const email = document.getElementById("setAdminEmail").value.trim();
+            const phone = document.getElementById("setAdminPhone").value.trim();
+            const currentPassword = document.getElementById("setCurrentPassword").value;
+            const newPassword = document.getElementById("setNewPassword").value;
+            const confirmPassword = document.getElementById("setConfirmPassword").value;
+
+            if (newPassword && newPassword !== confirmPassword) {
+                showToast("New passwords do not match. Please re-enter.", true);
+                return;
+            }
+
+            try {
+                const res = await fetch("/api/admin/profile", {
+                    method: "PUT",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name,
+                        email,
+                        phone,
+                        currentPassword: currentPassword || undefined,
+                        newPassword: newPassword || undefined
+                    })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message || "Admin credentials updated successfully!");
+                    document.getElementById("setCurrentPassword").value = "";
+                    document.getElementById("setNewPassword").value = "";
+                    document.getElementById("setConfirmPassword").value = "";
+                } else {
+                    showToast(data.error || "Failed to update admin profile", true);
+                }
+            } catch (err) {
+                showToast("Server error saving admin credentials", true);
+            }
+        }
+
+        window.addEventListener("load", loadSettings);
+
+        // BFCache & Back-Button Protection: reload if restored from cache after logout
+        window.addEventListener("pageshow", function (event) {
+            if (event.persisted || (window.performance && window.performance.getEntriesByType && window.performance.getEntriesByType("navigation")[0]?.type === "back_forward")) {
+                window.location.reload();
+            }
+        });
+    </script>
+</body>
+
+</html>
