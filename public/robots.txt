@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /contact
+Allow: /terms
+Allow: /privacy
+Allow: /refund-policy
+Disallow: /dashboard
+Disallow: /student-dashboard
+Disallow: /api/
+
+Sitemap: https://abhi-hostel-management.onrender.com/sitemap.xml
