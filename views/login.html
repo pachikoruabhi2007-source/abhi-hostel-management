@@ -232,30 +232,6 @@
         showToast("❌ Connection error. Please try again.", 4000);
       }
     };
-
-    // 3. Email & Password Register Handler
-    window.handleFirebaseEmailRegister = async function(event) {
-      event.preventDefault();
-      const form = event.target;
-      const submitBtn = form.querySelector('button[type="submit"]');
-      const email = form.email.value.trim();
-      const password = form.password.value;
-
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>Creating Account...</span> <i class="fa-solid fa-spinner fa-spin"></i>';
-      showToast("Creating your resident account...", 3000);
-
-      // Attempt Firebase user creation in background
-      try {
-        await createUserWithEmailAndPassword(auth, email, password);
-        console.log("Firebase user created:", email);
-      } catch (fbErr) {
-        console.log("Firebase signup notice:", fbErr.code || fbErr.message);
-      }
-
-      // Submit form to Node.js backend
-      form.submit();
-    };
   </script>
 
   <style>
@@ -295,10 +271,6 @@
       transition: clip-path 0.85s cubic-bezier(0.77, 0, 0.175, 1);
     }
 
-    .auth.signup::before {
-      clip-path: ellipse(45% 135% at 90% 50%);
-    }
-
     .forms {
       position: absolute;
       z-index: 3;
@@ -310,25 +282,14 @@
       align-items: center;
       justify-content: center;
       padding: 24px 44px 24px 24px;
-      transition: left 0.85s cubic-bezier(0.77, 0, 0.175, 1),
-                  padding 0.85s cubic-bezier(0.77, 0, 0.175, 1);
-    }
-
-    .auth.signup .forms {
-      left: 0;
-      padding: 24px 24px 24px 44px;
     }
 
     .form {
-      position: absolute;
-      width: min(310px, 100%);
+      position: relative;
+      width: min(320px, 100%);
       display: flex;
       flex-direction: column;
       gap: 13px;
-      transition:
-        opacity 0.35s ease,
-        transform 0.5s ease,
-        visibility 0s linear 0.35s;
     }
 
     .form h1 {
@@ -344,29 +305,6 @@
       opacity: 1;
       visibility: visible;
       transform: translateX(0);
-      transition-delay: 0s;
-    }
-
-    .form.register {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: translateX(35px);
-    }
-
-    .auth.signup .form.login {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: translateX(-35px);
-    }
-
-    .auth.signup .form.register {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translateX(0);
-      transition-delay: 0s;
     }
 
     /* ── Google Button & Divider ── */
@@ -553,29 +491,6 @@
       opacity: 1;
       visibility: visible;
       transform: translateX(0);
-    }
-
-    .panel-register {
-      right: 0;
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: translateX(30px);
-    }
-
-    .auth.signup .panel-login {
-      opacity: 0;
-      visibility: hidden;
-      pointer-events: none;
-      transform: translateX(-30px);
-    }
-
-    .auth.signup .panel-register {
-      opacity: 1;
-      visibility: visible;
-      pointer-events: auto;
-      transform: translateX(0);
-      transition-delay: 0s;
     }
 
     .switch {
@@ -1086,50 +1001,36 @@
 
     @media (max-width: 650px) {
       .auth {
-        height: 720px;
+        height: 620px;
       }
 
       .auth::before {
-        clip-path: ellipse(140% 40% at 50% 0%);
-      }
-
-      .auth.signup::before {
-        clip-path: ellipse(140% 40% at 50% 100%);
+        clip-path: ellipse(140% 32% at 50% 0%);
       }
 
       .forms {
-        top: 34%;
+        top: 28%;
         left: 0;
         width: 100%;
-        height: 66%;
-        padding: 20px;
-      }
-
-      .auth.signup .forms {
-        top: 0;
-        left: 0;
+        height: 72%;
         padding: 20px;
       }
 
       .panel {
         top: 0;
         width: 100%;
-        height: 34%;
-        padding: 20px;
+        height: 28%;
+        padding: 16px 20px;
       }
 
       .panel-login {
         left: 0;
       }
 
-      .panel-register {
-        top: 66%;
-        right: 0;
-      }
-
       .panel p {
-        max-width: 300px;
-        margin: 6px 0 14px;
+        max-width: 320px;
+        margin: 4px 0 10px;
+        font-size: 0.85rem;
       }
     }
 
@@ -1209,92 +1110,25 @@
 
         <a class="forgot" href="/forgot-password">Forgot password?</a>
         <button class="submit" type="submit" id="loginSubmitBtn">Login</button>
+
+        <!-- Direct Link to Single Registration / Admission Page -->
+        <div style="text-align: center; margin-top: 8px; font-size: 0.85rem; color: #64748b;">
+          New resident?
+          <a href="/register" style="color: #4f46e5; font-weight: 700; text-decoration: none;">
+            Apply for Admission / Register →
+          </a>
+        </div>
       </form>
-
-
-      <!-- ==================== SIGN UP FORM ==================== -->
-      <form class="form register" id="registerForm" action="/register" method="POST" onsubmit="handleFirebaseEmailRegister(event)">
-        <h1>Sign up</h1>
-
-        <input
-          class="field"
-          type="text"
-          name="name"
-          placeholder="Full name"
-          autocomplete="name"
-          required
-        >
-
-        <input
-          class="field"
-          type="email"
-          name="email"
-          placeholder="Google Email (e.g. Gmail or College ID)"
-          autocomplete="email"
-          required
-        >
-
-        <input
-          class="field"
-          type="date"
-          name="entry_date"
-          id="loginSignUpEntryDate"
-          title="Hostel Entry / Move-in Date"
-          required
-        >
-
-        <input
-          class="field"
-          type="tel"
-          name="phone"
-          placeholder="Mobile phone (10 digits)"
-          pattern="[0-9]{10}"
-          maxlength="10"
-          required
-        >
-
-        <select class="field" name="resident_type" style="cursor: pointer; color: #1e293b; background: #fff;" required>
-          <option value="" disabled selected>What are you doing? (Occupation)</option>
-          <option value="Jobholder">💼 Job Holder / Working Professional</option>
-          <option value="Student">🎓 Student (College / Coaching)</option>
-          <option value="Transfer Employee">🔄 Transfer Employee</option>
-          <option value="Other">🛠️ Other Works / Freelancer</option>
-        </select>
-
-        <select class="field" name="stay_type" style="cursor: pointer; color: #1e293b; background: #fff;" required>
-          <option value="" disabled selected>Stay plan (Monthly or Days?)</option>
-          <option value="Monthly Stay">🗓️ Monthly Stay (Standard Long-Term)</option>
-          <option value="Daily Stay (Days)">⏳ Days / Daily Stay (Short-Term)</option>
-        </select>
-
-        <input
-          class="field"
-          type="password"
-          name="password"
-          placeholder="Create password"
-          autocomplete="new-password"
-          minlength="6"
-          required
-        >
-
-        <button class="submit" type="submit">Create account</button>
-        <a href="/register" style="font-size: 0.74rem; color: #5b73e8; text-align: center; text-decoration: none; font-weight: 700; margin-top: 4px;">
-          Need more options? Open Full Admission Form →
-        </a>
-      </form>
-
     </section>
 
-    <!-- Side Panels -->
+    <!-- Side Panel (Directs user to the single official registration page) -->
     <section class="panel panel-login">
-      <h2>New here?</h2>
-      <p>Create an account to get started with the Hostel Management System.</p>
-      <button class="switch" type="button" data-mode="signup">Sign up</button>
+      <h2>New Resident?</h2>
+      <p>Reserve your bed, submit ID proof, and choose your food plan in our admission form.</p>
+      <a class="switch" href="/register" style="display: inline-flex; align-items: center; justify-content: center; text-decoration: none; font-weight: 700;">
+        Open Registration Form →
+      </a>
     </section>
-
-    <section class="panel panel-register">
-      <h2>Already registered?</h2>
-      <p>Sign in to continue to your hostel account.</p>
   </main>
 
   <!-- Compliance Footer Bar for Razorpay & Legal Compliance -->
@@ -1400,16 +1234,10 @@
       }, duration);
     }
 
-    document.querySelectorAll("[data-mode]").forEach((button) => {
-      button.addEventListener("click", () => {
-        if (authContainer) authContainer.classList.toggle("signup", button.dataset.mode === "signup");
-      });
-    });
-
-    // Auto-open signup if mode=signup in URL or hash
+    // Automatically forward any legacy signup links to the official registration page
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.get("mode") === "signup" || window.location.hash === "#signup") {
-      if (authContainer) authContainer.classList.add("signup");
+      window.location.replace("/register");
     }
 
     // ==================== GOOGLE OTP MODAL CONTROLLER ====================

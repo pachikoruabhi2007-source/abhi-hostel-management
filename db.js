@@ -1,6 +1,7 @@
 const mysql = require("mysql2");
 const fs = require("fs");
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 // Load .env file if present
 const envPath = path.join(__dirname, ".env");
@@ -28,8 +29,8 @@ const dbConfig = process.env.DATABASE_URL || {
 const connection = mysql.createConnection(dbConfig);
 
 function initSchema() {
-    // 0. Clean up test data: Retain only admin and 257r1a66p7@cmrtc.ac.in
-    cleanupOldUsers();
+    // 0. Database initialization (do not wipe newly registered users)
+    // cleanupOldUsers();
 
     // 1. Upgrade students table for private hostel & PG residents (jobholders, transfer employees, students)
     connection.query("SHOW TABLES LIKE 'students'", (err, tables) => {
@@ -267,6 +268,24 @@ function initSchema() {
             connection.query(createReviewsTableSql, (rErr) => {
                 if (rErr) console.error("Error creating reviews table:", rErr.message);
                 else console.log("✓ reviews table ready.");
+
+                // 9. Ensure default admin user exists
+                connection.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1", async (adminCheckErr, adminRows) => {
+                    if (!adminCheckErr && (!adminRows || adminRows.length === 0)) {
+                        try {
+                            const hash = await bcrypt.hash("Admin@12345", 10);
+                            connection.query(
+                                "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
+                                [hash],
+                                (insErr) => {
+                                    if (!insErr) console.log("✓ Default admin account ready: admin@hostel.com / Admin@12345");
+                                }
+                            );
+                        } catch (bErr) {
+                            console.warn("Could not hash default admin password:", bErr.message);
+                        }
+                    }
+                });
             });
         });
     });
