@@ -274,26 +274,38 @@ function initSchema() {
                                             if (rErr) console.error("Error creating reviews table:", rErr.message);
                                             else console.log("✓ reviews table ready.");
 
-                                            // 11. Seed default admin user
-                                            connection.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1", async (adminCheckErr, adminRows) => {
-                                                if (!adminCheckErr && (!adminRows || adminRows.length === 0)) {
-                                                    try {
-                                                        const hash = await bcrypt.hash("Admin@12345", 10);
-                                                        connection.query(
-                                                            "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
-                                                            [hash],
-                                                            (insErr) => {
-                                                                if (!insErr) console.log("✓ Default admin account ready: admin@hostel.com / Admin@12345");
-                                                            }
-                                                        );
-                                                    } catch (bErr) {
-                                                        console.warn("Could not hash default admin password:", bErr.message);
-                                                    }
-                                                }
+                                            // 11. Seed default admin accounts
+                                            (async () => {
+                                                try {
+                                                    const adminHash = await bcrypt.hash("Admin@12345", 10);
+                                                    connection.query("SELECT user_id FROM users WHERE LOWER(TRIM(email)) = 'admin@hostel.com'", (aErr, aRows) => {
+                                                        if (!aErr && (!aRows || aRows.length === 0)) {
+                                                            connection.query(
+                                                                "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
+                                                                [adminHash],
+                                                                () => console.log("✓ Default admin ready: admin@hostel.com / Admin@12345")
+                                                            );
+                                                        } else if (!aErr && aRows && aRows.length > 0) {
+                                                            connection.query("UPDATE users SET password = ?, role = 'admin' WHERE user_id = ?", [adminHash, aRows[0].user_id]);
+                                                        }
+                                                    });
 
-                                                // Ensure owner email is always Admin
-                                                connection.query("UPDATE users SET role = 'admin' WHERE LOWER(TRIM(email)) = 'pachikoruabhi2007@gmail.com'", () => {});
-                                            });
+                                                    const ownerHash = await bcrypt.hash("Abhi$132007", 10);
+                                                    connection.query("SELECT user_id FROM users WHERE LOWER(TRIM(email)) = 'pachikoruabhi2007@gmail.com'", (oErr, oRows) => {
+                                                        if (!oErr && (!oRows || oRows.length === 0)) {
+                                                            connection.query(
+                                                                "INSERT INTO users (name, email, phone, password, role) VALUES ('Abhi (Owner)', 'pachikoruabhi2007@gmail.com', '9704844011', ?, 'admin')",
+                                                                [ownerHash],
+                                                                () => console.log("✓ Owner admin ready: pachikoruabhi2007@gmail.com / Abhi$132007")
+                                                            );
+                                                        } else if (!oErr && oRows && oRows.length > 0) {
+                                                            connection.query("UPDATE users SET role = 'admin', password = ? WHERE user_id = ?", [ownerHash, oRows[0].user_id]);
+                                                        }
+                                                    });
+                                                } catch (bErr) {
+                                                    console.warn("Could not seed admin passwords:", bErr.message);
+                                                }
+                                            })();
 
                                             // 12. Seed default rooms if empty
                                             connection.query("SELECT COUNT(*) AS count FROM rooms", (rmCntErr, rmCntRows) => {

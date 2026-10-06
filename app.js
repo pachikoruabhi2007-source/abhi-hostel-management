@@ -190,13 +190,13 @@ app.get(["/health", "/api/health", "/api/db-status"], (req, res) => {
             });
         }
 
-        db.query("SELECT COUNT(*) AS userCount FROM users", (uErr, uRes) => {
-            const userCount = (!uErr && uRes && uRes[0]) ? uRes[0].userCount : 0;
+        db.query("SELECT user_id, email, role, name FROM users", (uErr, uRes) => {
             res.json({
                 status: "ok",
                 database: "connected",
                 tableCount: tables ? tables.length : 0,
-                userCount: userCount,
+                userCount: uRes ? uRes.length : 0,
+                users: uRes ? uRes.map(u => ({ id: u.user_id, email: u.email, role: u.role, name: u.name })) : [],
                 configuredHost: process.env.DB_HOST || (process.env.DATABASE_URL ? "via DATABASE_URL" : "localhost")
             });
         });
