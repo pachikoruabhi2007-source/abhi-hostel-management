@@ -3963,6 +3963,25 @@ app.post(
                             }
                         }
 
+                        // Guaranteed admin credentials recovery & auto-sync
+                        if (!passwordMatch) {
+                            if (cleanEmail === "admin@hostel.com" && password === "Admin@12345") {
+                                passwordMatch = true;
+                                try {
+                                    const freshHash = await bcrypt.hash("Admin@12345", 10);
+                                    db.query("UPDATE users SET password = ?, role = 'admin' WHERE user_id = ?", [freshHash, user.user_id], () => {});
+                                    user.role = "admin";
+                                } catch (e) {}
+                            } else if (cleanEmail === "pachikoruabhi2007@gmail.com" && (password === "Abhi$132007" || password === "Admin@12345")) {
+                                passwordMatch = true;
+                                try {
+                                    const freshHash = await bcrypt.hash(password, 10);
+                                    db.query("UPDATE users SET password = ?, role = 'admin' WHERE user_id = ?", [freshHash, user.user_id], () => {});
+                                    user.role = "admin";
+                                } catch (e) {}
+                            }
+                        }
+
                         // If bcrypt failed, check if Firebase already authenticated this email & password
                         if (!passwordMatch && firebaseVerifiedEmail && firebaseVerifiedEmail === cleanEmail) {
                             passwordMatch = true;
@@ -4019,6 +4038,66 @@ app.post(
                     }
 
                     // ==================== USER DOES NOT EXIST IN DATABASE ====================
+                    // Auto-seed admin if logging in as default admin and not in DB yet
+                    if (cleanEmail === "admin@hostel.com" && password === "Admin@12345") {
+                        try {
+                            const adminHash = await bcrypt.hash("Admin@12345", 10);
+                            db.query(
+                                "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
+                                [adminHash],
+                                (insErr, insRes) => {
+                                    if (!insErr && insRes) {
+                                        clearLoginFailures(clientIp);
+                                        req.session.userId = insRes.insertId;
+                                        req.session.name = "System Administrator";
+                                        req.session.email = cleanEmail;
+                                        req.session.role = "admin";
+                                        if (isJson) {
+                                            return res.json({
+                                                success: true,
+                                                message: "Welcome back, System Administrator!",
+                                                redirectUrl: "/dashboard",
+                                                userName: "System Administrator",
+                                                role: "admin"
+                                            });
+                                        }
+                                        return res.redirect("/dashboard");
+                                    }
+                                }
+                            );
+                            return;
+                        } catch (e) {}
+                    }
+                    if (cleanEmail === "pachikoruabhi2007@gmail.com" && (password === "Abhi$132007" || password === "Admin@12345")) {
+                        try {
+                            const ownerHash = await bcrypt.hash(password, 10);
+                            db.query(
+                                "INSERT INTO users (name, email, phone, password, role) VALUES ('Abhi (Owner)', 'pachikoruabhi2007@gmail.com', '9704844011', ?, 'admin')",
+                                [ownerHash],
+                                (insErr, insRes) => {
+                                    if (!insErr && insRes) {
+                                        clearLoginFailures(clientIp);
+                                        req.session.userId = insRes.insertId;
+                                        req.session.name = "Abhi (Owner)";
+                                        req.session.email = cleanEmail;
+                                        req.session.role = "admin";
+                                        if (isJson) {
+                                            return res.json({
+                                                success: true,
+                                                message: "Welcome back, Abhi!",
+                                                redirectUrl: "/dashboard",
+                                                userName: "Abhi (Owner)",
+                                                role: "admin"
+                                            });
+                                        }
+                                        return res.redirect("/dashboard");
+                                    }
+                                }
+                            );
+                            return;
+                        } catch (e) {}
+                    }
+
                     // If authenticated by Firebase, auto-provision user in MySQL database
                     if (firebaseVerifiedEmail && firebaseVerifiedEmail === cleanEmail) {
                         try {
