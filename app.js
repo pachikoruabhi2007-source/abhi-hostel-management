@@ -149,7 +149,8 @@ function requireStudent(req, res, next) {
         return res.redirect("/login");
     }
 
-    if (req.session.role !== "student") {
+    const role = (req.session.role || "").toLowerCase().trim();
+    if (role === "admin") {
         return res.redirect("/dashboard");
     }
 
@@ -165,7 +166,8 @@ function requireAdmin(req, res, next) {
         return res.redirect("/login");
     }
 
-    if (req.session.role !== "admin") {
+    const role = (req.session.role || "").toLowerCase().trim();
+    if (role !== "admin") {
         return res.redirect("/student-dashboard");
     }
 
@@ -3817,7 +3819,8 @@ app.get(
         // If user is already authenticated, redirect straight to their dashboard
         // so Back button will NEVER return to the login or OTP screen!
         if (req.session.userId) {
-            const dest = req.session.role === "student" ? "/student-dashboard" : "/dashboard";
+            const role = (req.session.role || "").toLowerCase().trim();
+            const dest = role === "admin" ? "/dashboard" : "/student-dashboard";
             return res.redirect(dest);
         }
 
@@ -3951,9 +3954,11 @@ app.post(
                         req.session.userId = user.user_id;
                         req.session.name = user.name;
                         req.session.email = user.email;
-                        req.session.role = user.role;
 
-                        const redirectUrl = user.role === "admin" ? "/dashboard" : "/student-dashboard";
+                        const userRole = (user.role || "student").toLowerCase().trim();
+                        req.session.role = userRole;
+
+                        const redirectUrl = userRole === "admin" ? "/dashboard" : "/student-dashboard";
 
                         req.session.save((saveErr) => {
                             if (saveErr) console.warn("Session save warning:", saveErr.message);
