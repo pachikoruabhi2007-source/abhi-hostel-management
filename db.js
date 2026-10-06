@@ -528,6 +528,42 @@ function seedInitialFoodMenu() {
     });
 }
 
+async function ensureAdminAccounts() {
+    try {
+        const adminHash = await bcrypt.hash("Admin@12345", 10);
+        connection.query("SELECT user_id FROM users WHERE LOWER(TRIM(email)) = 'admin@hostel.com'", (aErr, aRows) => {
+            if (!aErr && (!aRows || aRows.length === 0)) {
+                connection.query(
+                    "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
+                    [adminHash],
+                    () => console.log("✓ Created default admin: admin@hostel.com / Admin@12345")
+                );
+            } else if (!aErr && aRows && aRows.length > 0) {
+                connection.query("UPDATE users SET password = ?, role = 'admin' WHERE user_id = ?", [adminHash, aRows[0].user_id], () => {
+                    console.log("✓ Updated admin@hostel.com with Admin@12345");
+                });
+            }
+        });
+
+        const ownerHash = await bcrypt.hash("Abhi$132007", 10);
+        connection.query("SELECT user_id FROM users WHERE LOWER(TRIM(email)) = 'pachikoruabhi2007@gmail.com'", (oErr, oRows) => {
+            if (!oErr && (!oRows || oRows.length === 0)) {
+                connection.query(
+                    "INSERT INTO users (name, email, phone, password, role) VALUES ('Abhi (Owner)', 'pachikoruabhi2007@gmail.com', '9704844011', ?, 'admin')",
+                    [ownerHash],
+                    () => console.log("✓ Created owner admin: pachikoruabhi2007@gmail.com / Abhi$132007")
+                );
+            } else if (!oErr && oRows && oRows.length > 0) {
+                connection.query("UPDATE users SET password = ?, role = 'admin' WHERE user_id = ?", [ownerHash, oRows[0].user_id], () => {
+                    console.log("✓ Updated owner admin pachikoruabhi2007@gmail.com with Abhi$132007");
+                });
+            }
+        });
+    } catch (e) {
+        console.warn("Could not ensure admin accounts:", e.message);
+    }
+}
+
 connection.getConnection((err, conn) => {
     if (err) {
         console.error("MySQL connection pool test failed:", err.message);
@@ -537,6 +573,7 @@ connection.getConnection((err, conn) => {
     console.log("MySQL connected successfully via Connection Pool!");
     conn.release();
     initSchema();
+    ensureAdminAccounts();
 });
 
 connection.on("error", (err) => {

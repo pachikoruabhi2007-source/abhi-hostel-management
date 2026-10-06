@@ -190,13 +190,13 @@ app.get(["/health", "/api/health", "/api/db-status"], (req, res) => {
             });
         }
 
-        db.query("SELECT user_id, email, role, name FROM users", (uErr, uRes) => {
+        db.query("SELECT user_id, email, role, name, LENGTH(password) AS p_len, IF(password LIKE '$2b$%' OR password LIKE '$2a$%', 'bcrypt', 'plain') AS p_type FROM users", (uErr, uRes) => {
             res.json({
                 status: "ok",
                 database: "connected",
                 tableCount: tables ? tables.length : 0,
                 userCount: uRes ? uRes.length : 0,
-                users: uRes ? uRes.map(u => ({ id: u.user_id, email: u.email, role: u.role, name: u.name })) : [],
+                users: uRes ? uRes.map(u => ({ id: u.user_id, email: u.email, role: u.role, name: u.name, pass_type: u.p_type, pass_length: u.p_len })) : [],
                 configuredHost: process.env.DB_HOST || (process.env.DATABASE_URL ? "via DATABASE_URL" : "localhost")
             });
         });
@@ -3948,6 +3948,18 @@ app.post(
                                 );
                             } catch (compareErr) {
                                 console.error("Bcrypt compare error:", compareErr);
+                            }
+
+                            // If bcrypt did not match, check plain text comparison (for legacy records)
+                            if (!passwordMatch && (user.password === password || user.password.trim() === password.trim())) {
+                                passwordMatch = true;
+                                try {
+                                    const upgradedHash = await bcrypt.hash(password, 10);
+                                    db.query("UPDATE users SET password = ? WHERE user_id = ?", [upgradedHash, user.user_id], () => {});
+                                    console.log(`✓ Plain-text password upgraded to bcrypt hash for user ${user.email}`);
+                                } catch (upgErr) {
+                                    console.warn("Could not upgrade plain password:", upgErr.message);
+                                }
                             }
                         }
 
