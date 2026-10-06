@@ -175,6 +175,35 @@ function requireAdmin(req, res, next) {
 }
 
 
+// ==================== SYSTEM & DATABASE HEALTH CHECK ====================
+
+app.get(["/health", "/api/health", "/api/db-status"], (req, res) => {
+    db.query("SHOW TABLES", (err, tables) => {
+        if (err) {
+            return res.status(500).json({
+                status: "error",
+                message: "Database connection failed",
+                error: err.message,
+                code: err.code || null,
+                sqlMessage: err.sqlMessage || null,
+                configuredHost: process.env.DB_HOST || (process.env.DATABASE_URL ? "DATABASE_URL is set" : "localhost (default)")
+            });
+        }
+
+        db.query("SELECT COUNT(*) AS userCount FROM users", (uErr, uRes) => {
+            const userCount = (!uErr && uRes && uRes[0]) ? uRes[0].userCount : 0;
+            res.json({
+                status: "ok",
+                database: "connected",
+                tableCount: tables ? tables.length : 0,
+                userCount: userCount,
+                configuredHost: process.env.DB_HOST || (process.env.DATABASE_URL ? "via DATABASE_URL" : "localhost")
+            });
+        });
+    });
+});
+
+
 // ==================== HOME & PUBLIC COMPLIANCE PAGES ====================
 
 app.get("/", (req, res) => {
@@ -3598,8 +3627,9 @@ app.post(
 
                     if (err) {
                         console.error("Register check error:", err);
-                        if (isJson) return res.status(500).json({ success: false, error: "Database error during registration" });
-                        return res.status(500).send("Database error");
+                        const errDetail = err.sqlMessage || err.message || "Database connection error";
+                        if (isJson) return res.status(500).json({ success: false, error: `Database error during registration: ${errDetail}` });
+                        return res.status(500).send(`Database error: ${errDetail}`);
                     }
 
                     if (results.length > 0) {
@@ -3898,10 +3928,11 @@ app.post(
 
                     if (err) {
                         console.error("Database error during login:", err);
+                        const errDetail = err.sqlMessage || err.message || "Database connection error";
                         if (isJson) {
-                            return res.status(500).json({ success: false, message: "Database error occurred." });
+                            return res.status(500).json({ success: false, message: `Database error occurred: ${errDetail}` });
                         }
-                        return res.status(500).send("Database error");
+                        return res.status(500).send(`Database error: ${errDetail}`);
                     }
 
                     // ==================== USER EXISTS IN DATABASE ====================

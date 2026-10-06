@@ -22,3 +22,4 @@ yarn-debug.log*
 .idea/
 .agents/
 .gemini/
+powershell.cmd

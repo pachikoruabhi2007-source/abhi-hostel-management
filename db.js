@@ -26,7 +26,16 @@ const dbConfig = process.env.DATABASE_URL || {
     port: process.env.DB_PORT ? Number(process.env.DB_PORT) : 3306
 };
 
-const connection = mysql.createConnection(dbConfig);
+const poolConfig = typeof dbConfig === "string" ? dbConfig : {
+    ...dbConfig,
+    waitForConnections: true,
+    connectionLimit: 10,
+    queueLimit: 0,
+    enableKeepAlive: true,
+    keepAliveInitialDelay: 10000
+};
+
+const connection = mysql.createPool(poolConfig);
 
 function initSchema() {
     console.log("Initializing database schema and ensuring all tables exist...");
@@ -507,13 +516,14 @@ function seedInitialFoodMenu() {
     });
 }
 
-connection.connect((err) => {
+connection.getConnection((err, conn) => {
     if (err) {
-        console.log("MySQL connection failed:", err.message);
+        console.error("MySQL connection pool test failed:", err.message);
         return;
     }
 
-    console.log("MySQL connected successfully!");
+    console.log("MySQL connected successfully via Connection Pool!");
+    conn.release();
     initSchema();
 });
 
