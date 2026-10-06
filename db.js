@@ -29,262 +29,291 @@ const dbConfig = process.env.DATABASE_URL || {
 const connection = mysql.createConnection(dbConfig);
 
 function initSchema() {
-    // 0. Database initialization (do not wipe newly registered users)
-    // cleanupOldUsers();
+    console.log("Initializing database schema and ensuring all tables exist...");
 
-    // 1. Upgrade students table for private hostel & PG residents (jobholders, transfer employees, students)
-    connection.query("SHOW TABLES LIKE 'students'", (err, tables) => {
-        if (err || !tables || tables.length === 0) return;
-
-        connection.query("SHOW COLUMNS FROM students", (colErr, cols) => {
-            if (colErr || !cols) return;
-            const existing = cols.map(c => c.Field.toLowerCase());
-
-            const columnsToAdd = [
-                { name: "resident_type", def: "VARCHAR(50) DEFAULT 'Jobholder'" },
-                { name: "company_or_college", def: "VARCHAR(150) DEFAULT NULL" },
-                { name: "designation_or_course", def: "VARCHAR(100) DEFAULT NULL" },
-                { name: "office_address", def: "VARCHAR(255) DEFAULT NULL" },
-                { name: "id_proof_type", def: "VARCHAR(50) DEFAULT 'Aadhaar Card'" },
-                { name: "id_proof_number", def: "VARCHAR(100) DEFAULT NULL" },
-                { name: "native_city", def: "VARCHAR(100) DEFAULT NULL" },
-                { name: "stay_type", def: "VARCHAR(50) DEFAULT 'Monthly Stay'" },
-                { name: "check_in_date", def: "VARCHAR(30) DEFAULT NULL" },
-                { name: "expected_checkout_date", def: "VARCHAR(30) DEFAULT NULL" },
-                { name: "monthly_rent", def: "DECIMAL(10,2) DEFAULT 0" },
-                { name: "security_deposit", def: "DECIMAL(10,2) DEFAULT 0" },
-                { name: "food_plan", def: "VARCHAR(50) DEFAULT 'With Food'" },
-                { name: "emergency_name", def: "VARCHAR(100) DEFAULT NULL" },
-                { name: "emergency_phone", def: "VARCHAR(30) DEFAULT NULL" },
-                { name: "dietary_preference", def: "VARCHAR(50) DEFAULT 'Pure Veg'" },
-                { name: "profile_photo", def: "VARCHAR(255) DEFAULT NULL" },
-                { name: "id_proof_file", def: "VARCHAR(255) DEFAULT NULL" },
-                { name: "id_proof_filename", def: "VARCHAR(255) DEFAULT NULL" },
-                { name: "id_proof_status", def: "VARCHAR(50) DEFAULT 'Pending Verification'" },
-                { name: "id_proof_rejection_reason", def: "TEXT DEFAULT NULL" }
-            ];
-
-            columnsToAdd.forEach(col => {
-                if (!existing.includes(col.name.toLowerCase())) {
-                    connection.query(`ALTER TABLE students ADD COLUMN ${col.name} ${col.def}`, (alterErr) => {
-                        if (alterErr) console.warn(`Could not add column ${col.name}:`, alterErr.message);
-                        else console.log(`✓ Added column ${col.name} to students table.`);
-                    });
-                }
-            });
-        });
-    });
-
-    // 1b. Upgrade users table with profile_photo
-    connection.query("SHOW COLUMNS FROM users", (uColErr, uCols) => {
-        if (!uColErr && uCols) {
-            const uExisting = uCols.map(c => c.Field.toLowerCase());
-            if (!uExisting.includes("profile_photo")) {
-                connection.query("ALTER TABLE users ADD COLUMN profile_photo VARCHAR(255) DEFAULT NULL", () => {
-                    console.log("✓ Added profile_photo to users table.");
-                });
-            }
-        }
-    });
-
-    // 2. Upgrade rooms table with monthly rent and AC specification
-    connection.query("SHOW TABLES LIKE 'rooms'", (err, tables) => {
-        if (err || !tables || tables.length === 0) return;
-        connection.query("SHOW COLUMNS FROM rooms", (colErr, cols) => {
-            if (colErr || !cols) return;
-            const existing = cols.map(c => c.Field.toLowerCase());
-            if (!existing.includes("monthly_rent")) {
-                connection.query("ALTER TABLE rooms ADD COLUMN monthly_rent DECIMAL(10,2) DEFAULT 6500", () => {});
-            }
-            if (!existing.includes("ac_type")) {
-                connection.query("ALTER TABLE rooms ADD COLUMN ac_type VARCHAR(20) DEFAULT 'Non-AC'", () => {});
-            }
-        });
-    });
-
-    // 3. Create vacating_notices table for transfer employees & vacating residents
-    const createNoticeTableSql = `
-        CREATE TABLE IF NOT EXISTS vacating_notices (
-            notice_id INT AUTO_INCREMENT PRIMARY KEY,
-            resident_id INT,
-            resident_name VARCHAR(100),
-            room_no VARCHAR(50),
-            resident_type VARCHAR(50) DEFAULT 'Jobholder',
-            reason VARCHAR(100) DEFAULT 'Job Transfer',
-            notice_date VARCHAR(30),
-            expected_vacate_date VARCHAR(30),
-            notes TEXT,
-            status VARCHAR(50) DEFAULT 'Pending Review',
-            deposit_refund_amount DECIMAL(10,2) DEFAULT 0,
+    // 1. Create users table
+    const createUsersTableSql = `
+        CREATE TABLE IF NOT EXISTS users (
+            user_id INT AUTO_INCREMENT PRIMARY KEY,
+            name VARCHAR(100) NOT NULL,
+            email VARCHAR(150) NOT NULL UNIQUE,
+            phone VARCHAR(30) DEFAULT '',
+            password VARCHAR(255) NOT NULL,
+            role VARCHAR(50) DEFAULT 'student',
+            profile_photo VARCHAR(255) DEFAULT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
     `;
-    connection.query(createNoticeTableSql, (err) => {
-        if (err) console.error("Error creating vacating_notices table:", err.message);
-        else console.log("✓ vacating_notices table ready.");
+    connection.query(createUsersTableSql, (uErr) => {
+        if (uErr) console.error("Error creating users table:", uErr.message);
+        else console.log("✓ users table ready.");
 
-        connection.query(
-            "DELETE FROM users WHERE email IN ('resident.rahul@gmail.com', 'admin.hostel@gmail.com')",
-            () => {}
-        );
-
-        // 4. Create payments table for UPI & fee transactions
-        const createPaymentsTableSql = `
-            CREATE TABLE IF NOT EXISTS payments (
-                payment_id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT,
-                student_name VARCHAR(100),
-                amount DECIMAL(10,2) NOT NULL,
-                payment_mode VARCHAR(50) DEFAULT 'UPI',
-                upi_id VARCHAR(100),
-                utr_number VARCHAR(100),
-                status VARCHAR(50) DEFAULT 'Success',
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        // 2. Create rooms table
+        const createRoomsTableSql = `
+            CREATE TABLE IF NOT EXISTS rooms (
+                room_id INT AUTO_INCREMENT PRIMARY KEY,
+                room_no VARCHAR(50) NOT NULL UNIQUE,
+                room_type VARCHAR(50) DEFAULT 'Shared',
+                total_beds INT DEFAULT 3,
+                occupied_beds INT DEFAULT 0,
+                monthly_rent DECIMAL(10,2) DEFAULT 6500,
+                ac_type VARCHAR(20) DEFAULT 'Non-AC'
             )
         `;
-        connection.query(createPaymentsTableSql, (payErr) => {
-            if (payErr) console.error("Error creating payments table:", payErr.message);
-            else console.log("✓ payments table ready.");
+        connection.query(createRoomsTableSql, (rmErr) => {
+            if (rmErr) console.error("Error creating rooms table:", rmErr.message);
+            else console.log("✓ rooms table ready.");
 
-            // 5. Enforce UNIQUE email on users table to guarantee no email can be registered twice
-            connection.query("SHOW INDEX FROM users WHERE Column_name = 'email'", (idxErr, idxResults) => {
-                if (!idxErr && (!idxResults || idxResults.length === 0)) {
-                    connection.query("ALTER TABLE users ADD UNIQUE KEY unique_user_email (email)", (addIdxErr) => {
-                        if (!addIdxErr) console.log("✓ Enforced UNIQUE email constraint on users table.");
-                    });
-                }
-            });
-
-            // 5b. Upgrade fees table for monthly stay records & advance tracking
-            connection.query("SHOW TABLES LIKE 'fees'", (feeTableErr, feeTables) => {
-                if (!feeTableErr && feeTables && feeTables.length > 0) {
-                    connection.query("SHOW COLUMNS FROM fees", (colErr, cols) => {
-                        if (!colErr && cols) {
-                            const existing = cols.map(c => c.Field.toLowerCase());
-                            const feeCols = [
-                                { name: "month_name", def: "VARCHAR(50) DEFAULT 'October 2026'" },
-                                { name: "billing_month", def: "VARCHAR(10) DEFAULT '2026-10'" },
-                                { name: "due_date", def: "VARCHAR(30) DEFAULT NULL" },
-                                { name: "fee_type", def: "VARCHAR(50) DEFAULT 'Monthly Stay Fee'" }
-                            ];
-                            feeCols.forEach(col => {
-                                if (!existing.includes(col.name.toLowerCase())) {
-                                    connection.query(`ALTER TABLE fees ADD COLUMN ${col.name} ${col.def}`, () => {
-                                        console.log(`✓ Added column ${col.name} to fees table.`);
-                                    });
-                                }
-                            });
-                        }
-                    });
-                }
-            });
-
-            // 6. Create food_menu table for day-to-day mess menu management
-            const createFoodMenuTableSql = `
-                CREATE TABLE IF NOT EXISTS food_menu (
-                    menu_id INT AUTO_INCREMENT PRIMARY KEY,
-                    menu_date VARCHAR(20) NOT NULL UNIQUE,
-                    day_name VARCHAR(20) NOT NULL,
-                    breakfast_items TEXT,
-                    breakfast_special VARCHAR(255) DEFAULT '',
-                    breakfast_time VARCHAR(50) DEFAULT '7:30 AM - 10:00 AM',
-                    lunch_items TEXT,
-                    lunch_special VARCHAR(255) DEFAULT '',
-                    lunch_time VARCHAR(50) DEFAULT '12:30 PM - 3:00 PM',
-                    dinner_items TEXT,
-                    dinner_special VARCHAR(255) DEFAULT '',
-                    dinner_time VARCHAR(50) DEFAULT '7:30 PM - 10:00 PM',
-                    special_announcement TEXT,
-                    is_feast_day TINYINT(1) DEFAULT 0,
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                )
-            `;
-            connection.query(createFoodMenuTableSql, (foodErr) => {
-                if (foodErr) console.error("Error creating food_menu table:", foodErr.message);
-                else {
-                    console.log("✓ food_menu table ready.");
-                    seedInitialFoodMenu();
-                }
-            });
-
-            // 7. Create hostel_settings table for system configurations
-            const createSettingsTableSql = `
-                CREATE TABLE IF NOT EXISTS hostel_settings (
-                    setting_id INT PRIMARY KEY,
-                    hostel_name VARCHAR(150) DEFAULT 'Executive PG & Private Hostel',
-                    hostel_tagline VARCHAR(200) DEFAULT 'Modern Living & Homely Accommodation',
-                    hostel_address TEXT,
-                    contact_phone VARCHAR(50) DEFAULT '9876543210',
-                    contact_email VARCHAR(100) DEFAULT 'info@hostelpg.com',
-                    warden_name VARCHAR(100) DEFAULT 'Chief Warden Desk',
-                    warden_phone VARCHAR(50) DEFAULT '9704844011',
-                    gate_closing_time VARCHAR(50) DEFAULT '10:30 PM',
-                    wifi_ssid VARCHAR(100) DEFAULT 'Hostel_HighSpeed_Fiber',
-                    wifi_password VARCHAR(100) DEFAULT 'HostelWifi@2026',
-                    hostel_upi_id VARCHAR(100) DEFAULT 'hostel.fees@okhdfcbank',
-                    hostel_upi_name VARCHAR(100) DEFAULT 'Hostel Management',
-                    hostel_upi_mobile VARCHAR(50) DEFAULT '9704844011',
-                    default_monthly_rent DECIMAL(10,2) DEFAULT 6500,
-                    default_security_deposit DECIMAL(10,2) DEFAULT 5000,
-                    notice_period_days INT DEFAULT 15,
-                    mess_morning_time VARCHAR(50) DEFAULT '7:30 AM - 10:00 AM',
-                    mess_lunch_time VARCHAR(50) DEFAULT '12:30 PM - 3:00 PM',
-                    mess_dinner_time VARCHAR(50) DEFAULT '7:30 PM - 10:00 PM',
-                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                )
-            `;
-            connection.query(createSettingsTableSql, (setErr) => {
-                if (setErr) console.error("Error creating hostel_settings table:", setErr.message);
-                else {
-                    console.log("✓ hostel_settings table ready.");
-                    const seedSettingSql = `
-                        INSERT IGNORE INTO hostel_settings
-                        (setting_id, hostel_name, hostel_address, contact_phone, warden_phone, hostel_upi_id, hostel_upi_mobile)
-                        VALUES
-                        (1, 'Executive PG & Private Hostel', 'Plot 42, Silicon Valley Colony, Madhapur, Hyderabad, TS - 500081', '9876543210', '9704844011', 'hostel.fees@okhdfcbank', '9704844011')
-                    `;
-                    connection.query(seedSettingSql, () => {});
-                }
-            });
-
-            // 8. Create reviews table for resident ratings and reviews
-            const createReviewsTableSql = `
-                CREATE TABLE IF NOT EXISTS reviews (
-                    review_id INT AUTO_INCREMENT PRIMARY KEY,
-                    user_id INT,
-                    student_name VARCHAR(100),
-                    room_no VARCHAR(50),
-                    resident_type VARCHAR(50) DEFAULT 'Resident',
-                    rating INT NOT NULL,
-                    category VARCHAR(50) DEFAULT 'Overall Stay',
-                    title VARCHAR(150),
-                    comment TEXT,
-                    status VARCHAR(50) DEFAULT 'Published',
-                    admin_reply TEXT DEFAULT NULL,
-                    admin_replied_at DATETIME DEFAULT NULL,
+            // 3. Create students table
+            const createStudentsTableSql = `
+                CREATE TABLE IF NOT EXISTS students (
+                    student_id INT AUTO_INCREMENT PRIMARY KEY,
+                    user_id INT DEFAULT NULL,
+                    name VARCHAR(100) NOT NULL,
+                    room_no VARCHAR(50) DEFAULT NULL,
+                    phone VARCHAR(30) DEFAULT '',
+                    email VARCHAR(150) DEFAULT NULL,
+                    resident_type VARCHAR(50) DEFAULT 'Jobholder',
+                    company_or_college VARCHAR(150) DEFAULT NULL,
+                    designation_or_course VARCHAR(100) DEFAULT NULL,
+                    office_address VARCHAR(255) DEFAULT NULL,
+                    id_proof_type VARCHAR(50) DEFAULT 'Aadhaar Card',
+                    id_proof_number VARCHAR(100) DEFAULT NULL,
+                    native_city VARCHAR(100) DEFAULT NULL,
+                    stay_type VARCHAR(50) DEFAULT 'Monthly Stay',
+                    check_in_date VARCHAR(30) DEFAULT NULL,
+                    expected_checkout_date VARCHAR(30) DEFAULT NULL,
+                    monthly_rent DECIMAL(10,2) DEFAULT 6500,
+                    security_deposit DECIMAL(10,2) DEFAULT 0,
+                    food_plan VARCHAR(50) DEFAULT 'With Food',
+                    emergency_name VARCHAR(100) DEFAULT NULL,
+                    emergency_phone VARCHAR(30) DEFAULT NULL,
+                    dietary_preference VARCHAR(50) DEFAULT 'Pure Veg',
+                    profile_photo VARCHAR(255) DEFAULT NULL,
+                    id_proof_file VARCHAR(255) DEFAULT NULL,
+                    id_proof_filename VARCHAR(255) DEFAULT NULL,
+                    id_proof_status VARCHAR(50) DEFAULT 'Pending Verification',
+                    id_proof_rejection_reason TEXT DEFAULT NULL,
                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 )
             `;
-            connection.query(createReviewsTableSql, (rErr) => {
-                if (rErr) console.error("Error creating reviews table:", rErr.message);
-                else console.log("✓ reviews table ready.");
+            connection.query(createStudentsTableSql, (sErr) => {
+                if (sErr) console.error("Error creating students table:", sErr.message);
+                else console.log("✓ students table ready.");
 
-                // 9. Ensure default admin user exists
-                connection.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1", async (adminCheckErr, adminRows) => {
-                    if (!adminCheckErr && (!adminRows || adminRows.length === 0)) {
-                        try {
-                            const hash = await bcrypt.hash("Admin@12345", 10);
-                            connection.query(
-                                "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
-                                [hash],
-                                (insErr) => {
-                                    if (!insErr) console.log("✓ Default admin account ready: admin@hostel.com / Admin@12345");
-                                }
-                            );
-                        } catch (bErr) {
-                            console.warn("Could not hash default admin password:", bErr.message);
-                        }
-                    }
+                // 4. Create fees table
+                const createFeesTableSql = `
+                    CREATE TABLE IF NOT EXISTS fees (
+                        fee_id INT AUTO_INCREMENT PRIMARY KEY,
+                        user_id INT DEFAULT NULL,
+                        student_name VARCHAR(100) NOT NULL,
+                        total_fee DECIMAL(10,2) NOT NULL DEFAULT 0,
+                        paid_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+                        pending_amount DECIMAL(10,2) NOT NULL DEFAULT 0,
+                        status VARCHAR(50) DEFAULT 'Pending',
+                        fee_type VARCHAR(50) DEFAULT 'Monthly Stay Fee',
+                        month_name VARCHAR(50) DEFAULT 'October 2026',
+                        billing_month VARCHAR(10) DEFAULT '2026-10',
+                        due_date VARCHAR(30) DEFAULT NULL,
+                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    )
+                `;
+                connection.query(createFeesTableSql, (fErr) => {
+                    if (fErr) console.error("Error creating fees table:", fErr.message);
+                    else console.log("✓ fees table ready.");
+
+                    // 5. Create complaints table
+                    const createComplaintsTableSql = `
+                        CREATE TABLE IF NOT EXISTS complaints (
+                            complaint_id INT AUTO_INCREMENT PRIMARY KEY,
+                            student_id INT DEFAULT NULL,
+                            student_name VARCHAR(100) DEFAULT '',
+                            room_no VARCHAR(50) DEFAULT '',
+                            complaint_text TEXT,
+                            status VARCHAR(50) DEFAULT 'Pending',
+                            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                        )
+                    `;
+                    connection.query(createComplaintsTableSql, (cErr) => {
+                        if (cErr) console.error("Error creating complaints table:", cErr.message);
+                        else console.log("✓ complaints table ready.");
+
+                        // 6. Create vacating_notices table
+                        const createNoticeTableSql = `
+                            CREATE TABLE IF NOT EXISTS vacating_notices (
+                                notice_id INT AUTO_INCREMENT PRIMARY KEY,
+                                resident_id INT,
+                                resident_name VARCHAR(100),
+                                room_no VARCHAR(50),
+                                resident_type VARCHAR(50) DEFAULT 'Jobholder',
+                                reason VARCHAR(100) DEFAULT 'Job Transfer',
+                                notice_date VARCHAR(30),
+                                expected_vacate_date VARCHAR(30),
+                                notes TEXT,
+                                status VARCHAR(50) DEFAULT 'Pending Review',
+                                deposit_refund_amount DECIMAL(10,2) DEFAULT 0,
+                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                            )
+                        `;
+                        connection.query(createNoticeTableSql, (vErr) => {
+                            if (vErr) console.error("Error creating vacating_notices table:", vErr.message);
+                            else console.log("✓ vacating_notices table ready.");
+
+                            // 7. Create payments table
+                            const createPaymentsTableSql = `
+                                CREATE TABLE IF NOT EXISTS payments (
+                                    payment_id INT AUTO_INCREMENT PRIMARY KEY,
+                                    user_id INT,
+                                    student_name VARCHAR(100),
+                                    amount DECIMAL(10,2) NOT NULL,
+                                    payment_mode VARCHAR(50) DEFAULT 'UPI',
+                                    upi_id VARCHAR(100),
+                                    utr_number VARCHAR(100),
+                                    status VARCHAR(50) DEFAULT 'Success',
+                                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                )
+                            `;
+                            connection.query(createPaymentsTableSql, (payErr) => {
+                                if (payErr) console.error("Error creating payments table:", payErr.message);
+                                else console.log("✓ payments table ready.");
+
+                                // 8. Create food_menu table
+                                const createFoodMenuTableSql = `
+                                    CREATE TABLE IF NOT EXISTS food_menu (
+                                        menu_id INT AUTO_INCREMENT PRIMARY KEY,
+                                        menu_date VARCHAR(20) NOT NULL UNIQUE,
+                                        day_name VARCHAR(20) NOT NULL,
+                                        breakfast_items TEXT,
+                                        breakfast_special VARCHAR(255) DEFAULT '',
+                                        breakfast_time VARCHAR(50) DEFAULT '7:30 AM - 10:00 AM',
+                                        lunch_items TEXT,
+                                        lunch_special VARCHAR(255) DEFAULT '',
+                                        lunch_time VARCHAR(50) DEFAULT '12:30 PM - 3:00 PM',
+                                        dinner_items TEXT,
+                                        dinner_special VARCHAR(255) DEFAULT '',
+                                        dinner_time VARCHAR(50) DEFAULT '7:30 PM - 10:00 PM',
+                                        special_announcement TEXT,
+                                        is_feast_day TINYINT(1) DEFAULT 0,
+                                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                    )
+                                `;
+                                connection.query(createFoodMenuTableSql, (foodErr) => {
+                                    if (foodErr) console.error("Error creating food_menu table:", foodErr.message);
+                                    else {
+                                        console.log("✓ food_menu table ready.");
+                                        seedInitialFoodMenu();
+                                    }
+
+                                    // 9. Create hostel_settings table
+                                    const createSettingsTableSql = `
+                                        CREATE TABLE IF NOT EXISTS hostel_settings (
+                                            setting_id INT PRIMARY KEY,
+                                            hostel_name VARCHAR(150) DEFAULT 'Executive PG & Private Hostel',
+                                            hostel_tagline VARCHAR(200) DEFAULT 'Modern Living & Homely Accommodation',
+                                            hostel_address TEXT,
+                                            contact_phone VARCHAR(50) DEFAULT '9876543210',
+                                            contact_email VARCHAR(100) DEFAULT 'info@hostelpg.com',
+                                            warden_name VARCHAR(100) DEFAULT 'Chief Warden Desk',
+                                            warden_phone VARCHAR(50) DEFAULT '9704844011',
+                                            gate_closing_time VARCHAR(50) DEFAULT '10:30 PM',
+                                            wifi_ssid VARCHAR(100) DEFAULT 'Hostel_HighSpeed_Fiber',
+                                            wifi_password VARCHAR(100) DEFAULT 'HostelWifi@2026',
+                                            hostel_upi_id VARCHAR(100) DEFAULT 'hostel.fees@okhdfcbank',
+                                            hostel_upi_name VARCHAR(100) DEFAULT 'Hostel Management',
+                                            hostel_upi_mobile VARCHAR(50) DEFAULT '9704844011',
+                                            default_monthly_rent DECIMAL(10,2) DEFAULT 6500,
+                                            default_security_deposit DECIMAL(10,2) DEFAULT 5000,
+                                            notice_period_days INT DEFAULT 15,
+                                            mess_morning_time VARCHAR(50) DEFAULT '7:30 AM - 10:00 AM',
+                                            mess_lunch_time VARCHAR(50) DEFAULT '12:30 PM - 3:00 PM',
+                                            mess_dinner_time VARCHAR(50) DEFAULT '7:30 PM - 10:00 PM',
+                                            updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+                                        )
+                                    `;
+                                    connection.query(createSettingsTableSql, (setErr) => {
+                                        if (setErr) console.error("Error creating hostel_settings table:", setErr.message);
+                                        else {
+                                            console.log("✓ hostel_settings table ready.");
+                                            const seedSettingSql = `
+                                                INSERT IGNORE INTO hostel_settings
+                                                (setting_id, hostel_name, hostel_address, contact_phone, warden_phone, hostel_upi_id, hostel_upi_mobile)
+                                                VALUES
+                                                (1, 'Executive PG & Private Hostel', 'Plot 42, Silicon Valley Colony, Madhapur, Hyderabad, TS - 500081', '9876543210', '9704844011', 'hostel.fees@okhdfcbank', '9704844011')
+                                            `;
+                                            connection.query(seedSettingSql, () => {});
+                                        }
+
+                                        // 10. Create reviews table
+                                        const createReviewsTableSql = `
+                                            CREATE TABLE IF NOT EXISTS reviews (
+                                                review_id INT AUTO_INCREMENT PRIMARY KEY,
+                                                user_id INT,
+                                                student_name VARCHAR(100),
+                                                room_no VARCHAR(50),
+                                                resident_type VARCHAR(50) DEFAULT 'Resident',
+                                                rating INT NOT NULL,
+                                                category VARCHAR(50) DEFAULT 'Overall Stay',
+                                                title VARCHAR(150),
+                                                comment TEXT,
+                                                status VARCHAR(50) DEFAULT 'Published',
+                                                admin_reply TEXT DEFAULT NULL,
+                                                admin_replied_at DATETIME DEFAULT NULL,
+                                                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                                            )
+                                        `;
+                                        connection.query(createReviewsTableSql, (rErr) => {
+                                            if (rErr) console.error("Error creating reviews table:", rErr.message);
+                                            else console.log("✓ reviews table ready.");
+
+                                            // 11. Seed default admin user
+                                            connection.query("SELECT user_id FROM users WHERE role = 'admin' LIMIT 1", async (adminCheckErr, adminRows) => {
+                                                if (!adminCheckErr && (!adminRows || adminRows.length === 0)) {
+                                                    try {
+                                                        const hash = await bcrypt.hash("Admin@12345", 10);
+                                                        connection.query(
+                                                            "INSERT INTO users (name, email, phone, password, role) VALUES ('System Administrator', 'admin@hostel.com', '9876543210', ?, 'admin')",
+                                                            [hash],
+                                                            (insErr) => {
+                                                                if (!insErr) console.log("✓ Default admin account ready: admin@hostel.com / Admin@12345");
+                                                            }
+                                                        );
+                                                    } catch (bErr) {
+                                                        console.warn("Could not hash default admin password:", bErr.message);
+                                                    }
+                                                }
+                                            });
+
+                                            // 12. Seed default rooms if empty
+                                            connection.query("SELECT COUNT(*) AS count FROM rooms", (rmCntErr, rmCntRows) => {
+                                                if (!rmCntErr && rmCntRows && rmCntRows[0].count === 0) {
+                                                    const sampleRooms = [
+                                                        ['101', 'Single', 1, 0, 8500, 'AC'],
+                                                        ['102', 'Double', 2, 0, 7500, 'AC'],
+                                                        ['103', 'Triple', 3, 0, 6500, 'Non-AC'],
+                                                        ['104', 'Triple', 3, 0, 6500, 'Non-AC'],
+                                                        ['105', 'Four-Sharing', 4, 0, 5500, 'Non-AC'],
+                                                        ['201', 'Single', 1, 0, 8500, 'AC'],
+                                                        ['202', 'Double', 2, 0, 7500, 'AC'],
+                                                        ['203', 'Triple', 3, 0, 6500, 'Non-AC'],
+                                                        ['204', 'Triple', 3, 0, 6500, 'Non-AC'],
+                                                        ['205', 'Four-Sharing', 4, 0, 5500, 'Non-AC']
+                                                    ];
+                                                    sampleRooms.forEach(([no, type, total, occ, rent, ac]) => {
+                                                        connection.query(
+                                                            "INSERT IGNORE INTO rooms (room_no, room_type, total_beds, occupied_beds, monthly_rent, ac_type) VALUES (?, ?, ?, ?, ?, ?)",
+                                                            [no, type, total, occ, rent, ac],
+                                                            () => {}
+                                                        );
+                                                    });
+                                                    console.log("✓ Initial 10 rooms seeded successfully.");
+                                                }
+                                            });
+                                        });
+                                    });
+                                });
+                            });
+                        });
+                    });
                 });
             });
         });
