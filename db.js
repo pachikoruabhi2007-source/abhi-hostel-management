@@ -281,6 +281,9 @@ function initSchema() {
                                                         console.warn("Could not hash default admin password:", bErr.message);
                                                     }
                                                 }
+
+                                                // Ensure owner email is always Admin
+                                                connection.query("UPDATE users SET role = 'admin' WHERE LOWER(TRIM(email)) = 'pachikoruabhi2007@gmail.com'", () => {});
                                             });
 
                                             // 12. Seed default rooms if empty

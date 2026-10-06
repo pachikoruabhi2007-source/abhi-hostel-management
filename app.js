@@ -24,7 +24,7 @@ if (fs.existsSync(envPath)) {
 }
 
 const app = express();
-
+app.set("trust proxy", 1);
 
 // ==================== MIDDLEWARE ====================
 
@@ -64,7 +64,7 @@ app.use(session({
     cookie: {
         httpOnly: true, // Prevents JavaScript document.cookie access (Stops XSS session theft)
         sameSite: "lax", // Protects against Cross-Site Request Forgery (CSRF)
-        secure: process.env.NODE_ENV === "production", // Requires HTTPS in production
+        secure: "auto", // Automatically detects HTTPS behind reverse proxies like Render
         maxAge: 24 * 60 * 60 * 1000 // 24-hour expiration
     }
 }));
@@ -3953,19 +3953,21 @@ app.post(
                         req.session.email = user.email;
                         req.session.role = user.role;
 
-                        const redirectUrl = user.role === "student" ? "/student-dashboard" : "/dashboard";
+                        const redirectUrl = user.role === "admin" ? "/dashboard" : "/student-dashboard";
 
-                        if (isJson) {
-                            return res.json({
-                                success: true,
-                                message: `Welcome back, ${user.name}!`,
-                                redirectUrl: redirectUrl,
-                                userName: user.name,
-                                role: user.role
-                            });
-                        }
-
-                        return res.redirect(redirectUrl);
+                        req.session.save((saveErr) => {
+                            if (saveErr) console.warn("Session save warning:", saveErr.message);
+                            if (isJson) {
+                                return res.json({
+                                    success: true,
+                                    message: `Welcome back, ${user.name}!`,
+                                    redirectUrl: redirectUrl,
+                                    userName: user.name,
+                                    role: user.role
+                                });
+                            }
+                            return res.redirect(redirectUrl);
+                        });
                     }
 
                     // ==================== USER DOES NOT EXIST IN DATABASE ====================
