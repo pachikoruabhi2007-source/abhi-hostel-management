@@ -6260,15 +6260,20 @@ app.delete("/api/admin/reviews/:id", requireAdmin, (req, res) => {
 });
 
 
+// ==================== PROCESS CRASH PROTECTION ====================
+process.on("uncaughtException", (err) => {
+    console.error("Uncaught Exception intercepted:", err.message);
+});
+
+process.on("unhandledRejection", (reason) => {
+    console.error("Unhandled Rejection intercepted:", reason);
+});
+
 // ==================== START SERVER ====================
+const server = app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running at http://0.0.0.0:${PORT}`);
+});
 
-app.listen(
-    PORT,
-    () => {
-
-        console.log(
-            `Server running at http://localhost:${PORT}`
-        );
-
-    }
-);
+// Recommended Render keep-alive and headers timeout to eliminate 502 Bad Gateway
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 120000;

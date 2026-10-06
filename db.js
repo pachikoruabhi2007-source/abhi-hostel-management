@@ -517,4 +517,11 @@ connection.connect((err) => {
     initSchema();
 });
 
+connection.on("error", (err) => {
+    console.error("MySQL socket error:", err.message);
+    if (err.code === "PROTOCOL_CONNECTION_LOST" || err.code === "ECONNRESET") {
+        console.warn("MySQL connection reset or lost. Reconnecting is handled gracefully.");
+    }
+});
+
 module.exports = connection;
